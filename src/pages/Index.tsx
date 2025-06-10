@@ -61,7 +61,7 @@ const Index = () => {
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 flex items-center justify-center">
               <img 
-                src="/lovable-uploads/bde6f012-24a0-4530-b910-bf00f409b579.png" 
+                src="/lovable-uploads/ba71df48-aa83-4792-9619-cfb9dca550e8.png" 
                 alt="Wildest AI Logo" 
                 className="w-10 h-10 object-contain"
               />
@@ -244,7 +244,7 @@ const Index = () => {
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 flex items-center justify-center">
                   <img 
-                    src="/lovable-uploads/bde6f012-24a0-4530-b910-bf00f409b579.png" 
+                    src="/lovable-uploads/ba71df48-aa83-4792-9619-cfb9dca550e8.png" 
                     alt="Wildest AI Logo" 
                     className="w-8 h-8 object-contain"
                   />

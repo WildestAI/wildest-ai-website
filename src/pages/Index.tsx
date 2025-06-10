@@ -51,10 +51,10 @@ const Index = () => {
             <span className="text-xl font-bold">Wildest AI</span>
           </div>
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</a>
-            <a href="#about" className="text-muted-foreground hover:text-foreground transition-colors">About</a>
-            <a href="#testimonials" className="text-muted-foreground hover:text-foreground transition-colors">Testimonials</a>
-            <Button variant="outline" size="sm">Sign In</Button>
+            
+            
+            
+            
             <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
               Get Started
             </Button>
@@ -116,7 +116,7 @@ AI Code</span>
               <h2 className="text-4xl font-bold mb-6">
                 Code smarter, not harder
               </h2>
-              <p className="text-xl text-muted-foreground mb-8">AI generates 100x the output of human engineers, but current tools rely on text and line-by-line diffs. </p>
+              <p className="text-xl text-muted-foreground mb-8">AI generates 100x the output of human engineers, but current tools rely on text and line-by-line diffs. </p>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />
@@ -128,7 +128,7 @@ AI Code</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />
-                  <span>Zoom-in and out to understand different layers </span>
+                  <span>Zoom-in and out to understand different layers </span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />
@@ -137,17 +137,16 @@ AI Code</span>
               </div>
             </div>
             <div className="relative">
-              <Card className="bg-card/80 backdrop-blur-sm border-border/50">
+              <Card className="bg-card/80 backdrop-blur-sm border-border/50 animate-float">
                 <CardContent className="p-6">
-                  <div className="aspect-video w-full">
-                    <iframe
-                      className="w-full h-full rounded-lg"
-                      src="https://www.youtube.com/embed/0GmbbfMj-ew"
-                      title="YouTube video player"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                    ></iframe>
+                  <div className="bg-background/90 rounded-lg p-4 font-mono text-sm">
+                    <div className="text-primary mb-2">// AI-generated optimization</div>
+                    <div className="text-green-400">function calculateResults(data) {'{'}
+                    </div>
+                    <div className="text-muted-foreground ml-4">// Optimized algorithm suggested by Wildest AI</div>
+                    <div className="text-blue-400 ml-4">return data.reduce((acc, item) {'=>'}</div>
+                    <div className="text-blue-400 ml-8">acc + item.value * 0.95, 0);</div>
+                    <div className="text-green-400">{'}'}</div>
                   </div>
                 </CardContent>
               </Card>
@@ -158,30 +157,7 @@ AI Code</span>
 
       {/* Testimonials Section */}
       <section id="testimonials" className="py-20 bg-card/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">What Developers Are Saying</h2>
-            <p className="text-xl text-muted-foreground">
-              Join thousands of developers who have transformed their workflow
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => <Card key={index} className="bg-card/50 backdrop-blur-sm border-border/50">
-                <CardContent className="p-6">
-                  <div className="flex mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />)}
-                  </div>
-                  <p className="text-muted-foreground mb-6">"{testimonial.content}"</p>
-                  <div>
-                    <div className="font-semibold">{testimonial.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {testimonial.role} at {testimonial.company}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>)}
-          </div>
-        </div>
+        
       </section>
 
       {/* CTA Section */}
@@ -206,51 +182,7 @@ AI Code</span>
 
       {/* Footer */}
       <footer className="border-t border-border/50 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 flex items-center justify-center">
-                  <img src="/lovable-uploads/ba71df48-aa83-4792-9619-cfb9dca550e8.png" alt="Wildest AI Logo" className="w-8 h-8 object-contain" />
-                </div>
-                <span className="text-lg font-bold">Wildest AI</span>
-              </div>
-              <p className="text-muted-foreground">
-                The New Agile for AI Code
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Product</h4>
-              <div className="space-y-2 text-muted-foreground">
-                <div>Features</div>
-                <div>Pricing</div>
-                <div>Documentation</div>
-                <div>API</div>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <div className="space-y-2 text-muted-foreground">
-                <div>About</div>
-                <div>Careers</div>
-                <div>Blog</div>
-                <div>Contact</div>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Support</h4>
-              <div className="space-y-2 text-muted-foreground">
-                <div>Help Center</div>
-                <div>Community</div>
-                <div>Status</div>
-                <div>Security</div>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-border/50 mt-8 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 Wildest AI. All rights reserved.</p>
-          </div>
-        </div>
+        
       </footer>
     </div>;
 };

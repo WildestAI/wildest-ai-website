@@ -11,15 +11,15 @@ const Index = () => {
   const features = [{
     icon: <Code className="h-8 w-8" />,
     title: "DiffGraph",
-    description: "Generate, refactor, and optimize code with advanced AI assistance that understands your project context."
+    description: "Quickly visualize the changes AI code introduces"
   }, {
     icon: <Zap className="h-8 w-8" />,
     title: "Prompt Orchestrator",
-    description: "Accelerate development cycles by 10x with intelligent automation and predictive coding suggestions."
+    description: "Gathers objectives & constraints then orchestrates AI agents to execute"
   }, {
     icon: <Users className="h-8 w-8" />,
     title: "Scenario Engine",
-    description: "Seamless integration with your existing workflow and team collaboration tools."
+    description: "Generates multiple builds for the user to choose best fit"
   }];
   const testimonials = [{
     name: "Sarah Chen",

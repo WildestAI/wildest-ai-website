@@ -116,9 +116,7 @@ AI Code</span>
               <h2 className="text-4xl font-bold mb-6">
                 Code smarter, not harder
               </h2>
-              <p className="text-xl text-muted-foreground mb-8">
-                Our AI understands your codebase, suggests optimizations, and catches errors before they become problems.
-              </p>
+              <p className="text-xl text-muted-foreground mb-8">AI generates 100x the output of human engineers, but current tools rely on text and line-by-line diffs. </p>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />

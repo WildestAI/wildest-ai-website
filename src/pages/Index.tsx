@@ -137,7 +137,7 @@ AI Code</span>
               </div>
             </div>
             <div className="relative">
-              <Card className="bg-card/80 backdrop-blur-sm border-border/50 animate-float">
+              <Card className="bg-card/80 backdrop-blur-sm border-border/50">
                 <CardContent className="p-6">
                   <div className="aspect-video w-full">
                     <iframe

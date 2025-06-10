@@ -120,15 +120,15 @@ AI Code</span>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />
-                  <span>Intelligent code completion</span>
+                  <span>Semantic understanding of code changes</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />
-                  <span>Automated refactoring suggestions</span>
+                  <span>Visualization of code changes based on functions and operations (not file structure)</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />
-                  <span>Real-time error detection</span>
+                  <span>Zoom-in and out to understand different layers </span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />

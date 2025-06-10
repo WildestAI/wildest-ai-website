@@ -10,15 +10,15 @@ const Index = () => {
   }, []);
   const features = [{
     icon: <Code className="h-8 w-8" />,
-    title: "AI-Powered Coding",
+    title: "DiffGraph",
     description: "Generate, refactor, and optimize code with advanced AI assistance that understands your project context."
   }, {
     icon: <Zap className="h-8 w-8" />,
-    title: "Lightning Fast",
+    title: "Prompt Orchestrator",
     description: "Accelerate development cycles by 10x with intelligent automation and predictive coding suggestions."
   }, {
     icon: <Users className="h-8 w-8" />,
-    title: "Team Collaboration",
+    title: "Scenario Engine",
     description: "Seamless integration with your existing workflow and team collaboration tools."
   }];
   const testimonials = [{

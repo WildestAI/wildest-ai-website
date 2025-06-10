@@ -80,13 +80,9 @@ AI Code</span>
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-glow">
                 Start Building <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button variant="outline" size="lg">
-                Watch Demo
-              </Button>
+              
             </div>
-            <div className="mt-8 text-sm text-muted-foreground">
-              Join 10,000+ developers already using Wildest AI
-            </div>
+            
           </div>
         </div>
       </section>

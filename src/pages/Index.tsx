@@ -92,7 +92,7 @@ const Index = () => {
               The Future of Development is Here
             </Badge>
             <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
-              Make your code <span className="gradient-text">brilliant</span>
+              The New Agile for <span className="gradient-text">AI Code</span>
             </h1>
             <p className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               The New Agile for AI Code. Transform your development process with intelligent automation and cutting-edge AI assistance.

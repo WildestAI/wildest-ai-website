@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -60,8 +59,12 @@ const Index = () => {
       <header className="border-b border-border/50 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-yellow-400 flex items-center justify-center">
-              <span className="text-black font-bold text-lg">W</span>
+            <div className="w-10 h-10 flex items-center justify-center">
+              <img 
+                src="/lovable-uploads/bde6f012-24a0-4530-b910-bf00f409b579.png" 
+                alt="Wildest AI Logo" 
+                className="w-10 h-10 object-contain"
+              />
             </div>
             <span className="text-xl font-bold">Wildest AI</span>
           </div>
@@ -239,8 +242,12 @@ const Index = () => {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-yellow-400 flex items-center justify-center">
-                  <span className="text-black font-bold">W</span>
+                <div className="w-8 h-8 flex items-center justify-center">
+                  <img 
+                    src="/lovable-uploads/bde6f012-24a0-4530-b910-bf00f409b579.png" 
+                    alt="Wildest AI Logo" 
+                    className="w-8 h-8 object-contain"
+                  />
                 </div>
                 <span className="text-lg font-bold">Wildest AI</span>
               </div>

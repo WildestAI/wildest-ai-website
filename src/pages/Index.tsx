@@ -167,11 +167,12 @@ const Index = () => {
                 <CardContent className="p-6">
                   <div className="bg-background/90 rounded-lg p-4 font-mono text-sm">
                     <div className="text-primary mb-2">// AI-generated optimization</div>
-                    <div className="text-green-400">function calculateResults(data) {</div>
+                    <div className="text-green-400">function calculateResults(data) {'{'}
+                    </div>
                     <div className="text-muted-foreground ml-4">// Optimized algorithm suggested by Wildest AI</div>
-                    <div className="text-blue-400 ml-4">return data.reduce((acc, item) =></div>
+                    <div className="text-blue-400 ml-4">return data.reduce((acc, item) {'=>'}</div>
                     <div className="text-blue-400 ml-8">acc + item.value * 0.95, 0);</div>
-                    <div className="text-green-400">}</div>
+                    <div className="text-green-400">{'}'}</div>
                   </div>
                 </CardContent>
               </Card>

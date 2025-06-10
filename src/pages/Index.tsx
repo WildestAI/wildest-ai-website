@@ -116,7 +116,7 @@ AI Code</span>
               <h2 className="text-4xl font-bold mb-6">
                 Code smarter, not harder
               </h2>
-              <p className="text-xl text-muted-foreground mb-8">AI generates 100x the output of human engineers, but current tools rely on text and line-by-line diffs. </p>
+              <p className="text-xl text-muted-foreground mb-8">AI generates 100x the output of human engineers, but current tools rely on text and line-by-line diffs. </p>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />
@@ -128,7 +128,7 @@ AI Code</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />
-                  <span>Zoom-in and out to understand different layers </span>
+                  <span>Zoom-in and out to understand different layers </span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />
@@ -139,14 +139,15 @@ AI Code</span>
             <div className="relative">
               <Card className="bg-card/80 backdrop-blur-sm border-border/50 animate-float">
                 <CardContent className="p-6">
-                  <div className="bg-background/90 rounded-lg p-4 font-mono text-sm">
-                    <div className="text-primary mb-2">// AI-generated optimization</div>
-                    <div className="text-green-400">function calculateResults(data) {'{'}
-                    </div>
-                    <div className="text-muted-foreground ml-4">// Optimized algorithm suggested by Wildest AI</div>
-                    <div className="text-blue-400 ml-4">return data.reduce((acc, item) {'=>'}</div>
-                    <div className="text-blue-400 ml-8">acc + item.value * 0.95, 0);</div>
-                    <div className="text-green-400">{'}'}</div>
+                  <div className="aspect-video w-full">
+                    <iframe
+                      className="w-full h-full rounded-lg"
+                      src="https://www.youtube.com/embed/0GmbbfMj-ew"
+                      title="YouTube video player"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    ></iframe>
                   </div>
                 </CardContent>
               </Card>

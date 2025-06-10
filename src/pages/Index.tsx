@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRight, Code, Zap, Users, Sparkles, CheckCircle, Star } from "lucide-react";
-
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -17,22 +16,21 @@ const Index = () => {
     email: "",
     teamSize: ""
   });
-
   useEffect(() => {
     setIsVisible(true);
   }, []);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
     // Handle form submission here
     setIsDialogOpen(false);
   };
-
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
-
   const features = [{
     icon: <Code className="h-8 w-8" />,
     title: "DiffGraph",
@@ -65,9 +63,7 @@ const Index = () => {
     content: "The agile AI approach has revolutionized our sprint planning and execution.",
     rating: 5
   }];
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border/50 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -92,36 +88,20 @@ const Index = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName">First Name</Label>
-                      <Input
-                        id="firstName"
-                        value={formData.firstName}
-                        onChange={(e) => handleInputChange("firstName", e.target.value)}
-                        required
-                      />
+                      <Input id="firstName" value={formData.firstName} onChange={e => handleInputChange("firstName", e.target.value)} required />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="lastName">Last Name</Label>
-                      <Input
-                        id="lastName"
-                        value={formData.lastName}
-                        onChange={(e) => handleInputChange("lastName", e.target.value)}
-                        required
-                      />
+                      <Input id="lastName" value={formData.lastName} onChange={e => handleInputChange("lastName", e.target.value)} required />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => handleInputChange("email", e.target.value)}
-                      required
-                    />
+                    <Input id="email" type="email" value={formData.email} onChange={e => handleInputChange("email", e.target.value)} required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="teamSize">Size of Engineering Team</Label>
-                    <Select value={formData.teamSize} onValueChange={(value) => handleInputChange("teamSize", value)}>
+                    <Select value={formData.teamSize} onValueChange={value => handleInputChange("teamSize", value)}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select team size" />
                       </SelectTrigger>
@@ -223,16 +203,7 @@ const Index = () => {
               <Card className="bg-card/80 backdrop-blur-sm border-border/50">
                 <CardContent className="p-0">
                   <div className="aspect-video">
-                    <iframe
-                      width="100%"
-                      height="100%"
-                      src="https://www.youtube.com/embed/0GmbbfMj-ew"
-                      title="YouTube video player"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                      className="rounded-lg"
-                    ></iframe>
+                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/0GmbbfMj-ew" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen className="rounded-lg"></iframe>
                   </div>
                 </CardContent>
               </Card>
@@ -242,36 +213,7 @@ const Index = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 bg-card/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              What Our Users Say
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Don't just take our word for it. See how Wildest AI is transforming development teams.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all duration-300 hover:scale-105">
-                <CardContent className="p-8">
-                  <div className="flex items-center mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 text-yellow-500 mr-1" />
-                    ))}
-                  </div>
-                  <p className="text-muted-foreground italic mb-4">"{testimonial.content}"</p>
-                  <div className="font-semibold">{testimonial.name}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {testimonial.role}, {testimonial.company}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+      
 
       {/* CTA Section */}
       <section className="py-20">
@@ -303,8 +245,6 @@ const Index = () => {
           &copy; {new Date().getFullYear()} Wildest AI. All rights reserved.
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;

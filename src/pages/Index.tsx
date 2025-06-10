@@ -3,68 +3,50 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Code, Zap, Users, Sparkles, CheckCircle, Star } from "lucide-react";
-
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
     setIsVisible(true);
   }, []);
-
-  const features = [
-    {
-      icon: <Code className="h-8 w-8" />,
-      title: "AI-Powered Coding",
-      description: "Generate, refactor, and optimize code with advanced AI assistance that understands your project context."
-    },
-    {
-      icon: <Zap className="h-8 w-8" />,
-      title: "Lightning Fast",
-      description: "Accelerate development cycles by 10x with intelligent automation and predictive coding suggestions."
-    },
-    {
-      icon: <Users className="h-8 w-8" />,
-      title: "Team Collaboration",
-      description: "Seamless integration with your existing workflow and team collaboration tools."
-    }
-  ];
-
-  const testimonials = [
-    {
-      name: "Sarah Chen",
-      role: "Senior Developer",
-      company: "TechCorp",
-      content: "Wildest AI has transformed how we approach development. The AI suggestions are incredibly accurate.",
-      rating: 5
-    },
-    {
-      name: "Marcus Rodriguez",
-      role: "CTO",
-      company: "StartupXYZ",
-      content: "We've reduced our development time by 60% while improving code quality. Game-changer!",
-      rating: 5
-    },
-    {
-      name: "Emily Watson",
-      role: "Lead Engineer",
-      company: "DevStudio",
-      content: "The agile AI approach has revolutionized our sprint planning and execution.",
-      rating: 5
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-background">
+  const features = [{
+    icon: <Code className="h-8 w-8" />,
+    title: "AI-Powered Coding",
+    description: "Generate, refactor, and optimize code with advanced AI assistance that understands your project context."
+  }, {
+    icon: <Zap className="h-8 w-8" />,
+    title: "Lightning Fast",
+    description: "Accelerate development cycles by 10x with intelligent automation and predictive coding suggestions."
+  }, {
+    icon: <Users className="h-8 w-8" />,
+    title: "Team Collaboration",
+    description: "Seamless integration with your existing workflow and team collaboration tools."
+  }];
+  const testimonials = [{
+    name: "Sarah Chen",
+    role: "Senior Developer",
+    company: "TechCorp",
+    content: "Wildest AI has transformed how we approach development. The AI suggestions are incredibly accurate.",
+    rating: 5
+  }, {
+    name: "Marcus Rodriguez",
+    role: "CTO",
+    company: "StartupXYZ",
+    content: "We've reduced our development time by 60% while improving code quality. Game-changer!",
+    rating: 5
+  }, {
+    name: "Emily Watson",
+    role: "Lead Engineer",
+    company: "DevStudio",
+    content: "The agile AI approach has revolutionized our sprint planning and execution.",
+    rating: 5
+  }];
+  return <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border/50 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 flex items-center justify-center">
-              <img 
-                src="/lovable-uploads/ba71df48-aa83-4792-9619-cfb9dca550e8.png" 
-                alt="Wildest AI Logo" 
-                className="w-10 h-10 object-contain"
-              />
+              <img src="/lovable-uploads/ba71df48-aa83-4792-9619-cfb9dca550e8.png" alt="Wildest AI Logo" className="w-10 h-10 object-contain" />
             </div>
             <span className="text-xl font-bold">Wildest AI</span>
           </div>
@@ -84,19 +66,16 @@ const Index = () => {
       <section className="relative py-20 lg:py-32 overflow-hidden">
         <div className="absolute inset-0 hero-gradient"></div>
         <div className="container mx-auto px-4 relative z-10">
-          <div className={`text-center max-w-4xl mx-auto transition-all duration-1000 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}>
+          <div className={`text-center max-w-4xl mx-auto transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <Badge variant="secondary" className="mb-6 px-4 py-2 text-sm">
               <Sparkles className="h-4 w-4 mr-2" />
               The Future of Development is Here
             </Badge>
             <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
-              The New Agile for <span className="gradient-text">AI Code</span>
+              The New Agile for <span className="gradient-text">
+AI Code</span>
             </h1>
-            <p className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              The New Agile for AI Code. Transform your development process with intelligent automation and cutting-edge AI assistance.
-            </p>
+            <p className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">Unhobble AI Code Generation by equipping your teams with the tools to understand AI-generated diffs and prompt AI to generate multiple builds</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-glow">
                 Start Building <ArrowRight className="ml-2 h-5 w-5" />
@@ -122,15 +101,13 @@ const Index = () => {
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <Card key={index} className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all duration-300 hover:scale-105">
+            {features.map((feature, index) => <Card key={index} className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all duration-300 hover:scale-105">
                 <CardContent className="p-8 text-center">
                   <div className="text-primary mb-4 flex justify-center">{feature.icon}</div>
                   <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
                   <p className="text-muted-foreground">{feature.description}</p>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -194,13 +171,10 @@ const Index = () => {
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="bg-card/50 backdrop-blur-sm border-border/50">
+            {testimonials.map((testimonial, index) => <Card key={index} className="bg-card/50 backdrop-blur-sm border-border/50">
                 <CardContent className="p-6">
                   <div className="flex mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
-                    ))}
+                    {[...Array(testimonial.rating)].map((_, i) => <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />)}
                   </div>
                   <p className="text-muted-foreground mb-6">"{testimonial.content}"</p>
                   <div>
@@ -210,8 +184,7 @@ const Index = () => {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -243,11 +216,7 @@ const Index = () => {
             <div>
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 flex items-center justify-center">
-                  <img 
-                    src="/lovable-uploads/ba71df48-aa83-4792-9619-cfb9dca550e8.png" 
-                    alt="Wildest AI Logo" 
-                    className="w-8 h-8 object-contain"
-                  />
+                  <img src="/lovable-uploads/ba71df48-aa83-4792-9619-cfb9dca550e8.png" alt="Wildest AI Logo" className="w-8 h-8 object-contain" />
                 </div>
                 <span className="text-lg font-bold">Wildest AI</span>
               </div>
@@ -288,8 +257,6 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;

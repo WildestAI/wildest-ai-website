@@ -186,19 +186,19 @@ const Index = () => {
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />
-                  <span>Semantic understanding of code changes</span>
+                  <span className="w-full">Semantic understanding of code changes</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />
-                  <span>Visualization of code changes based on functions and operations (not file structure)</span>
+                  <span className="w-full">Visualization of code changes based on functional relationship (not file structure)</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />
-                  <span>Zoom-in and out to understand different layers </span>
+                  <span className="w-full">Zoom-in and out to understand different layers </span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />
-                  <span>Performance optimization</span>
+                  <span className="w-full">Performance optimization</span>
                 </div>
               </div>
             </div>

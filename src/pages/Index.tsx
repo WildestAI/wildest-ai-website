@@ -134,7 +134,7 @@ const Index = () => {
             The Future of Development is Here
           </Badge>
           <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
-            The New Agile for <span className="gradient-text">AI Code</span>
+            The Operating System for <span className="gradient-text">AI Code</span>
           </h1>
           <p className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">Unhobble AI Code Generation by equipping your teams with the tools to understand AI-generated diffs and prompt AI to generate multiple builds</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -175,29 +175,31 @@ const Index = () => {
     <section className="py-20">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row gap-12 items-center">
-          <div className="w-full lg:w-1/3 order-1">
-            <h2 className="text-4xl font-bold mb-6">
-              Code smarter, not harder
-            </h2>
-            <p className="text-xl text-muted-foreground mb-8">
-              AI generates 100x the output of human engineers, but current tools rely on text and line-by-line diffs.
-            </p>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <CheckCircle className="h-5 w-5 text-primary" />
-                <span>Semantic understanding of code changes</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <CheckCircle className="h-5 w-5 text-primary" />
-                <span>Visualization of code changes based on functions and operations (not file structure)</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <CheckCircle className="h-5 w-5 text-primary" />
-                <span>Zoom-in and out to understand different layers </span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <CheckCircle className="h-5 w-5 text-primary" />
-                <span>Performance optimization</span>
+          <div className="w-full lg:w-1/3 order-1 flex flex-col items-center lg:items-start">
+            <div className="w-full max-w-lg">
+              <h2 className="text-4xl font-bold mb-6 text-center lg:text-left">
+                Code smarter, not harder
+              </h2>
+              <p className="text-xl text-muted-foreground mb-8 text-center lg:text-left">
+                AI generates 100x the output of human engineers, but current tools rely on text and line-by-line diffs.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <span>Semantic understanding of code changes</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <span>Visualization of code changes based on functions and operations (not file structure)</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <span>Zoom-in and out to understand different layers </span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <span>Performance optimization</span>
+                </div>
               </div>
             </div>
           </div>

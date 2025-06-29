@@ -136,7 +136,7 @@ const Index = () => {
           <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
             The Operating System for <span className="gradient-text">AI Code</span>
           </h1>
-          <p className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">Unhobble AI Code Generation by equipping your teams with the tools to understand AI-generated diffs and prompt AI to generate multiple builds</p>
+          <p className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">Unhobble AI Code Generation by equipping your teams with interactive visualizations of AI-generated diffs </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
@@ -207,30 +207,21 @@ const Index = () => {
             <div className="w-full">
               <Card className="bg-card/80 backdrop-blur-sm border-border/50">
                 <CardContent className="p-0">
-                  <div
-                    style={{
-                      position: "relative",
-                      boxSizing: "content-box",
-                      maxHeight: "80vh",
+                  <div style={{
+                    position: "relative",
+                    boxSizing: "content-box",
+                    maxHeight: "80vh",
+                    width: "100%",
+                    aspectRatio: "1.6",
+                    padding: "40px 0 40px 0"
+                  }}>
+                    <iframe src="https://app.supademo.com/embed/cmc0qtem7iz1nsn1rmw7aellf?embed_v=2" loading="lazy" title="Code Demo" allow="clipboard-write" allowFullScreen style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
                       width: "100%",
-                      aspectRatio: "1.6",
-                      padding: "40px 0 40px 0"
-                    }}
-                  >
-                    <iframe
-                      src="https://app.supademo.com/embed/cmc0qtem7iz1nsn1rmw7aellf?embed_v=2"
-                      loading="lazy"
-                      title="Code Demo"
-                      allow="clipboard-write"
-                      allowFullScreen
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%"
-                      }}
-                    ></iframe>
+                      height: "100%"
+                    }}></iframe>
                   </div>
                 </CardContent>
               </Card>

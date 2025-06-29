@@ -151,25 +151,7 @@ const Index = () => {
     </section>
 
     {/* Features Section */}
-    <section id="features" className="py-20 bg-card/30">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4">Why Choose <span className="gradient-text">Wildest AI</span>?</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Experience the next generation of software development with AI-powered tools designed for modern teams.
-          </p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-8">
-          {features.map((feature, index) => <Card key={index} className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all duration-300 hover:scale-105">
-            <CardContent className="p-8 text-center">
-              <div className="text-primary mb-4 flex justify-center">{feature.icon}</div>
-              <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-              <p className="text-muted-foreground">{feature.description}</p>
-            </CardContent>
-          </Card>)}
-        </div>
-      </div>
-    </section>
+    
 
     {/* Code Demo Section */}
     <section className="py-20">

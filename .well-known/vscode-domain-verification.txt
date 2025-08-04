@@ -1,1 +1,1 @@
-vscode-domain-verification=your-verification-code-here
+vscode-domain-verification=ce357bc0-75df-4f75-997d-e7da78ba7ce4

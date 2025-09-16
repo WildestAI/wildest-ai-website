@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Code, Zap, Users, Sparkles, CheckCircle, Star } from "lucide-react";
+import { ArrowRight, Code, Zap, CheckCircle, Star, Sparkles } from "lucide-react";
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
@@ -10,36 +10,20 @@ const Index = () => {
   }, []);
   const features = [{
     icon: <Code className="h-8 w-8" />,
-    title: "DiffGraph",
-    description: "Quickly visualize the changes AI code introduces"
+    title: "Semantic Understanding",
+    description: "Stop drowning in line-by-line diffs. See AI-generated changes organized by their functional impact on your codebase."
   }, {
     icon: <Zap className="h-8 w-8" />,
-    title: "Prompt Orchestrator",
-    description: "Gathers objectives & constraints then orchestrates AI agents to execute"
-  }, {
-    icon: <Users className="h-8 w-8" />,
-    title: "Scenario Engine",
-    description: "Generates multiple builds for the user to choose best fit"
+    title: "Architectural View",
+    description: "Instantly spot how AI changes affect your system's architecture and identify potential issues before they reach production."
   }];
-  const testimonials = [{
+  const testimonial = {
     name: "Sarah Chen",
-    role: "Senior Developer",
+    role: "Engineering Manager",
     company: "TechCorp",
-    content: "Wildest AI has transformed how we approach development. The AI suggestions are incredibly accurate.",
+    content: "Our team was flying blind with AI assistants, struggling to understand the scope of suggested changes. Wildest AI's real-time visualization lets us instantly see how AI-generated code fits into our architecture.",
     rating: 5
-  }, {
-    name: "Marcus Rodriguez",
-    role: "CTO",
-    company: "StartupXYZ",
-    content: "We've reduced our development time by 60% while improving code quality. Game-changer!",
-    rating: 5
-  }, {
-    name: "Emily Watson",
-    role: "Lead Engineer",
-    company: "DevStudio",
-    content: "The agile AI approach has revolutionized our sprint planning and execution.",
-    rating: 5
-  }];
+  };
   return <div className="min-h-screen bg-background">
     {/* Header */}
     <header className="border-b border-border/50 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
@@ -66,18 +50,20 @@ const Index = () => {
     </header>
 
     {/* Hero Section */}
-    <section className="relative py-20 lg:py-32 overflow-hidden">
+    <section className="relative py-20 overflow-hidden">
       <div className="absolute inset-0 hero-gradient"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className={`text-center max-w-4xl mx-auto transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <Badge variant="secondary" className="mb-6 px-4 py-2 text-sm">
             <Sparkles className="h-4 w-4 mr-2" />
-            The Future of Development is Here
+            The AI Code Understanding Gap
           </Badge>
           <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
-            The Operating System for <span className="gradient-text">AI Code</span>
+            When AI writes 100x more code, <span className="gradient-text">how do you make sense of it?</span>
           </h1>
-          <p className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">Unhobble AI Code Generation by equipping your teams with interactive visualizations of AI-generated diffs </p>
+          <p className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Traditional diff tools can't show you how AI-generated changes affect your codebase. See how leading teams visualize and understand AI code in real-time.
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-glow" asChild>
               <a href="https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext&ssr=false" target="_blank" rel="noopener noreferrer">
@@ -94,8 +80,37 @@ const Index = () => {
       </div>
     </section>
 
-    {/* Features Section */}
-
+    {/* Expert Quote Section */}
+    <section className="py-12 bg-secondary/30">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          {/* Sundar Pichai Quote */}
+          <div className="p-6 bg-background/50 backdrop-blur-sm rounded-lg border border-border/50 flex flex-col h-full">
+            <p className="text-lg mb-4">
+              "Across the company [Google], we have only accomplished a 10% engineering velocity increase using AI."
+            </p>
+            <div className="mt-auto flex items-center">
+              <div>
+                <p className="font-semibold">Sundar Pichai</p>
+                <p className="text-sm text-muted-foreground">CEO of Google, June 2025</p>
+              </div>
+            </div>
+          </div>
+          {/* Andrej Karpathy Quote */}
+          <div className="p-6 bg-background/50 backdrop-blur-sm rounded-lg border border-border/50 flex flex-col h-full">
+            <p className="text-lg mb-4">
+              "Keep AI on a tight leash. It's not useful for me to get a Diff [code change] of 1000s of lines of code. I'm still the bottleneck."
+            </p>
+            <div className="mt-auto flex items-center">
+              <div>
+                <p className="font-semibold">Andrej Karpathy</p>
+                <p className="text-sm text-muted-foreground">OpenAI co-founder</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     {/* Code Demo Section */}
     <section className="py-20">
@@ -129,8 +144,12 @@ const Index = () => {
               </div>
             </div>
           </div>
-          <div className="w-full lg:w-2/3 order-2 flex justify-center">
-            <div className="w-full">
+          <div className="w-full lg:w-2/3 order-2 flex flex-col justify-center">
+            <div className="w-full max-w-4xl mx-auto">
+              {/* <div className="flex justify-between mb-4 px-2">
+                <h3 className="text-lg font-semibold">Before (traditional diff)</h3>
+                <h3 className="text-lg font-semibold">After (Wildest Visualization)</h3>
+              </div> */}
               <Card className="bg-card/80 backdrop-blur-sm border-border/50">
                 <CardContent className="p-0">
                   <div style={{
@@ -157,8 +176,47 @@ const Index = () => {
       </div>
     </section>
 
-    {/* Testimonials Section */}
+    {/* Features Section */}
+    <section className="py-20 bg-background">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {features.map((feature, index) => (
+            <Card key={index} className="bg-background/50 backdrop-blur-sm border-border/50">
+              <CardContent className="pt-6">
+                <div className="mb-4 p-2 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <p className="text-muted-foreground">{feature.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
 
+    {/* Single Testimonial Section */}
+    {/* <section className="py-20 bg-secondary/30">
+      <div className="container mx-auto px-4">
+        <div className="max-w-3xl mx-auto">
+          <Card className="bg-background/50 backdrop-blur-sm border-border/50">
+            <CardContent className="pt-6">
+              <div className="flex mb-4">
+                {[...Array(testimonial.rating)].map((_, i) => (
+                  <Star key={i} className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+                ))}
+              </div>
+              <p className="mb-6 text-muted-foreground">{testimonial.content}</p>
+              <div>
+                <div className="font-semibold">{testimonial.name}</div>
+                <div className="text-sm text-muted-foreground">{testimonial.role}</div>
+                <div className="text-sm text-muted-foreground">{testimonial.company}</div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </section> */}
 
     {/* CTA Section */}
     <section className="py-20">

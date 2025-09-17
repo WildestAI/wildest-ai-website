@@ -1,10 +1,14 @@
-import { useState, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Code, Zap, CheckCircle, Star, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle, Code, Sparkles, Zap } from "lucide-react";
+import { useEffect, useState } from "react";
+
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const OPEN_VSX_URL = import.meta.env.VITE_OPEN_VSX_URL || "https://open-vsx.org/extension/WildestAI/wildest-vscode-ext";
+  const VS_CODE_EXTENSION_URL = import.meta.env.VITE_VS_CODE_EXTENSION_URL || "https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext";
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
@@ -36,12 +40,12 @@ const Index = () => {
         </div>
         <nav className="hidden md:flex items-center space-x-4">
           <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
-            <a href="https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext&ssr=false" target="_blank" rel="noopener noreferrer">
+            <a href={VS_CODE_EXTENSION_URL} target="_blank" rel="noopener noreferrer">
               VS Code Extension
             </a>
           </Button>
           <Button size="sm" variant="outline" asChild>
-            <a href="https://open-vsx.org/extension/WildestAI/wildest-vscode-ext" target="_blank" rel="noopener noreferrer">
+            <a href={OPEN_VSX_URL} target="_blank" rel="noopener noreferrer">
               OpenVSX Extension
             </a>
           </Button>
@@ -66,12 +70,12 @@ const Index = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-glow" asChild>
-              <a href="https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext&ssr=false" target="_blank" rel="noopener noreferrer">
+              <a href={VS_CODE_EXTENSION_URL} target="_blank" rel="noopener noreferrer">
                 Install for VS Code <ArrowRight className="ml-2 h-5 w-5" />
               </a>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <a href="https://open-vsx.org/extension/WildestAI/wildest-vscode-ext" target="_blank" rel="noopener noreferrer">
+              <a href={OPEN_VSX_URL} target="_blank" rel="noopener noreferrer">
                 Install for Other Editors <ArrowRight className="ml-2 h-5 w-5" />
               </a>
             </Button>
@@ -86,25 +90,27 @@ const Index = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {/* Sundar Pichai Quote */}
           <div className="p-6 bg-background/50 backdrop-blur-sm rounded-lg border border-border/50 flex flex-col h-full">
-            <p className="text-lg mb-4">
-              "Across the company [Google], we have only accomplished a 10% engineering velocity increase using AI."
-            </p>
+            <blockquote className="text-lg mb-4 italic">
+              “Across the company, we have only accomplished a 10% engineering velocity increase using AI.”
+            </blockquote>
             <div className="mt-auto flex items-center">
               <div>
                 <p className="font-semibold">Sundar Pichai</p>
-                <p className="text-sm text-muted-foreground">CEO of Google, June 2025</p>
+                <cite className="text-sm text-muted-foreground">CEO of Google — Lex Fridman Podcast (June 5, 2025)</cite>
               </div>
             </div>
           </div>
           {/* Andrej Karpathy Quote */}
           <div className="p-6 bg-background/50 backdrop-blur-sm rounded-lg border border-border/50 flex flex-col h-full">
-            <p className="text-lg mb-4">
-              "Keep AI on a tight leash. It's not useful for me to get a Diff [code change] of 1000s of lines of code. I'm still the bottleneck."
-            </p>
+            <blockquote className="text-lg mb-4 italic">
+              “Keep AI on a tight leash. It's not useful for me to get a diff of thousands of lines of code. I'm still the bottleneck.”
+            </blockquote>
             <div className="mt-auto flex items-center">
               <div>
                 <p className="font-semibold">Andrej Karpathy</p>
-                <p className="text-sm text-muted-foreground">OpenAI co-founder</p>
+                <cite className="text-sm text-muted-foreground">
+                  Founding member of OpenAI — Y Combinator talk "Software Is Changing (Again)" (June 2025)
+                </cite>
               </div>
             </div>
           </div>
@@ -230,12 +236,12 @@ const Index = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-glow" asChild>
-              <a href="https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext&ssr=false" target="_blank" rel="noopener noreferrer">
+              <a href={VS_CODE_EXTENSION_URL} target="_blank" rel="noopener noreferrer">
                 Get VS Code Extension <ArrowRight className="ml-2 h-5 w-5" />
               </a>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <a href="https://open-vsx.org/extension/WildestAI/wildest-vscode-ext" target="_blank" rel="noopener noreferrer">
+              <a href={OPEN_VSX_URL} target="_blank" rel="noopener noreferrer">
                 Get OpenVSX Extension <ArrowRight className="ml-2 h-5 w-5" />
               </a>
             </Button>

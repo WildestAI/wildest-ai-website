@@ -1,68 +1,33 @@
-import { useState, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, Code, Zap, Users, Sparkles, CheckCircle, Star } from "lucide-react";
+import { ArrowRight, CheckCircle, Code, Sparkles, Zap } from "lucide-react";
+import { useEffect, useState } from "react";
+
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    teamSize: ""
-  });
+  const OPEN_VSX_URL = import.meta.env.VITE_OPEN_VSX_URL || "https://open-vsx.org/extension/WildestAI/wildest-vscode-ext";
+  const VS_CODE_EXTENSION_URL = import.meta.env.VITE_VS_CODE_EXTENSION_URL || "https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext";
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Handle form submission here
-    setIsDialogOpen(false);
-  };
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
   const features = [{
     icon: <Code className="h-8 w-8" />,
-    title: "DiffGraph",
-    description: "Quickly visualize the changes AI code introduces"
+    title: "Semantic Understanding",
+    description: "Stop drowning in line-by-line diffs. See AI-generated changes organized by their functional impact on your codebase."
   }, {
     icon: <Zap className="h-8 w-8" />,
-    title: "Prompt Orchestrator",
-    description: "Gathers objectives & constraints then orchestrates AI agents to execute"
-  }, {
-    icon: <Users className="h-8 w-8" />,
-    title: "Scenario Engine",
-    description: "Generates multiple builds for the user to choose best fit"
+    title: "Architectural View",
+    description: "Instantly spot how AI changes affect your system's architecture and identify potential issues before they reach production."
   }];
-  const testimonials = [{
+  const testimonial = {
     name: "Sarah Chen",
-    role: "Senior Developer",
+    role: "Engineering Manager",
     company: "TechCorp",
-    content: "Wildest AI has transformed how we approach development. The AI suggestions are incredibly accurate.",
+    content: "Our team was flying blind with AI assistants, struggling to understand the scope of suggested changes. Wildest AI's real-time visualization lets us instantly see how AI-generated code fits into our architecture.",
     rating: 5
-  }, {
-    name: "Marcus Rodriguez",
-    role: "CTO",
-    company: "StartupXYZ",
-    content: "We've reduced our development time by 60% while improving code quality. Game-changer!",
-    rating: 5
-  }, {
-    name: "Emily Watson",
-    role: "Lead Engineer",
-    company: "DevStudio",
-    content: "The agile AI approach has revolutionized our sprint planning and execution.",
-    rating: 5
-  }];
+  };
   return <div className="min-h-screen bg-background">
     {/* Header */}
     <header className="border-b border-border/50 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
@@ -73,85 +38,85 @@ const Index = () => {
           </div>
           <span className="text-xl font-bold">Wildest AI</span>
         </div>
-        <nav className="hidden md:flex items-center space-x-8">
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                Get Started
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Get Started with Wildest AI</DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input id="firstName" value={formData.firstName} onChange={e => handleInputChange("firstName", e.target.value)} required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input id="lastName" value={formData.lastName} onChange={e => handleInputChange("lastName", e.target.value)} required />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" value={formData.email} onChange={e => handleInputChange("email", e.target.value)} required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="teamSize">Size of Engineering Team</Label>
-                  <Select value={formData.teamSize} onValueChange={value => handleInputChange("teamSize", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select team size" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1-10">1-10</SelectItem>
-                      <SelectItem value="10-50">10-50</SelectItem>
-                      <SelectItem value="50-100">50-100</SelectItem>
-                      <SelectItem value="100-500">100-500</SelectItem>
-                      <SelectItem value="500+">500+</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-                  Submit
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
+        <nav className="hidden md:flex items-center space-x-4">
+          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+            <a href={VS_CODE_EXTENSION_URL} target="_blank" rel="noopener noreferrer">
+              VS Code Extension
+            </a>
+          </Button>
+          <Button size="sm" variant="outline" asChild>
+            <a href={OPEN_VSX_URL} target="_blank" rel="noopener noreferrer">
+              OpenVSX Extension
+            </a>
+          </Button>
         </nav>
       </div>
     </header>
 
     {/* Hero Section */}
-    <section className="relative py-20 lg:py-32 overflow-hidden">
+    <section className="relative py-20 overflow-hidden">
       <div className="absolute inset-0 hero-gradient"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className={`text-center max-w-4xl mx-auto transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <Badge variant="secondary" className="mb-6 px-4 py-2 text-sm">
             <Sparkles className="h-4 w-4 mr-2" />
-            The Future of Development is Here
+            The AI Code Understanding Gap
           </Badge>
           <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
-            The Operating System for <span className="gradient-text">AI Code</span>
+            When AI writes 100x more code, <span className="gradient-text">how do you make sense of it?</span>
           </h1>
-          <p className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">Unhobble AI Code Generation by equipping your teams with interactive visualizations of AI-generated diffs </p>
+          <p className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Traditional diff tools can't show you how AI-generated changes affect your codebase. See how leading teams visualize and understand AI code in real-time.
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-glow">
-                  Start Building <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </DialogTrigger>
-            </Dialog>
+            <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-glow" asChild>
+              <a href={VS_CODE_EXTENSION_URL} target="_blank" rel="noopener noreferrer">
+                Install for VS Code <ArrowRight className="ml-2 h-5 w-5" />
+              </a>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <a href={OPEN_VSX_URL} target="_blank" rel="noopener noreferrer">
+                Install for Other Editors <ArrowRight className="ml-2 h-5 w-5" />
+              </a>
+            </Button>
           </div>
         </div>
       </div>
     </section>
 
-    {/* Features Section */}
-    
+    {/* Expert Quote Section */}
+    <section className="py-12 bg-secondary/30">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          {/* Sundar Pichai Quote */}
+          <div className="p-6 bg-background/50 backdrop-blur-sm rounded-lg border border-border/50 flex flex-col h-full">
+            <blockquote className="text-lg mb-4 italic">
+              “Across the company, we have only accomplished a 10% engineering velocity increase using AI.”
+            </blockquote>
+            <div className="mt-auto flex items-center">
+              <div>
+                <p className="font-semibold">Sundar Pichai</p>
+                <cite className="text-sm text-muted-foreground">CEO of Google — Lex Fridman Podcast (June 5, 2025)</cite>
+              </div>
+            </div>
+          </div>
+          {/* Andrej Karpathy Quote */}
+          <div className="p-6 bg-background/50 backdrop-blur-sm rounded-lg border border-border/50 flex flex-col h-full">
+            <blockquote className="text-lg mb-4 italic">
+              “Keep AI on a tight leash. It's not useful for me to get a diff of thousands of lines of code. I'm still the bottleneck.”
+            </blockquote>
+            <div className="mt-auto flex items-center">
+              <div>
+                <p className="font-semibold">Andrej Karpathy</p>
+                <cite className="text-sm text-muted-foreground">
+                  Founding member of OpenAI — Y Combinator talk "Software Is Changing (Again)" (June 2025)
+                </cite>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     {/* Code Demo Section */}
     <section className="py-20">
@@ -185,8 +150,12 @@ const Index = () => {
               </div>
             </div>
           </div>
-          <div className="w-full lg:w-2/3 order-2 flex justify-center">
-            <div className="w-full">
+          <div className="w-full lg:w-2/3 order-2 flex flex-col justify-center">
+            <div className="w-full max-w-4xl mx-auto">
+              {/* <div className="flex justify-between mb-4 px-2">
+                <h3 className="text-lg font-semibold">Before (traditional diff)</h3>
+                <h3 className="text-lg font-semibold">After (Wildest Visualization)</h3>
+              </div> */}
               <Card className="bg-card/80 backdrop-blur-sm border-border/50">
                 <CardContent className="p-0">
                   <div style={{
@@ -213,8 +182,47 @@ const Index = () => {
       </div>
     </section>
 
-    {/* Testimonials Section */}
+    {/* Features Section */}
+    <section className="py-20 bg-background">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {features.map((feature, index) => (
+            <Card key={index} className="bg-background/50 backdrop-blur-sm border-border/50">
+              <CardContent className="pt-6">
+                <div className="mb-4 p-2 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <p className="text-muted-foreground">{feature.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
 
+    {/* Single Testimonial Section */}
+    {/* <section className="py-20 bg-secondary/30">
+      <div className="container mx-auto px-4">
+        <div className="max-w-3xl mx-auto">
+          <Card className="bg-background/50 backdrop-blur-sm border-border/50">
+            <CardContent className="pt-6">
+              <div className="flex mb-4">
+                {[...Array(testimonial.rating)].map((_, i) => (
+                  <Star key={i} className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+                ))}
+              </div>
+              <p className="mb-6 text-muted-foreground">{testimonial.content}</p>
+              <div>
+                <div className="font-semibold">{testimonial.name}</div>
+                <div className="text-sm text-muted-foreground">{testimonial.role}</div>
+                <div className="text-sm text-muted-foreground">{testimonial.company}</div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </section> */}
 
     {/* CTA Section */}
     <section className="py-20">
@@ -224,17 +232,22 @@ const Index = () => {
             Ready to <span className="gradient-text">supercharge</span> your development?
           </h2>
           <p className="text-xl text-muted-foreground mb-8">
-            Join the AI revolution and start building the future today.
+            Install the Wildest AI extension and start coding smarter today.
           </p>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-glow">
-                Get Started for Free <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </DialogTrigger>
-          </Dialog>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-glow" asChild>
+              <a href={VS_CODE_EXTENSION_URL} target="_blank" rel="noopener noreferrer">
+                Get VS Code Extension <ArrowRight className="ml-2 h-5 w-5" />
+              </a>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <a href={OPEN_VSX_URL} target="_blank" rel="noopener noreferrer">
+                Get OpenVSX Extension <ArrowRight className="ml-2 h-5 w-5" />
+              </a>
+            </Button>
+          </div>
           <div className="mt-4 text-sm text-muted-foreground">
-            No credit card required • Free 14-day trial
+            Free • Open Source • No account required
           </div>
         </div>
       </div>

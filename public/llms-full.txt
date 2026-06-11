@@ -1,0 +1,144 @@
+# WildestAI — Full Context for AI Assistants
+
+This file contains the complete technical and strategic context for WildestAI.
+For a compact summary, see: https://wildest.ai/llms.txt
+
+---
+
+## Mission
+
+WildestAI exists to solve the generation-verification gap in AI-native software development.
+
+AI coding tools have made code generation cheap. Verification — understanding, reviewing, and safely evolving what was generated — is now the scarce resource.
+
+**The durable triad:**
+1. What changed? (components, behaviour, APIs, dependencies — not just lines)
+2. Why did it change? (intent, prompt, decision, constraint, alternatives)
+3. What is the impact? (runtime behaviour, risk, test coverage, architectural drift, future agent context)
+
+---
+
+## The Problem
+
+### The generation-verification gap
+
+Reading a diff ≠ understanding a change.
+Understanding a change ≠ verifying it should exist.
+
+AI agents:
+- Overfit to the prompt
+- Miss unstated architectural constraints
+- Modify files outside intended scope
+- Satisfy visible tests while missing hidden invariants
+- Hallucinate APIs, conventions, or intended behaviour
+- Don't carry organisational memory
+
+WildestAI is designed around this new failure profile — not around recreating human code review with AI summaries.
+
+---
+
+## Products
+
+### `wild` CLI
+
+The CLI is the core engine and local entry point.
+
+**Installation:**
+```bash
+pip install wildest-ai
+# or
+git clone https://github.com/WildestAI/DiffGraph-CLI && pip install -e .
+```
+
+**Usage:**
+```bash
+wild diff                        # analyse unstaged + untracked changes
+wild diff --staged               # analyse staged changes
+wild diff <commit-id>            # diff between HEAD and commit
+wild diff <commit1> <commit2>    # diff between two commits
+wild diff <file>                 # diff for a specific file
+wild <any-other-git-command>     # passes through to git transparently
+```
+
+**Configuration:**
+- `OPENAI_API_KEY` environment variable (or `--api-key` flag)
+- `--output` / `-o` to specify output file (default: `diffgraph.html`)
+- `--no-open` to skip auto-opening the report
+
+**Output:** Generates `diffgraph.html` — an interactive dependency graph with AI-generated analysis, Mermaid.js visualisation, syntax-highlighted code blocks, dark mode.
+
+**GitHub:** https://github.com/WildestAI/DiffGraph-CLI
+
+### VS Code Extension
+
+Visualises code changes inside VS Code. Available on:
+- VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext
+- OpenVSX: https://open-vsx.org/extension/WildestAI/wildest-vscode-ext
+
+### MCP Server
+
+An MCP (Model Context Protocol) server is available for AI agents that want to interact with DiffGraph-CLI programmatically.
+
+Start it from the DiffGraph-CLI repo:
+```bash
+python mcp_server.py
+```
+
+The server exposes:
+- `run_wild_diff` — run `wild diff` on a given repo path and return the analysis
+- `get_docs` — retrieve documentation pages
+- `list_docs` — list available documentation
+- `search_docs` — search across docs and project context
+
+---
+
+## Design Principles
+
+1. **Evidence over vibes** — Every claim links to code. "Modifies token validation in auth.ts" not "improves auth."
+2. **Understanding before automation** — Help users understand and decide first. Earn trust before automating.
+3. **Reduce cognitive load, not agency** — Show the map. Don't make the decision.
+4. **Experienced developers first** — Power tool feel, not tutorial. Fast, accurate, controllable.
+5. **Accuracy > elegance** — A wrong graph is worse than no graph.
+6. **Latency matters** — Lives in the developer loop. Slow = unused.
+7. **Model agnostic** — Static analysis + LLM should complement each other.
+8. **Representation flexible** — Graph is a strong hypothesis, not sacred.
+
+---
+
+## Evaluation Criteria (for feature decisions)
+
+| Dimension | Question | Target |
+|-----------|----------|--------|
+| Problem centrality | Does this attack code-change understanding? | 9+/10 |
+| Developer usefulness | Would an experienced dev use this in real workflow? | 8+/10 |
+| Accuracy | Are affected components and relationships correct? | 9+/10 |
+| Evidence quality | Can claims be traced to code or metadata? | 8+/10 |
+| Non-commoditisation | Is this more than a generic AI summary? | 9+/10 |
+| Latency | Fast enough for the loop it sits in? | 8+/10 |
+
+---
+
+## What WildestAI Is NOT
+
+- Not "AI PR summary" (commodity feature, not a product)
+- Not a pretty graph generator that sacrifices correctness for visual flair
+- Not a thin wrapper over one LLM
+- Not locked to any single surface
+- Not a replacement for developer judgment
+
+---
+
+## Strategic Positioning
+
+- **Developer-facing:** WildestAI helps developers understand AI-generated code changes before they accept, review, or ship them.
+- **Team-facing:** WildestAI gives teams a better interface for understanding software changes across local development, code review, and release.
+- **Long-term:** WildestAI is building the standard of record for how software evolves in the age of AI.
+
+---
+
+## Links
+
+- Website: https://wildest.ai
+- GitHub (CLI): https://github.com/WildestAI/DiffGraph-CLI
+- VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext
+- OpenVSX: https://open-vsx.org/extension/WildestAI/wildest-vscode-ext

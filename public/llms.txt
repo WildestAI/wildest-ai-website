@@ -1,0 +1,69 @@
+# WildestAI
+
+> WildestAI turns code changes from raw diffs into understandable, evidence-linked software evolution.
+
+## What it is
+
+WildestAI is a developer tool that solves the **generation-verification gap**: AI coding tools have made code generation fast and cheap, but understanding, reviewing, and verifying what changed has become the new bottleneck.
+
+The core problem: reading a diff is not the same as understanding a change. Understanding a change is not the same as verifying it should exist.
+
+WildestAI helps developers, reviewers, and AI agents answer three questions every time code changes:
+- **What changed?** — not just lines and files, but components, behaviour, APIs, and dependencies
+- **Why did it change?** — intent, prompt, decision, constraint, alternatives considered
+- **What is the impact?** — runtime behaviour, risk, test coverage, architectural drift, future agent context
+
+## Products
+
+### `wild` CLI (current)
+A command-line tool that wraps `git` and provides AI-powered analysis on `wild diff`.
+
+- Reads your current git diff (staged, unstaged, commit range, or specific files)
+- Sends to an AI model for semantic analysis
+- Generates a dependency graph as an HTML report
+- Supports: `wild diff`, `wild diff --staged`, `wild diff <commit>`, `wild diff <file>`
+- All other `wild <cmd>` commands pass through to `git` transparently
+- Open source, free, no account required
+
+Install: `pip install wildest-ai` (or clone from GitHub)
+Usage: `wild diff` — generates `diffgraph.html` and opens it in your browser
+
+### VS Code Extension (current)
+Available on VS Code Marketplace and OpenVSX.
+- Visualises AI-generated code changes inside VS Code
+- Source Control-like sidebar showing changed components
+- Click to navigate from graph node to exact code range
+
+Links:
+- VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext
+- OpenVSX: https://open-vsx.org/extension/WildestAI/wildest-vscode-ext
+
+### Planned surfaces
+- Vibinex / GitHub browser extension — code review overlay for PRs
+- CI/CD integration — automated DiffGraph artifacts on PR open
+- Enterprise / on-prem — compliance, audit, traceability
+
+## Key concepts
+
+**DiffGraph** — the core representation: a graph of changed components and their relationships, generated from a git diff. Shows logical structure (what changed and how components relate) rather than line-by-line text.
+
+**Semantic diffing vs textual diffing** — a textual diff answers "which lines changed?"; a semantic diff answers "what changed in the system?". WildestAI moves from line-level to system-level understanding.
+
+**Three loops**:
+- Inner loop: local development — "what did this AI agent just do?"
+- Middle loop: code review — "can another human responsibly approve this?"
+- Outer loop: organisational memory — "how has the system evolved, and can we trust the process?"
+
+**Evidence over vibes** — every claim links to code. "This changes token validation in auth.ts" not "this improves auth."
+
+## Resources
+
+- Website: https://wildest.ai
+- GitHub (CLI): https://github.com/WildestAI/DiffGraph-CLI
+- VS Code extension: https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext
+- OpenVSX extension: https://open-vsx.org/extension/WildestAI/wildest-vscode-ext
+
+## Optional: full context
+
+For a complete technical and strategic context dump (vision, design principles, product surfaces, evaluation criteria, open questions), fetch:
+https://wildest.ai/llms-full.txt

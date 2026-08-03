@@ -100,7 +100,7 @@ The server exposes:
 4. **Experienced developers first** — Power tool feel, not tutorial. Fast, accurate, controllable.
 5. **Accuracy > elegance** — A wrong graph is worse than no graph.
 6. **Latency matters** — Lives in the developer loop. Slow = unused.
-7. **Model agnostic** — Static analysis + LLM should complement each other.
+7. **Provider truth** — Current AI analysis uses OpenAI `gpt-4o`; static analysis and AI output complement each other.
 8. **Representation flexible** — Graph is a strong hypothesis, not sacred.
 
 ---
@@ -122,7 +122,7 @@ The server exposes:
 
 - Not "AI PR summary" (commodity feature, not a product)
 - Not a pretty graph generator that sacrifices correctness for visual flair
-- Not a thin wrapper over one LLM
+- Not provider-independent today: current AI analysis uses OpenAI `gpt-4o`
 - Not locked to any single surface
 - Not a replacement for developer judgment
 

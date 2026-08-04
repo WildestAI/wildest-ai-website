@@ -25,6 +25,8 @@ A command-line tool that wraps `git` and provides AI-powered analysis on `wild d
 - All other `wild <cmd>` commands pass through to `git` transparently
 - Open source, free, no account required
 
+**AI data flow:** When AI analysis is enabled, WildestAI sends changed-file content to OpenAI's `gpt-4o` using the user-provided API key. The generated report is written locally. Data retention, model-training use, account controls, and charges are governed by the user's OpenAI API account and current OpenAI terms; WildestAI makes no additional guarantee.
+
 Install from source: `git clone https://github.com/WildestAI/DiffGraph-CLI.git && cd DiffGraph-CLI && python -m pip install -e .`
 Usage: `wild diff` — generates `diffgraph.html` and opens it in your browser
 

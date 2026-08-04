@@ -67,6 +67,8 @@ wild <any-other-git-command>     # passes through to git transparently
 
 **Output:** Generates `diffgraph.html` — an interactive dependency graph with AI-generated analysis, Mermaid.js visualisation, syntax-highlighted code blocks, dark mode.
 
+**AI data flow:** When AI analysis is enabled, WildestAI sends changed-file content to OpenAI's `gpt-4o` using the user-provided API key. The generated report is written locally. Data retention, model-training use, account controls, and charges are governed by the user's OpenAI API account and current OpenAI terms; WildestAI makes no additional guarantee.
+
 **GitHub:** https://github.com/WildestAI/DiffGraph-CLI
 
 ### VS Code Extension

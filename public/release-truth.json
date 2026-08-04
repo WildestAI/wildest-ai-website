@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-08-04",
+  "roadmapUrl": "https://github.com/WildestAI/wildest-ai-website/issues/6",
+  "cli": {
+    "status": "Available (source install)",
+    "repository": "https://github.com/WildestAI/DiffGraph-CLI",
+    "sourceRevision": "336a3a6b5e68399ef4f97b844d15e7eec1f73cae",
+    "install": [
+      "git clone https://github.com/WildestAI/DiffGraph-CLI.git",
+      "cd DiffGraph-CLI",
+      "python -m pip install -e ."
+    ],
+    "provider": "OpenAI",
+    "model": "gpt-4o"
+  },
+  "extension": {
+    "status": "Available",
+    "version": "1.0.5",
+    "marketplace": "https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext",
+    "openvsx": "https://open-vsx.org/extension/WildestAI/wildest-vscode-ext"
+  },
+  "mcp": {
+    "status": "Beta (source-only)",
+    "supportedInstall": false
+  },
+  "planned": [
+    "Vibinex / GitHub browser extension",
+    "CI/CD integration",
+    "Enterprise / on-prem"
+  ],
+  "aiDataFlow": "When AI analysis is enabled, WildestAI sends changed-file content to OpenAI's `gpt-4o` using the user-provided API key. The generated report is written locally. Data retention, model-training use, account controls, and charges are governed by the user's OpenAI API account and current OpenAI terms; WildestAI makes no additional guarantee.",
+  "resources": [
+    "https://wildest.ai",
+    "https://github.com/WildestAI/DiffGraph-CLI",
+    "https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext",
+    "https://open-vsx.org/extension/WildestAI/wildest-vscode-ext"
+  ]
+}

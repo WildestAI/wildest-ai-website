@@ -1,0 +1,34 @@
+name: Public release truth
+
+on:
+  pull_request:
+    paths:
+      - public/llms.txt
+      - public/llms-full.txt
+      - public/release-truth.json
+      - scripts/validate-public-llms.mjs
+      - .github/workflows/public-release-truth.yml
+  push:
+    branches: [main]
+    paths:
+      - public/llms.txt
+      - public/llms-full.txt
+      - public/release-truth.json
+      - scripts/validate-public-llms.mjs
+      - .github/workflows/public-release-truth.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out reviewed source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Validate synchronized claims and public links
+        run: node scripts/validate-public-llms.mjs --check-links

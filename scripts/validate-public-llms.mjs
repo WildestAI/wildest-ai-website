@@ -16,9 +16,15 @@ function requireInBoth(value, description) {
 }
 
 assert.equal(truth.schemaVersion, 1, 'unsupported release-truth schema');
-assert.match(truth.asOf, /^\d{4}-\d{2}-\d{2}$/);
+assert.match(truth.asOf, /^\d{4}-\d{2}-\d{2}$/, 'asOf must use YYYY-MM-DD');
+const asOfDate = new Date(`${truth.asOf}T00:00:00.000Z`);
+assert(
+  !Number.isNaN(asOfDate.valueOf()) && asOfDate.toISOString().slice(0, 10) === truth.asOf,
+  'asOf must be a real calendar date',
+);
 assert.match(truth.cli.sourceRevision, /^[0-9a-f]{40}$/, 'CLI sourceRevision must be an exact commit');
 assert.match(truth.extension.version, /^\d+\.\d+\.\d+$/, 'extension version must be exact');
+assert.equal(typeof truth.mcp.supportedInstall, 'boolean', 'MCP supportedInstall must be boolean');
 requireInBoth(`Release truth as of **${truth.asOf}**`, 'dated release status');
 requireInBoth(`### Available — ${truth.asOf}`, 'Available section');
 requireInBoth(`### Beta — ${truth.asOf}`, 'Beta section');
@@ -26,7 +32,24 @@ requireInBoth(`### Planned — ${truth.asOf}`, 'Planned section');
 requireInBoth(truth.roadmapUrl, 'roadmap source');
 requireInBoth(truth.aiDataFlow, 'approved AI data-flow disclosure');
 requireInBoth(`${truth.cli.provider} \`${truth.cli.model}\``, 'current provider/model');
-requireInBoth(`MCP Server — ${truth.mcp.status}`, 'MCP release status');
+
+const releaseSurfaces = [
+  { name: 'wild CLI', heading: `#### \`wild\` CLI — ${truth.cli.status}`, status: truth.cli.status },
+  { name: 'VS Code Extension', heading: `#### VS Code Extension — ${truth.extension.status}`, status: truth.extension.status },
+  { name: 'MCP Server', heading: `#### MCP Server — ${truth.mcp.status}`, status: truth.mcp.status },
+];
+for (const { name, heading, status } of releaseSurfaces) {
+  const sectionName = status.match(/^(Available|Beta|Planned)\b/)?.[1];
+  assert(sectionName, `${name} status must begin with Available, Beta, or Planned`);
+  for (const [file, text] of Object.entries(documents)) {
+    const section = text.split(`### ${sectionName} — ${truth.asOf}`)[1]?.split('\n### ')[0] ?? '';
+    assert(section.includes(heading), `${file} does not place ${name} in its declared ${sectionName} section`);
+  }
+}
+requireInBoth(
+  truth.mcp.supportedInstall ? 'MCP installation: supported' : 'there is no supported MCP entry point',
+  'MCP installation support',
+);
 
 for (const command of truth.cli.install) requireInBoth(command, 'supported CLI installation command');
 for (const url of truth.resources) requireInBoth(url, 'canonical resource URL');
@@ -116,7 +139,8 @@ async function checkRemoteUrl(url) {
 }
 
 if (process.argv.includes('--check-links')) {
-  const results = await Promise.allSettled(urls.map(checkRemoteUrl));
+  const cliRevisionUrl = `${truth.cli.repository.replace(/\/$/, '')}/commit/${truth.cli.sourceRevision}`;
+  const results = await Promise.allSettled([...urls, cliRevisionUrl].map(checkRemoteUrl));
   const failures = results.flatMap((result) => result.status === 'rejected' ? [result.reason.message] : []);
   assert.equal(failures.length, 0, `public URL validation failed:\n${failures.join('\n')}`);
 }

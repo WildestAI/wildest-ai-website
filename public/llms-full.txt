@@ -45,9 +45,9 @@ The CLI is the core engine and local entry point.
 
 **Installation:**
 ```bash
-pip install wildest-ai
-# or
-git clone https://github.com/WildestAI/DiffGraph-CLI && pip install -e .
+git clone https://github.com/WildestAI/DiffGraph-CLI.git
+cd DiffGraph-CLI
+python -m pip install -e .
 ```
 
 **Usage:**

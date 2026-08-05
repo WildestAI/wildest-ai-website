@@ -32,6 +32,7 @@ requireInBoth(`### Planned — ${truth.asOf}`, 'Planned section');
 requireInBoth(truth.roadmapUrl, 'roadmap source');
 requireInBoth(truth.aiDataFlow, 'approved AI data-flow disclosure');
 requireInBoth(`${truth.cli.provider} \`${truth.cli.model}\``, 'current provider/model');
+requireInBoth(truth.extension.marketplace, 'VS Code Marketplace URL');
 
 const releaseSurfaces = [
   { name: 'wild CLI', heading: `#### \`wild\` CLI — ${truth.cli.status}`, status: truth.cli.status },
@@ -73,7 +74,14 @@ const urls = [...new Set(
     .map((url) => url.replace(/[.,;:]+$/, '')),
 )];
 
-async function checkMarketplace() {
+async function checkMarketplace(url) {
+  const marketplaceUrl = new URL(url);
+  assert.equal(marketplaceUrl.origin, 'https://marketplace.visualstudio.com');
+  assert.equal(marketplaceUrl.pathname, '/items');
+  const itemName = marketplaceUrl.searchParams.get('itemName');
+  assert.equal(itemName, 'WildestAI.wildest-vscode-ext');
+  const [publisherName, extensionName] = itemName.split('.');
+
   const response = await fetch('https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery', {
     method: 'POST',
     signal: AbortSignal.timeout(15_000),
@@ -83,15 +91,15 @@ async function checkMarketplace() {
       'user-agent': 'WildestAI-release-truth-validator/1.0',
     },
     body: JSON.stringify({
-      filters: [{ criteria: [{ filterType: 7, value: 'WildestAI.wildest-vscode-ext' }] }],
+      filters: [{ criteria: [{ filterType: 7, value: itemName }] }],
       flags: 914,
     }),
   });
   if (!response.ok) throw new Error(`Marketplace API returned HTTP ${response.status}`);
   const body = await response.json();
   const extension = body.results?.[0]?.extensions?.[0];
-  assert.equal(extension?.publisher?.publisherName, 'WildestAI');
-  assert.equal(extension?.extensionName, 'wildest-vscode-ext');
+  assert.equal(extension?.publisher?.publisherName, publisherName);
+  assert.equal(extension?.extensionName, extensionName);
   assert.equal(extension?.versions?.[0]?.version, truth.extension.version);
 }
 
@@ -107,7 +115,7 @@ async function checkRemoteUrl(url) {
     return;
   }
   if (url === truth.extension.marketplace) {
-    await checkMarketplace();
+    await checkMarketplace(url);
     return;
   }
 

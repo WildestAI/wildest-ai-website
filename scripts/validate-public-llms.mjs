@@ -32,6 +32,10 @@ for (const field of ['cli.status', 'extension.status', 'mcp.status', 'aiDataFlow
   assert(releaseTruthSource.includes(`releaseTruth.${field}`), `release-truth component does not render releaseTruth.${field}`);
 }
 assert(releaseTruthSource.includes('href="/release-truth.json"'), 'release-truth component must link the public manifest');
+assert(
+  releaseTruthSource.includes('linkLabel: "View Marketplace listing"'),
+  'VS Code CTA must describe its Marketplace destination',
+);
 assert(releaseTruthSource.includes('Dated release status'), 'release-truth badge must not imply third-party terms were verified');
 assert(
   landingPageSource.includes('import ReleaseTruth from "@/components/ReleaseTruth"'),

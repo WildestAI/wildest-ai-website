@@ -29,7 +29,7 @@ const ReleaseTruth = () => {
       status: releaseTruth.extension.status,
       detail: `Version ${releaseTruth.extension.version} on the VS Code Marketplace and Open VSX.`,
       href: releaseTruth.extension.marketplace,
-      linkLabel: "Verify source",
+      linkLabel: "View Marketplace listing",
     },
     {
       name: "MCP server",

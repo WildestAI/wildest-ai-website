@@ -22,12 +22,14 @@ const ReleaseTruth = () => {
       status: releaseTruth.cli.status,
       detail: `${releaseTruth.cli.provider} ${releaseTruth.cli.model}; install from the verified source revision.`,
       href: `${releaseTruth.cli.repository}/commit/${releaseTruth.cli.sourceRevision}`,
+      linkLabel: "Verify source",
     },
     {
       name: "VS Code extension",
       status: releaseTruth.extension.status,
       detail: `Version ${releaseTruth.extension.version} on the VS Code Marketplace and Open VSX.`,
       href: releaseTruth.extension.marketplace,
+      linkLabel: "Verify source",
     },
     {
       name: "MCP server",
@@ -36,6 +38,7 @@ const ReleaseTruth = () => {
         ? "A supported installation path is available."
         : "Source-only preview; there is no supported installation path yet.",
       href: releaseTruth.roadmapUrl,
+      linkLabel: "View roadmap",
     },
   ];
 
@@ -83,7 +86,7 @@ const ReleaseTruth = () => {
                       rel="noopener noreferrer"
                       className="inline-flex items-center text-sm text-primary hover:underline"
                     >
-                      Verify source <ExternalLink className="ml-1 h-4 w-4" />
+                      {product.linkLabel} <ExternalLink className="ml-1 h-4 w-4" />
                     </a>
                   </CardContent>
                 </Card>

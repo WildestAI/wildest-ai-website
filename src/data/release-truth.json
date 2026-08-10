@@ -9,6 +9,7 @@
     "install": [
       "git clone https://github.com/WildestAI/DiffGraph-CLI.git",
       "cd DiffGraph-CLI",
+      "git checkout 336a3a6b5e68399ef4f97b844d15e7eec1f73cae",
       "python -m pip install -e ."
     ],
     "provider": "OpenAI",

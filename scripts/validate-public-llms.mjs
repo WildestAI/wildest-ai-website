@@ -25,6 +25,10 @@ assert(
   'asOf must be a real calendar date',
 );
 assert.match(truth.cli.sourceRevision, /^[0-9a-f]{40}$/, 'CLI sourceRevision must be an exact commit');
+assert(
+  truth.cli.install.includes(`git checkout ${truth.cli.sourceRevision}`),
+  'CLI installation must check out the exact sourceRevision used by release claims',
+);
 assert.match(truth.extension.version, /^\d+\.\d+\.\d+$/, 'extension version must be exact');
 assert.equal(typeof truth.mcp.supportedInstall, 'boolean', 'MCP supportedInstall must be boolean');
 assert(releaseTruthSource.includes('import releaseTruth from "@/data/release-truth.json"'), 'release-truth component must import the canonical manifest');

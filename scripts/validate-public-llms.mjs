@@ -32,11 +32,16 @@ for (const field of ['cli.status', 'extension.status', 'mcp.status', 'aiDataFlow
   assert(releaseTruthSource.includes(`releaseTruth.${field}`), `release-truth component does not render releaseTruth.${field}`);
 }
 assert(releaseTruthSource.includes('href="/release-truth.json"'), 'release-truth component must link the public manifest');
+assert(releaseTruthSource.includes('Dated release status'), 'release-truth badge must not imply third-party terms were verified');
 assert(
   landingPageSource.includes('import ReleaseTruth from "@/components/ReleaseTruth"'),
   'landing page must import the release-truth component',
 );
 assert.match(landingPageSource, /<ReleaseTruth\s*\/>/, 'landing page must mount the release-truth component');
+assert(
+  landingPageSource.includes('GPL-3.0-or-later extension'),
+  'landing page must scope the open-source claim to the licensed extension',
+);
 requireInBoth(`Release truth as of **${truth.asOf}**`, 'dated release status');
 requireInBoth(`### Available — ${truth.asOf}`, 'Available section');
 requireInBoth(`### Beta — ${truth.asOf}`, 'Beta section');

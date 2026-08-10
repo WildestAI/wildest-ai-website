@@ -30,7 +30,7 @@ A command-line tool that wraps `git` and provides AI-powered analysis on `wild d
 - Passes other `wild <cmd>` commands through to `git`
 - Open source, free, and requires no WildestAI account
 
-**AI data flow:** When AI analysis is enabled, WildestAI sends changed-file content to OpenAI's `gpt-4o` using the user-provided API key. The generated report is written locally. Data retention, model-training use, account controls, and charges are governed by the user's OpenAI API account and current OpenAI terms; WildestAI makes no additional guarantee.
+**AI data flow:** At the pinned CLI revision, AI analysis sends each changed file's content directly to OpenAI's `gpt-4o` through the OpenAI Agents SDK using the user-provided API key; the generated report is written locally. WildestAI has not independently verified OpenAI retention, training-use, account-control, or charge terms; consult the terms for the user's OpenAI API account.
 
 Install from source:
 ```bash

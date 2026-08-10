@@ -49,7 +49,7 @@ const ReleaseTruth = () => {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
             <div>
               <Badge variant="outline" className="mb-4">
-                <ShieldCheck className="h-4 w-4 mr-2" /> Verified release truth
+                <ShieldCheck className="h-4 w-4 mr-2" /> Dated release status
               </Badge>
               <h2 id="release-truth-title" className="text-3xl md:text-4xl font-bold mb-3">
                 Availability as of {releaseTruth.asOf}

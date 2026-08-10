@@ -221,7 +221,7 @@ const Index = () => {
             </Button>
           </div>
           <div className="mt-4 text-sm text-muted-foreground">
-            Open source • No Wildest AI account required
+            GPL-3.0-or-later extension • No Wildest AI account required
           </div>
         </div>
       </div>

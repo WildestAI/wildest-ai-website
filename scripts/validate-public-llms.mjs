@@ -3,7 +3,8 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const truth = JSON.parse(await readFile('public/release-truth.json', 'utf8'));
+const truth = JSON.parse(await readFile('src/data/release-truth.json', 'utf8'));
+const landingSource = await readFile('src/components/ReleaseTruth.tsx', 'utf8');
 const documents = {
   'public/llms.txt': await readFile('public/llms.txt', 'utf8'),
   'public/llms-full.txt': await readFile('public/llms-full.txt', 'utf8'),
@@ -25,6 +26,11 @@ assert(
 assert.match(truth.cli.sourceRevision, /^[0-9a-f]{40}$/, 'CLI sourceRevision must be an exact commit');
 assert.match(truth.extension.version, /^\d+\.\d+\.\d+$/, 'extension version must be exact');
 assert.equal(typeof truth.mcp.supportedInstall, 'boolean', 'MCP supportedInstall must be boolean');
+assert(landingSource.includes('import releaseTruth from "@/data/release-truth.json"'), 'landing page must import the canonical manifest');
+for (const field of ['cli.status', 'extension.status', 'mcp.status', 'aiDataFlow', 'planned', 'asOf']) {
+  assert(landingSource.includes(`releaseTruth.${field}`), `landing page does not render releaseTruth.${field}`);
+}
+assert(landingSource.includes('href="/release-truth.json"'), 'landing page must link the public manifest');
 requireInBoth(`Release truth as of **${truth.asOf}**`, 'dated release status');
 requireInBoth(`### Available — ${truth.asOf}`, 'Available section');
 requireInBoth(`### Beta — ${truth.asOf}`, 'Beta section');
@@ -108,7 +114,7 @@ async function checkRemoteUrl(url) {
     ['https://wildest.ai', 'index.html'],
     ['https://wildest.ai/llms.txt', 'public/llms.txt'],
     ['https://wildest.ai/llms-full.txt', 'public/llms-full.txt'],
-    ['https://wildest.ai/release-truth.json', 'public/release-truth.json'],
+    ['https://wildest.ai/release-truth.json', 'src/data/release-truth.json'],
   ]);
   if (localPaths.has(url)) {
     await readFile(localPaths.get(url));

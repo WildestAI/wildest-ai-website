@@ -6,6 +6,10 @@ on:
       - public/llms.txt
       - public/llms-full.txt
       - public/release-truth.json
+      - src/data/release-truth.json
+      - src/components/ReleaseTruth.tsx
+      - src/pages/Index.tsx
+      - scripts/sync-release-truth.mjs
       - scripts/validate-public-llms.mjs
       - .github/workflows/public-release-truth.yml
   push:
@@ -14,6 +18,10 @@ on:
       - public/llms.txt
       - public/llms-full.txt
       - public/release-truth.json
+      - src/data/release-truth.json
+      - src/components/ReleaseTruth.tsx
+      - src/pages/Index.tsx
+      - scripts/sync-release-truth.mjs
       - scripts/validate-public-llms.mjs
       - .github/workflows/public-release-truth.yml
   workflow_dispatch:
@@ -31,4 +39,6 @@ jobs:
         with:
           persist-credentials: false
       - name: Validate synchronized claims and public links
-        run: node scripts/validate-public-llms.mjs --check-links
+        run: |
+          node scripts/sync-release-truth.mjs --check
+          node scripts/validate-public-llms.mjs --check-links

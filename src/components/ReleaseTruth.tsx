@@ -52,7 +52,7 @@ const ReleaseTruth = () => {
                 <ShieldCheck className="h-4 w-4 mr-2" /> Verified release truth
               </Badge>
               <h2 id="release-truth-title" className="text-3xl md:text-4xl font-bold mb-3">
-                What is available today
+                Availability as of {releaseTruth.asOf}
               </h2>
               <p className="text-muted-foreground max-w-2xl">
                 Product status, install links, and data handling are sourced from one public manifest and dated {releaseTruth.asOf}.

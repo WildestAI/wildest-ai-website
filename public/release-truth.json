@@ -30,7 +30,7 @@
     "CI/CD integration",
     "Enterprise / on-prem"
   ],
-  "aiDataFlow": "At the pinned CLI revision, AI analysis sends each changed file's content directly to OpenAI's `gpt-4o` through the OpenAI Agents SDK using the user-provided API key; the generated report is written locally. WildestAI has not independently verified OpenAI retention, training-use, account-control, or charge terms; consult the terms for the user's OpenAI API account.",
+  "aiDataFlow": "At the pinned CLI revision, the AI path sends one prompt per successfully loaded changed file to OpenAI's `gpt-4o` through the OpenAI Agents SDK. Modified files contribute `git diff` output; untracked files contribute their full content. The SDK reads `OPENAI_API_KEY`; `--api-key` is only stored and validated at this revision and does not configure the SDK request. The report is written locally to `diffgraph.html` by default or to the `--output` path. WildestAI has not independently verified OpenAI retention, training-use, account-control, or charge terms; consult the terms for the user's OpenAI API account.",
   "resources": [
     "https://wildest.ai",
     "https://github.com/WildestAI/DiffGraph-CLI",

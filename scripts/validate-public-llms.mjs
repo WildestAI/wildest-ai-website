@@ -83,6 +83,10 @@ for (const item of truth.planned) requireInBoth(item, 'planned product surface')
 
 for (const [file, text] of Object.entries(documents)) {
   assert(!/\(current\)/i.test(text), `${file} contains an undated current label`);
+  assert(
+    !text.includes('`OPENAI_API_KEY` environment variable or `--api-key` flag'),
+    `${file} presents --api-key as a working SDK configuration path`,
+  );
   assert(!text.includes('python mcp_server.py'), `${file} presents unsupported MCP setup instructions`);
   assert(!/MCP Server — Available/i.test(text), `${file} presents MCP as generally available`);
   assert(!/An MCP[^\n]+server is available/i.test(text), `${file} presents MCP as generally available`);

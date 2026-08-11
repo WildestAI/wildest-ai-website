@@ -66,7 +66,7 @@ wild <any-other-git-command>     # pass through to git
 ```
 
 **Configuration:**
-- `OPENAI_API_KEY` environment variable or `--api-key` flag
+- `OPENAI_API_KEY` environment variable
 - `--output` / `-o` to specify the output file (default: `diffgraph.html`)
 - `--no-open` to skip auto-opening the report
 

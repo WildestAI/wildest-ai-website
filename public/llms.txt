@@ -15,7 +15,7 @@ WildestAI helps developers, reviewers, and AI agents answer three questions ever
 
 ## Product availability
 
-Release truth as of **2026-08-04**. Planned status is tracked in the [public product roadmap](https://github.com/WildestAI/wildest-ai-website/issues/6).
+Release truth as of **2026-08-04**. Planned status is tracked in the [public product roadmap](https://github.com/WildestAI/wildest-ai-website/issues/8).
 
 ### Available — 2026-08-04
 
@@ -58,7 +58,7 @@ An MCP server exists in the DiffGraph-CLI source repository for evaluation, but 
 
 ### Planned — 2026-08-04
 
-These surfaces are roadmap items, not currently available products. Status is tracked in [issue #6](https://github.com/WildestAI/wildest-ai-website/issues/6).
+These surfaces are roadmap items, not currently available products. Status is tracked in [roadmap issue #8](https://github.com/WildestAI/wildest-ai-website/issues/8).
 
 - Vibinex / GitHub browser extension — code-review overlay for pull requests
 - CI/CD integration — automated DiffGraph artifacts for pull requests
@@ -83,7 +83,7 @@ These surfaces are roadmap items, not currently available products. Status is tr
 - GitHub (CLI): https://github.com/WildestAI/DiffGraph-CLI
 - VS Code extension: https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext
 - OpenVSX extension: https://open-vsx.org/extension/WildestAI/wildest-vscode-ext
-- Product roadmap: https://github.com/WildestAI/wildest-ai-website/issues/6
+- Product roadmap: https://github.com/WildestAI/wildest-ai-website/issues/8
 - Maintained release truth: https://wildest.ai/release-truth.json
 
 ## Optional: full context

@@ -39,7 +39,7 @@ WildestAI is designed around this failure profile, not around recreating human c
 
 ## Product availability
 
-Release truth as of **2026-08-04**. Planned status is tracked in the [public product roadmap](https://github.com/WildestAI/wildest-ai-website/issues/6). The machine-readable source for these claims is https://wildest.ai/release-truth.json.
+Release truth as of **2026-08-04**. Planned status is tracked in the [public product roadmap](https://github.com/WildestAI/wildest-ai-website/issues/8). The machine-readable source for these claims is https://wildest.ai/release-truth.json.
 
 ### Available — 2026-08-04
 
@@ -90,7 +90,7 @@ An MCP server exists in the DiffGraph-CLI source repository for evaluation. It i
 
 ### Planned — 2026-08-04
 
-These are roadmap items, not currently available products. Their status is tracked in [issue #6](https://github.com/WildestAI/wildest-ai-website/issues/6).
+These are roadmap items, not currently available products. Their status is tracked in [roadmap issue #8](https://github.com/WildestAI/wildest-ai-website/issues/8).
 
 - Vibinex / GitHub browser extension — code-review overlay for pull requests
 - CI/CD integration — automated DiffGraph artifacts for pull requests
@@ -148,6 +148,6 @@ These are roadmap items, not currently available products. Their status is track
 - GitHub (CLI): https://github.com/WildestAI/DiffGraph-CLI
 - VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext
 - OpenVSX: https://open-vsx.org/extension/WildestAI/wildest-vscode-ext
-- Product roadmap: https://github.com/WildestAI/wildest-ai-website/issues/6
+- Product roadmap: https://github.com/WildestAI/wildest-ai-website/issues/8
 - Maintained release truth: https://wildest.ai/release-truth.json
 - Compact context: https://wildest.ai/llms.txt

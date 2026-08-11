@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "asOf": "2026-08-04",
-  "roadmapUrl": "https://github.com/WildestAI/wildest-ai-website/issues/6",
+  "roadmapUrl": "https://github.com/WildestAI/wildest-ai-website/issues/8",
   "cli": {
     "status": "Available (source install)",
     "repository": "https://github.com/WildestAI/DiffGraph-CLI",

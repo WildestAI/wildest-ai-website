@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import ReleaseTruth from "@/components/ReleaseTruth";
 import { ArrowRight, CheckCircle, Code, Sparkles, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -15,19 +16,12 @@ const Index = () => {
   const features = [{
     icon: <Code className="h-8 w-8" />,
     title: "Semantic Understanding",
-    description: "Stop drowning in line-by-line diffs. See AI-generated changes organized by their functional impact on your codebase."
+    description: "Move beyond line-by-line diffs with reports that organize changed code by functional impact."
   }, {
     icon: <Zap className="h-8 w-8" />,
     title: "Architectural View",
-    description: "Instantly spot how AI changes affect your system's architecture and identify potential issues before they reach production."
+    description: "Explore changed files, summaries, and dependency relationships in one visual report."
   }];
-  const testimonial = {
-    name: "Sarah Chen",
-    role: "Engineering Manager",
-    company: "TechCorp",
-    content: "Our team was flying blind with AI assistants, struggling to understand the scope of suggested changes. Wildest AI's real-time visualization lets us instantly see how AI-generated code fits into our architecture.",
-    rating: 5
-  };
   return <div className="min-h-screen bg-background">
     {/* Header */}
     <header className="border-b border-border/50 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
@@ -63,10 +57,10 @@ const Index = () => {
             The AI Code Understanding Gap
           </Badge>
           <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
-            When AI writes 100x more code, <span className="gradient-text">how do you make sense of it?</span>
+            When AI changes code faster, <span className="gradient-text">how do you make sense of it?</span>
           </h1>
           <p className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Traditional diff tools can't show you how AI-generated changes affect your codebase. See how leading teams visualize and understand AI code in real-time.
+            Traditional diffs show changed lines. Wildest AI helps you review the files, summaries, and relationships behind a larger change.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-glow" asChild>
@@ -128,7 +122,7 @@ const Index = () => {
                 Code smarter, not harder
               </h2>
               <p className="text-xl text-muted-foreground mb-8 text-center lg:text-left">
-                AI generates 100x the output of human engineers, but current tools rely on text and line-by-line diffs.
+                AI agents can produce large changes quickly, while review tools still center on text and line-by-line diffs.
               </p>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
@@ -145,7 +139,7 @@ const Index = () => {
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary" />
-                  <span className="w-full">Performance optimization</span>
+                  <span className="w-full">Local HTML report for sharing and review</span>
                 </div>
               </div>
             </div>
@@ -201,38 +195,18 @@ const Index = () => {
       </div>
     </section>
 
-    {/* Single Testimonial Section */}
-    {/* <section className="py-20 bg-secondary/30">
-      <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto">
-          <Card className="bg-background/50 backdrop-blur-sm border-border/50">
-            <CardContent className="pt-6">
-              <div className="flex mb-4">
-                {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 text-yellow-500 fill-yellow-500" />
-                ))}
-              </div>
-              <p className="mb-6 text-muted-foreground">{testimonial.content}</p>
-              <div>
-                <div className="font-semibold">{testimonial.name}</div>
-                <div className="text-sm text-muted-foreground">{testimonial.role}</div>
-                <div className="text-sm text-muted-foreground">{testimonial.company}</div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </section> */}
+    <ReleaseTruth />
+
 
     {/* CTA Section */}
     <section className="py-20">
       <div className="container mx-auto px-4 text-center">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-4xl font-bold mb-6">
-            Ready to <span className="gradient-text">supercharge</span> your development?
+            Ready to <span className="gradient-text">understand</span> your next change?
           </h2>
           <p className="text-xl text-muted-foreground mb-8">
-            Install the Wildest AI extension and start coding smarter today.
+            Install the Wildest AI extension and review your staged or unstaged changes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-glow" asChild>
@@ -247,7 +221,7 @@ const Index = () => {
             </Button>
           </div>
           <div className="mt-4 text-sm text-muted-foreground">
-            Free • Open Source • No account required
+            GPL-3.0-or-later extension • No Wildest AI account required
           </div>
         </div>
       </div>

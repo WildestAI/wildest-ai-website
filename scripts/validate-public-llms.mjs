@@ -3,7 +3,9 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const truth = JSON.parse(await readFile('public/release-truth.json', 'utf8'));
+const truth = JSON.parse(await readFile('src/data/release-truth.json', 'utf8'));
+const releaseTruthSource = await readFile('src/components/ReleaseTruth.tsx', 'utf8');
+const landingPageSource = await readFile('src/pages/Index.tsx', 'utf8');
 const documents = {
   'public/llms.txt': await readFile('public/llms.txt', 'utf8'),
   'public/llms-full.txt': await readFile('public/llms-full.txt', 'utf8'),
@@ -23,8 +25,31 @@ assert(
   'asOf must be a real calendar date',
 );
 assert.match(truth.cli.sourceRevision, /^[0-9a-f]{40}$/, 'CLI sourceRevision must be an exact commit');
+assert(
+  truth.cli.install.includes(`git checkout ${truth.cli.sourceRevision}`),
+  'CLI installation must check out the exact sourceRevision used by release claims',
+);
 assert.match(truth.extension.version, /^\d+\.\d+\.\d+$/, 'extension version must be exact');
 assert.equal(typeof truth.mcp.supportedInstall, 'boolean', 'MCP supportedInstall must be boolean');
+assert(releaseTruthSource.includes('import releaseTruth from "@/data/release-truth.json"'), 'release-truth component must import the canonical manifest');
+for (const field of ['cli.status', 'extension.status', 'mcp.status', 'aiDataFlow', 'planned', 'asOf']) {
+  assert(releaseTruthSource.includes(`releaseTruth.${field}`), `release-truth component does not render releaseTruth.${field}`);
+}
+assert(releaseTruthSource.includes('href="/release-truth.json"'), 'release-truth component must link the public manifest');
+assert(
+  releaseTruthSource.includes('linkLabel: "View Marketplace listing"'),
+  'VS Code CTA must describe its Marketplace destination',
+);
+assert(releaseTruthSource.includes('Dated release status'), 'release-truth badge must not imply third-party terms were verified');
+assert(
+  landingPageSource.includes('import ReleaseTruth from "@/components/ReleaseTruth"'),
+  'landing page must import the release-truth component',
+);
+assert.match(landingPageSource, /<ReleaseTruth\s*\/>/, 'landing page must mount the release-truth component');
+assert(
+  landingPageSource.includes('GPL-3.0-or-later extension'),
+  'landing page must scope the open-source claim to the licensed extension',
+);
 requireInBoth(`Release truth as of **${truth.asOf}**`, 'dated release status');
 requireInBoth(`### Available — ${truth.asOf}`, 'Available section');
 requireInBoth(`### Beta — ${truth.asOf}`, 'Beta section');
@@ -58,6 +83,10 @@ for (const item of truth.planned) requireInBoth(item, 'planned product surface')
 
 for (const [file, text] of Object.entries(documents)) {
   assert(!/\(current\)/i.test(text), `${file} contains an undated current label`);
+  assert(
+    !text.includes('`OPENAI_API_KEY` environment variable or `--api-key` flag'),
+    `${file} presents --api-key as a working SDK configuration path`,
+  );
   assert(!text.includes('python mcp_server.py'), `${file} presents unsupported MCP setup instructions`);
   assert(!/MCP Server — Available/i.test(text), `${file} presents MCP as generally available`);
   assert(!/An MCP[^\n]+server is available/i.test(text), `${file} presents MCP as generally available`);
@@ -108,7 +137,7 @@ async function checkRemoteUrl(url) {
     ['https://wildest.ai', 'index.html'],
     ['https://wildest.ai/llms.txt', 'public/llms.txt'],
     ['https://wildest.ai/llms-full.txt', 'public/llms-full.txt'],
-    ['https://wildest.ai/release-truth.json', 'public/release-truth.json'],
+    ['https://wildest.ai/release-truth.json', 'src/data/release-truth.json'],
   ]);
   if (localPaths.has(url)) {
     await readFile(localPaths.get(url));

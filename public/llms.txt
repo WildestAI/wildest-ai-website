@@ -15,7 +15,7 @@ WildestAI helps developers, reviewers, and AI agents answer three questions ever
 
 ## Product availability
 
-Release truth as of **2026-08-04**. Planned status is tracked in the [public product roadmap](https://github.com/WildestAI/wildest-ai-website/issues/6).
+Release truth as of **2026-08-04**. Planned status is tracked in the [public product roadmap](https://github.com/WildestAI/wildest-ai-website/issues/8).
 
 ### Available — 2026-08-04
 
@@ -30,12 +30,13 @@ A command-line tool that wraps `git` and provides AI-powered analysis on `wild d
 - Passes other `wild <cmd>` commands through to `git`
 - Open source, free, and requires no WildestAI account
 
-**AI data flow:** When AI analysis is enabled, WildestAI sends changed-file content to OpenAI's `gpt-4o` using the user-provided API key. The generated report is written locally. Data retention, model-training use, account controls, and charges are governed by the user's OpenAI API account and current OpenAI terms; WildestAI makes no additional guarantee.
+**AI data flow:** At the pinned CLI revision, the AI path sends one prompt per successfully loaded changed file to OpenAI's `gpt-4o` through the OpenAI Agents SDK. Modified files contribute `git diff` output; untracked files contribute their full content. The SDK reads `OPENAI_API_KEY`; `--api-key` is only stored and validated at this revision and does not configure the SDK request. The report is written locally to `diffgraph.html` by default or to the `--output` path. WildestAI has not independently verified OpenAI retention, training-use, account-control, or charge terms; consult the terms for the user's OpenAI API account.
 
 Install from source:
 ```bash
 git clone https://github.com/WildestAI/DiffGraph-CLI.git
 cd DiffGraph-CLI
+git checkout 336a3a6b5e68399ef4f97b844d15e7eec1f73cae
 python -m pip install -e .
 ```
 
@@ -57,7 +58,7 @@ An MCP server exists in the DiffGraph-CLI source repository for evaluation, but 
 
 ### Planned — 2026-08-04
 
-These surfaces are roadmap items, not currently available products. Status is tracked in [issue #6](https://github.com/WildestAI/wildest-ai-website/issues/6).
+These surfaces are roadmap items, not currently available products. Status is tracked in [roadmap issue #8](https://github.com/WildestAI/wildest-ai-website/issues/8).
 
 - Vibinex / GitHub browser extension — code-review overlay for pull requests
 - CI/CD integration — automated DiffGraph artifacts for pull requests
@@ -82,7 +83,7 @@ These surfaces are roadmap items, not currently available products. Status is tr
 - GitHub (CLI): https://github.com/WildestAI/DiffGraph-CLI
 - VS Code extension: https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext
 - OpenVSX extension: https://open-vsx.org/extension/WildestAI/wildest-vscode-ext
-- Product roadmap: https://github.com/WildestAI/wildest-ai-website/issues/6
+- Product roadmap: https://github.com/WildestAI/wildest-ai-website/issues/8
 - Maintained release truth: https://wildest.ai/release-truth.json
 
 ## Optional: full context

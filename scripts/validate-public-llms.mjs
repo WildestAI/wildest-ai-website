@@ -36,8 +36,20 @@ assert.match(truth.cli.minimumPython, /^\d+\.\d+$/, 'CLI minimumPython must be e
 assert(truth.cli.aiOff.includes('--structural-json'), 'CLI AI-off claim must name its non-AI command');
 assert.match(truth.extension.version, /^\d+\.\d+\.\d+$/, 'extension version must be exact');
 assert.match(truth.extension.minimumVscode, /^\d+\.\d+\.\d+$/, 'extension minimumVscode must be exact');
+const extensionRuntimeBinaries = new Map([
+  ['macOS arm64', 'wild-macos-arm64'],
+  ['macOS x64', 'wild-macos-x64'],
+  ['Linux arm64', 'wild-linux-arm64'],
+  ['Linux x64', 'wild-linux-x64'],
+  ['Windows x64', 'wild-win.exe'],
+]);
 assert.deepEqual(truth.extension.publishedRuntimeTargets, ['macOS arm64']);
 assert(truth.extension.missingRuntimeTargets.length > 0, 'missing published runtimes must remain explicit');
+assert.deepEqual(
+  [...truth.extension.publishedRuntimeTargets, ...truth.extension.missingRuntimeTargets].sort(),
+  [...extensionRuntimeBinaries.keys()].sort(),
+  'release truth must classify every declared extension runtime target',
+);
 assert(truth.extension.aiOff.startsWith('Not available'), 'extension AI-off limitation must be explicit');
 assert.equal(typeof truth.mcp.supportedInstall, 'boolean', 'MCP supportedInstall must be boolean');
 assert(releaseTruthSource.includes('import releaseTruth from "@/data/release-truth.json"'), 'release-truth component must import the canonical manifest');
@@ -171,6 +183,18 @@ async function checkMarketplace(url) {
   const vsixPath = join(directory, 'extension.vsix');
   try {
     await writeFile(vsixPath, Buffer.from(await vsixResponse.arrayBuffer()));
+    const manifestEntry = spawnSync('unzip', ['-p', vsixPath, 'extension/package.json'], { encoding: 'utf8' });
+    assert.equal(manifestEntry.status, 0, `unable to read Marketplace VSIX manifest: ${manifestEntry.stderr}`);
+    const packageManifest = JSON.parse(manifestEntry.stdout);
+    const expectedBinDeclarations = Object.fromEntries(
+      [...extensionRuntimeBinaries.values()].map((binary) => [binary, `./bin/${binary}`]),
+    );
+    assert.deepEqual(
+      packageManifest.bin,
+      expectedBinDeclarations,
+      'published VSIX runtime declarations changed; update release truth',
+    );
+
     const listing = spawnSync('unzip', ['-Z1', vsixPath], { encoding: 'utf8' });
     assert.equal(listing.status, 0, `unable to inspect Marketplace VSIX: ${listing.stderr}`);
     const packagedBinaries = listing.stdout
@@ -178,7 +202,10 @@ async function checkMarketplace(url) {
       .filter((entry) => entry.startsWith('extension/bin/') && !entry.endsWith('/'))
       .map((entry) => entry.slice('extension/bin/'.length))
       .sort();
-    assert.deepEqual(packagedBinaries, ['wild-macos-arm64'], 'published runtime support changed; update release truth');
+    const expectedPackagedBinaries = truth.extension.publishedRuntimeTargets
+      .map((target) => extensionRuntimeBinaries.get(target))
+      .sort();
+    assert.deepEqual(packagedBinaries, expectedPackagedBinaries, 'published runtime support changed; update release truth');
   } finally {
     await rm(directory, { recursive: true, force: true });
   }

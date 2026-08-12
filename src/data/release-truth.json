@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "asOf": "2026-08-04",
+  "asOf": "2026-08-12",
   "roadmapUrl": "https://github.com/WildestAI/wildest-ai-website/issues/8",
   "cli": {
     "status": "Available (source install)",
@@ -13,13 +13,26 @@
       "python -m pip install -e ."
     ],
     "provider": "OpenAI",
-    "model": "gpt-4o"
+    "model": "gpt-4o",
+    "minimumPython": "3.10",
+    "aiOff": "Available for local structural JSON only: `wild --structural-json <path> diff`. The pinned revision extracts Python symbols and imports without an AI request; other languages remain file-level entries with an unsupported-language warning. HTML generation still uses OpenAI."
   },
   "extension": {
     "status": "Available",
     "version": "1.0.5",
     "marketplace": "https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext",
-    "openvsx": "https://open-vsx.org/extension/WildestAI/wildest-vscode-ext"
+    "openvsx": "https://open-vsx.org/extension/WildestAI/wildest-vscode-ext",
+    "minimumVscode": "1.99.0",
+    "publishedRuntimeTargets": [
+      "macOS arm64"
+    ],
+    "missingRuntimeTargets": [
+      "macOS x64",
+      "Linux arm64",
+      "Linux x64",
+      "Windows x64"
+    ],
+    "aiOff": "Not available in extension 1.0.5. DiffGraph generation invokes the bundled AI/HTML CLI and requires the user's OpenAI API credentials."
   },
   "mcp": {
     "status": "Beta (source-only)",

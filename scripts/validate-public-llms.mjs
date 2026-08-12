@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const truth = JSON.parse(await readFile('src/data/release-truth.json', 'utf8'));
 const releaseTruthSource = await readFile('src/components/ReleaseTruth.tsx', 'utf8');
@@ -29,10 +32,29 @@ assert(
   truth.cli.install.includes(`git checkout ${truth.cli.sourceRevision}`),
   'CLI installation must check out the exact sourceRevision used by release claims',
 );
+assert.match(truth.cli.minimumPython, /^\d+\.\d+$/, 'CLI minimumPython must be exact');
+assert(truth.cli.aiOff.includes('--structural-json'), 'CLI AI-off claim must name its non-AI command');
 assert.match(truth.extension.version, /^\d+\.\d+\.\d+$/, 'extension version must be exact');
+assert.match(truth.extension.minimumVscode, /^\d+\.\d+\.\d+$/, 'extension minimumVscode must be exact');
+assert.deepEqual(truth.extension.publishedRuntimeTargets, ['macOS arm64']);
+assert(truth.extension.missingRuntimeTargets.length > 0, 'missing published runtimes must remain explicit');
+assert(truth.extension.aiOff.startsWith('Not available'), 'extension AI-off limitation must be explicit');
 assert.equal(typeof truth.mcp.supportedInstall, 'boolean', 'MCP supportedInstall must be boolean');
 assert(releaseTruthSource.includes('import releaseTruth from "@/data/release-truth.json"'), 'release-truth component must import the canonical manifest');
-for (const field of ['cli.status', 'extension.status', 'mcp.status', 'aiDataFlow', 'planned', 'asOf']) {
+for (const field of [
+  'cli.status',
+  'cli.minimumPython',
+  'cli.aiOff',
+  'extension.status',
+  'extension.minimumVscode',
+  'extension.publishedRuntimeTargets',
+  'extension.missingRuntimeTargets',
+  'extension.aiOff',
+  'mcp.status',
+  'aiDataFlow',
+  'planned',
+  'asOf',
+]) {
   assert(releaseTruthSource.includes(`releaseTruth.${field}`), `release-truth component does not render releaseTruth.${field}`);
 }
 assert(releaseTruthSource.includes('href="/release-truth.json"'), 'release-truth component must link the public manifest');
@@ -57,6 +79,12 @@ requireInBoth(`### Planned — ${truth.asOf}`, 'Planned section');
 requireInBoth(truth.roadmapUrl, 'roadmap source');
 requireInBoth(truth.aiDataFlow, 'approved AI data-flow disclosure');
 requireInBoth(`${truth.cli.provider} \`${truth.cli.model}\``, 'current provider/model');
+requireInBoth(`Python ${truth.cli.minimumPython} or newer`, 'CLI runtime requirement');
+requireInBoth('AI-off operation is available for local structural JSON only', 'CLI AI-off behavior');
+requireInBoth(`Extension ${truth.extension.version} requires VS Code ${truth.extension.minimumVscode} or newer`, 'extension runtime requirement');
+requireInBoth(`The Marketplace VSIX contains a runnable CLI for ${truth.extension.publishedRuntimeTargets.join(', ')} only`, 'published extension runtime support');
+for (const target of truth.extension.missingRuntimeTargets) requireInBoth(target, 'missing extension runtime target');
+requireInBoth(`AI-off DiffGraph generation is not available in extension ${truth.extension.version}`, 'extension AI-off limitation');
 requireInBoth(truth.extension.marketplace, 'VS Code Marketplace URL');
 
 const releaseSurfaces = [
@@ -129,7 +157,31 @@ async function checkMarketplace(url) {
   const extension = body.results?.[0]?.extensions?.[0];
   assert.equal(extension?.publisher?.publisherName, publisherName);
   assert.equal(extension?.extensionName, extensionName);
-  assert.equal(extension?.versions?.[0]?.version, truth.extension.version);
+  const publishedVersion = extension?.versions?.[0];
+  assert.equal(publishedVersion?.version, truth.extension.version);
+
+  const vsixUrl = publishedVersion?.files?.find(
+    (file) => file.assetType === 'Microsoft.VisualStudio.Services.VSIXPackage',
+  )?.source;
+  assert(vsixUrl, 'Marketplace response does not expose the published VSIX');
+  const vsixResponse = await fetch(vsixUrl, { signal: AbortSignal.timeout(30_000) });
+  assert(vsixResponse.ok, `Marketplace VSIX returned HTTP ${vsixResponse.status}`);
+
+  const directory = await mkdtemp(join(tmpdir(), 'wildest-vsix-'));
+  const vsixPath = join(directory, 'extension.vsix');
+  try {
+    await writeFile(vsixPath, Buffer.from(await vsixResponse.arrayBuffer()));
+    const listing = spawnSync('unzip', ['-Z1', vsixPath], { encoding: 'utf8' });
+    assert.equal(listing.status, 0, `unable to inspect Marketplace VSIX: ${listing.stderr}`);
+    const packagedBinaries = listing.stdout
+      .split('\n')
+      .filter((entry) => entry.startsWith('extension/bin/') && !entry.endsWith('/'))
+      .map((entry) => entry.slice('extension/bin/'.length))
+      .sort();
+    assert.deepEqual(packagedBinaries, ['wild-macos-arm64'], 'published runtime support changed; update release truth');
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
 }
 
 async function checkRemoteUrl(url) {

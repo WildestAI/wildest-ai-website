@@ -94,6 +94,29 @@ const ReleaseTruth = () => {
             })}
           </div>
 
+          <Card className="bg-background/80 border-border/50 mb-8">
+            <CardHeader>
+              <CardTitle className="text-xl">Verified runtime support and AI-off behavior</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <h3 className="font-semibold mb-2">DiffGraph CLI</h3>
+                <p className="text-sm text-muted-foreground mb-2">Python {releaseTruth.cli.minimumPython} or newer.</p>
+                <p className="text-sm text-muted-foreground">{releaseTruth.cli.aiOff}</p>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2">VS Code extension {releaseTruth.extension.version}</h3>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Requires VS Code {releaseTruth.extension.minimumVscode} or newer. The published Marketplace package contains a runnable CLI for {releaseTruth.extension.publishedRuntimeTargets.join(", ")} only.
+                </p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Missing packaged runtimes: {releaseTruth.extension.missingRuntimeTargets.join(", ")}.
+                </p>
+                <p className="text-sm text-muted-foreground">{releaseTruth.extension.aiOff}</p>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card className="bg-background/80 border-border/50">
             <CardContent className="pt-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>

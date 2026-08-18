@@ -34,7 +34,7 @@ A command-line tool that wraps `git` and provides AI-powered analysis on `wild d
 
 **Local processing:** Git reads, deterministic structural extraction, and report generation run on the user's machine. Structural JSON generation makes no AI request.
 
-**Credential handling:** The pinned CLI reads `OPENAI_API_KEY` from its process environment. Extension 1.0.5 launches the bundled CLI with the VS Code host process environment; it does not provide SecretStorage-based BYOK. The key is not passed as a command argument or sent to a WildestAI-operated service.
+**Credential handling:** The pinned CLI reads `OPENAI_API_KEY` from its process environment. Extension 1.0.5 launches the bundled CLI with the VS Code host process environment; it does not provide SecretStorage-based BYOK. The environment-provided key is not added to CLI arguments or sent to a WildestAI-operated service.
 
 **Local artifacts:** Structural JSON and HTML reports are written only to the user-selected local path. WildestAI does not upload or retain these artifacts.
 

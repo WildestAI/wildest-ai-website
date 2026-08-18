@@ -117,6 +117,42 @@ const ReleaseTruth = () => {
             </CardContent>
           </Card>
 
+          <Card className="bg-background/80 border-border/50 mb-8">
+            <CardHeader>
+              <CardTitle className="text-xl">Data handling and retention</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="font-semibold mb-2">What stays local</h3>
+                  <p className="text-sm text-muted-foreground mb-2">{releaseTruth.dataHandling.localProcessing}</p>
+                  <p className="text-sm text-muted-foreground">{releaseTruth.dataHandling.localArtifacts}</p>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-2">Credentials and WildestAI retention</h3>
+                  <p className="text-sm text-muted-foreground mb-2">{releaseTruth.dataHandling.credentialHandling}</p>
+                  <p className="text-sm text-muted-foreground">{releaseTruth.dataHandling.wildestAiRetention}</p>
+                </div>
+              </div>
+              {releaseTruth.dataHandling.thirdParties.map((party) => (
+                <div key={party.name} className="border-t border-border/50 pt-5">
+                  <h3 className="font-semibold mb-2">Third party: {party.name}</h3>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    {party.when}. Data sent: {party.data}.
+                  </p>
+                  <div className="flex flex-wrap gap-x-5 gap-y-2">
+                    <a href={party.dataControlsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm text-primary hover:underline">
+                      Data controls and retention <ExternalLink className="ml-1 h-4 w-4" />
+                    </a>
+                    <a href={party.privacyUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm text-primary hover:underline">
+                      Privacy policy <ExternalLink className="ml-1 h-4 w-4" />
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
           <Card className="bg-background/80 border-border/50">
             <CardContent className="pt-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>

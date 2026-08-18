@@ -15,9 +15,9 @@ WildestAI helps developers, reviewers, and AI agents answer three questions ever
 
 ## Product availability
 
-Release truth as of **2026-08-12**. Planned status is tracked in the [public product roadmap](https://github.com/WildestAI/wildest-ai-website/issues/8).
+Release truth as of **2026-08-18**. Planned status is tracked in the [public product roadmap](https://github.com/WildestAI/wildest-ai-website/issues/8).
 
-### Available — 2026-08-12
+### Available — 2026-08-18
 
 #### `wild` CLI — Available (source install)
 
@@ -31,6 +31,17 @@ A command-line tool that wraps `git` and provides AI-powered analysis on `wild d
 - Open source, free, and requires no WildestAI account
 
 **AI data flow:** At the pinned CLI revision, the AI path sends one prompt per successfully loaded changed file to OpenAI's `gpt-4o` through the OpenAI Agents SDK. Modified files contribute `git diff` output; untracked files contribute their full content. The SDK reads `OPENAI_API_KEY`; `--api-key` is only stored and validated at this revision and does not configure the SDK request. The report is written locally to `diffgraph.html` by default or to the `--output` path. WildestAI has not independently verified OpenAI retention, training-use, account-control, or charge terms; consult the terms for the user's OpenAI API account.
+
+**Local processing:** Git reads, deterministic structural extraction, and report generation run on the user's machine. Structural JSON generation makes no AI request.
+
+**Credential handling:** The pinned CLI reads `OPENAI_API_KEY` from its process environment. Extension 1.0.5 launches the bundled CLI with the VS Code host process environment; it does not provide SecretStorage-based BYOK. The key is not passed as a command argument or sent to a WildestAI-operated service.
+
+**Local artifacts:** Structural JSON and HTML reports are written only to the user-selected local path. WildestAI does not upload or retain these artifacts.
+
+**WildestAI retention:** The pinned CLI and extension 1.0.5 do not send source content, prompts, API keys, or generated reports to a WildestAI-operated service, so WildestAI has no server-side retention of that data.
+
+**Third party: OpenAI API.** Only when AI-powered HTML analysis is used. Data sent: One prompt per successfully loaded changed file: `git diff` output for modified files or full content for untracked files. See OpenAI's [data controls and retention documentation](https://developers.openai.com/api/docs/guides/your-data) and [privacy policy](https://openai.com/policies/privacy-policy/).
+
 
 **Runtime and AI-off support:** Python 3.10 or newer is required. AI-off operation is available for local structural JSON only with `wild --structural-json <path> diff`; the pinned revision extracts Python symbols and imports without an AI request, while other languages remain file-level entries with an unsupported-language warning. HTML generation still uses OpenAI.
 
@@ -54,13 +65,13 @@ Available on the VS Code Marketplace and OpenVSX.
 
 **Verified published-package support:** Extension 1.0.5 requires VS Code 1.99.0 or newer. The Marketplace VSIX contains a runnable CLI for macOS arm64 only. Although its package manifest declares macOS x64, Linux arm64, Linux x64, and Windows x64 targets, those binaries are absent from the published VSIX. AI-off DiffGraph generation is not available in extension 1.0.5; it invokes the bundled AI/HTML CLI and requires the user's OpenAI API credentials.
 
-### Beta — 2026-08-12
+### Beta — 2026-08-18
 
 #### MCP Server — Beta (source-only)
 
 An MCP server exists in the DiffGraph-CLI source repository for evaluation, but it is not part of a versioned release, the package does not declare its MCP dependency, and there is no supported MCP entry point. Treat it as source-only beta code, not as a generally available installation surface.
 
-### Planned — 2026-08-12
+### Planned — 2026-08-18
 
 These surfaces are roadmap items, not currently available products. Status is tracked in [roadmap issue #8](https://github.com/WildestAI/wildest-ai-website/issues/8).
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "asOf": "2026-08-12",
+  "asOf": "2026-08-18",
   "roadmapUrl": "https://github.com/WildestAI/wildest-ai-website/issues/8",
   "cli": {
     "status": "Available (source install)",
@@ -44,6 +44,21 @@
     "Enterprise / on-prem"
   ],
   "aiDataFlow": "At the pinned CLI revision, the AI path sends one prompt per successfully loaded changed file to OpenAI's `gpt-4o` through the OpenAI Agents SDK. Modified files contribute `git diff` output; untracked files contribute their full content. The SDK reads `OPENAI_API_KEY`; `--api-key` is only stored and validated at this revision and does not configure the SDK request. The report is written locally to `diffgraph.html` by default or to the `--output` path. WildestAI has not independently verified OpenAI retention, training-use, account-control, or charge terms; consult the terms for the user's OpenAI API account.",
+  "dataHandling": {
+    "localProcessing": "Git reads, deterministic structural extraction, and report generation run on the user's machine. Structural JSON generation makes no AI request.",
+    "credentialHandling": "The pinned CLI reads `OPENAI_API_KEY` from its process environment. Extension 1.0.5 launches the bundled CLI with the VS Code host process environment; it does not provide SecretStorage-based BYOK. The key is not passed as a command argument or sent to a WildestAI-operated service.",
+    "localArtifacts": "Structural JSON and HTML reports are written only to the user-selected local path. WildestAI does not upload or retain these artifacts.",
+    "wildestAiRetention": "The pinned CLI and extension 1.0.5 do not send source content, prompts, API keys, or generated reports to a WildestAI-operated service, so WildestAI has no server-side retention of that data.",
+    "thirdParties": [
+      {
+        "name": "OpenAI API",
+        "when": "Only when AI-powered HTML analysis is used",
+        "data": "One prompt per successfully loaded changed file: `git diff` output for modified files or full content for untracked files",
+        "dataControlsUrl": "https://developers.openai.com/api/docs/guides/your-data",
+        "privacyUrl": "https://openai.com/policies/privacy-policy/"
+      }
+    ]
+  },
   "resources": [
     "https://wildest.ai",
     "https://github.com/WildestAI/DiffGraph-CLI",

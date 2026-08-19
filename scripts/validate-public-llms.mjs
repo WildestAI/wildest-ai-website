@@ -59,8 +59,14 @@ assert(truth.dataHandling.localArtifacts.includes('local path'));
 assert(truth.dataHandling.wildestAiRetention.includes('no server-side retention'));
 assert.equal(truth.dataHandling.thirdParties.length, 1, 'all current AI subprocessors must be explicit');
 assert.equal(truth.dataHandling.thirdParties[0].name, 'OpenAI API');
-assert.match(truth.dataHandling.thirdParties[0].dataControlsUrl, /^https:\/\//);
-assert.match(truth.dataHandling.thirdParties[0].privacyUrl, /^https:\/\//);
+assert.equal(
+  truth.dataHandling.thirdParties[0].dataControlsUrl,
+  'https://developers.openai.com/api/docs/guides/your-data',
+);
+assert.equal(
+  truth.dataHandling.thirdParties[0].privacyUrl,
+  'https://openai.com/policies/privacy-policy/',
+);
 assert(releaseTruthSource.includes('import releaseTruth from "@/data/release-truth.json"'), 'release-truth component must import the canonical manifest');
 for (const field of [
   'cli.status',

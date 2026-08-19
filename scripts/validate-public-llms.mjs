@@ -58,13 +58,16 @@ assert(truth.dataHandling.credentialHandling.includes('does not provide SecretSt
 assert(truth.dataHandling.localArtifacts.includes('local path'));
 assert(truth.dataHandling.wildestAiRetention.includes('no server-side retention'));
 assert.equal(truth.dataHandling.thirdParties.length, 1, 'all current AI subprocessors must be explicit');
-assert.equal(truth.dataHandling.thirdParties[0].name, 'OpenAI API');
+const openAiParty = truth.dataHandling.thirdParties.find(
+  (party) => party.name === 'OpenAI API',
+);
+assert.ok(openAiParty, 'OpenAI API processor entry is required');
 assert.equal(
-  truth.dataHandling.thirdParties[0].dataControlsUrl,
+  openAiParty.dataControlsUrl,
   'https://developers.openai.com/api/docs/guides/your-data',
 );
 assert.equal(
-  truth.dataHandling.thirdParties[0].privacyUrl,
+  openAiParty.privacyUrl,
   'https://openai.com/policies/privacy-policy/',
 );
 assert(releaseTruthSource.includes('import releaseTruth from "@/data/release-truth.json"'), 'release-truth component must import the canonical manifest');

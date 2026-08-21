@@ -52,6 +52,24 @@ assert.deepEqual(
 );
 assert(truth.extension.aiOff.startsWith('Not available'), 'extension AI-off limitation must be explicit');
 assert.equal(typeof truth.mcp.supportedInstall, 'boolean', 'MCP supportedInstall must be boolean');
+assert(truth.dataHandling.localProcessing.includes('Structural JSON generation makes no AI request'));
+assert(truth.dataHandling.credentialHandling.includes('OPENAI_API_KEY'));
+assert(truth.dataHandling.credentialHandling.includes('does not provide SecretStorage-based BYOK'));
+assert(truth.dataHandling.localArtifacts.includes('local path'));
+assert(truth.dataHandling.wildestAiRetention.includes('no server-side retention'));
+assert.equal(truth.dataHandling.thirdParties.length, 1, 'all current AI subprocessors must be explicit');
+const openAiParty = truth.dataHandling.thirdParties.find(
+  (party) => party.name === 'OpenAI API',
+);
+assert.ok(openAiParty, 'OpenAI API processor entry is required');
+assert.equal(
+  openAiParty.dataControlsUrl,
+  'https://developers.openai.com/api/docs/guides/your-data',
+);
+assert.equal(
+  openAiParty.privacyUrl,
+  'https://openai.com/policies/privacy-policy/',
+);
 assert(releaseTruthSource.includes('import releaseTruth from "@/data/release-truth.json"'), 'release-truth component must import the canonical manifest');
 for (const field of [
   'cli.status',
@@ -64,6 +82,11 @@ for (const field of [
   'extension.aiOff',
   'mcp.status',
   'aiDataFlow',
+  'dataHandling.localProcessing',
+  'dataHandling.credentialHandling',
+  'dataHandling.localArtifacts',
+  'dataHandling.wildestAiRetention',
+  'dataHandling.thirdParties',
   'planned',
   'asOf',
 ]) {
@@ -90,6 +113,16 @@ requireInBoth(`### Beta — ${truth.asOf}`, 'Beta section');
 requireInBoth(`### Planned — ${truth.asOf}`, 'Planned section');
 requireInBoth(truth.roadmapUrl, 'roadmap source');
 requireInBoth(truth.aiDataFlow, 'approved AI data-flow disclosure');
+for (const field of ['localProcessing', 'credentialHandling', 'localArtifacts', 'wildestAiRetention']) {
+  requireInBoth(truth.dataHandling[field], `data-handling field ${field}`);
+}
+for (const party of truth.dataHandling.thirdParties) {
+  requireInBoth(party.name, 'third-party processor name');
+  requireInBoth(party.when, 'third-party invocation condition');
+  requireInBoth(party.data, 'third-party data disclosure');
+  requireInBoth(party.dataControlsUrl, 'third-party data controls');
+  requireInBoth(party.privacyUrl, 'third-party privacy policy');
+}
 requireInBoth(`${truth.cli.provider} \`${truth.cli.model}\``, 'current provider/model');
 requireInBoth(`Python ${truth.cli.minimumPython} or newer`, 'CLI runtime requirement');
 requireInBoth('AI-off operation is available for local structural JSON only', 'CLI AI-off behavior');

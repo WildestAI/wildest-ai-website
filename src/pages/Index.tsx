@@ -2,7 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ReleaseTruth from "@/components/ReleaseTruth";
-import { ArrowRight, CheckCircle, Code, Sparkles, Zap } from "lucide-react";
+import DiffGraphProof from "@/components/DiffGraphProof";
+import { ArrowRight, Code, Sparkles, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const Index = () => {
@@ -112,69 +113,7 @@ const Index = () => {
       </div>
     </section>
 
-    {/* Code Demo Section */}
-    <section className="py-20">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col lg:flex-row gap-12 items-center">
-          <div className="w-full lg:w-1/3 order-1 flex flex-col items-center lg:items-start">
-            <div className="w-full max-w-lg">
-              <h2 className="text-4xl font-bold mb-6 text-center lg:text-left">
-                Code smarter, not harder
-              </h2>
-              <p className="text-xl text-muted-foreground mb-8 text-center lg:text-left">
-                AI agents can produce large changes quickly, while review tools still center on text and line-by-line diffs.
-              </p>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-primary" />
-                  <span className="w-full">Semantic understanding of code changes</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-primary" />
-                  <span className="w-full">Visualization of code changes based on functional relationship (not file structure)</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-primary" />
-                  <span className="w-full">Zoom-in and out to understand different layers </span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-primary" />
-                  <span className="w-full">Local HTML report for sharing and review</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="w-full lg:w-2/3 order-2 flex flex-col justify-center">
-            <div className="w-full max-w-4xl mx-auto">
-              {/* <div className="flex justify-between mb-4 px-2">
-                <h3 className="text-lg font-semibold">Before (traditional diff)</h3>
-                <h3 className="text-lg font-semibold">After (Wildest Visualization)</h3>
-              </div> */}
-              <Card className="bg-card/80 backdrop-blur-sm border-border/50">
-                <CardContent className="p-0">
-                  <div style={{
-                    position: "relative",
-                    boxSizing: "content-box",
-                    maxHeight: "80vh",
-                    width: "100%",
-                    aspectRatio: "1.6",
-                    padding: "40px 0 40px 0"
-                  }}>
-                    <iframe src="https://app.supademo.com/embed/cmc0qtem7iz1nsn1rmw7aellf?embed_v=2" loading="lazy" title="Code Demo" allow="clipboard-write" allowFullScreen style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%"
-                    }}></iframe>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <DiffGraphProof />
 
     {/* Features Section */}
     <section className="py-20 bg-background">

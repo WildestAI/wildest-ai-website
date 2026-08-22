@@ -8,7 +8,10 @@ import { join } from 'node:path';
 
 const truth = JSON.parse(await readFile('src/data/release-truth.json', 'utf8'));
 const releaseTruthSource = await readFile('src/components/ReleaseTruth.tsx', 'utf8');
+const diffGraphProofSource = await readFile('src/components/DiffGraphProof.tsx', 'utf8');
 const landingPageSource = await readFile('src/pages/Index.tsx', 'utf8');
+const sampleArtifact = JSON.parse(await readFile('public/examples/greeting-structural.json', 'utf8'));
+const sampleDiff = await readFile('public/examples/greeting.diff', 'utf8');
 const documents = {
   'public/llms.txt': await readFile('public/llms.txt', 'utf8'),
   'public/llms-full.txt': await readFile('public/llms-full.txt', 'utf8'),
@@ -103,6 +106,22 @@ assert(
   'landing page must import the release-truth component',
 );
 assert.match(landingPageSource, /<ReleaseTruth\s*\/>/, 'landing page must mount the release-truth component');
+assert(
+  landingPageSource.includes('import DiffGraphProof from "@/components/DiffGraphProof"'),
+  'landing page must import the static DiffGraph proof',
+);
+assert.match(landingPageSource, /<DiffGraphProof\s*\/>/, 'landing page must mount the static DiffGraph proof');
+assert(!landingPageSource.includes('app.supademo.com'), 'landing page must not depend on a scripted third-party demo');
+assert.equal(sampleArtifact.schema_version, '2.0', 'sample artifact must use the supported DiffGraph schema');
+assert.equal(sampleArtifact.metadata.llm_calls, 0, 'sample graph must be structural, not AI-generated');
+assert.equal(sampleArtifact.files[0]?.language, 'python', 'sample artifact must identify its supported language');
+assert.equal(sampleArtifact.relationships[0]?.analysis_source, 'structural', 'sample relationship must be structural');
+assert(sampleDiff.startsWith('diff --git '), 'sample evidence must include a textual Git diff');
+assert(diffGraphProofSource.includes('greeting-structural.json'), 'proof must render the checked-in artifact');
+assert(diffGraphProofSource.includes('greeting.diff'), 'proof must link evidence to the checked-in textual diff');
+assert(diffGraphProofSource.includes('artifact.schema_version'), 'proof must display schema version');
+assert(diffGraphProofSource.includes('artifact.generated_at'), 'proof must display generation date');
+assert(diffGraphProofSource.includes('artifact.diff_ref.kind'), 'proof must display comparison semantics');
 assert(
   landingPageSource.includes('GPL-3.0-or-later extension'),
   'landing page must scope the open-source claim to the licensed extension',

@@ -10,7 +10,10 @@ const truth = JSON.parse(await readFile('src/data/release-truth.json', 'utf8'));
 const releaseTruthSource = await readFile('src/components/ReleaseTruth.tsx', 'utf8');
 const diffGraphProofSource = await readFile('src/components/DiffGraphProof.tsx', 'utf8');
 const landingPageSource = await readFile('src/pages/Index.tsx', 'utf8');
-const sampleArtifact = JSON.parse(await readFile('public/examples/greeting-structural.json', 'utf8'));
+const publicSampleArtifact = JSON.parse(await readFile('public/examples/greeting-structural.json', 'utf8'));
+const sourceSampleArtifact = JSON.parse(await readFile('src/data/greeting-structural.json', 'utf8'));
+assert.deepEqual(sourceSampleArtifact, publicSampleArtifact, 'source and public DiffGraph artifacts must remain identical');
+const sampleArtifact = sourceSampleArtifact;
 const sampleDiff = await readFile('public/examples/greeting.diff', 'utf8');
 const documents = {
   'public/llms.txt': await readFile('public/llms.txt', 'utf8'),

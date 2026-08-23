@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import artifact from "../../public/examples/greeting-structural.json";
+import artifact from "@/data/greeting-structural.json";
 import { useState } from "react";
 import { ExternalLink, FileCode2, GitBranch, Info, Network } from "lucide-react";
 

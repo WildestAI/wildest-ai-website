@@ -85,7 +85,7 @@ wild <any-other-git-command>     # pass through to git
 **Third party: OpenAI API.** Only when AI-powered HTML analysis is used. Data sent: One prompt per successfully loaded changed file: `git diff` output for modified files or full content for untracked files. See OpenAI's [data controls and retention documentation](https://developers.openai.com/api/docs/guides/your-data) and [privacy policy](https://openai.com/policies/privacy-policy/).
 
 
-**Runtime and AI-off support:** Python 3.10 or newer is required. AI-off operation is available for local structural JSON only with `wild --structural-json <path> diff`; the pinned revision extracts Python symbols and imports without an AI request, while other languages remain file-level entries with an unsupported-language warning. HTML generation still uses OpenAI.
+**Runtime, schema, and AI-off support:** Python 3.10 or newer is required. The pinned CLI produces structural artifacts using schema v2.0. AI-off operation is available for local structural JSON only with `wild --structural-json <path> diff`; the pinned revision extracts Python symbols and imports without an AI request, while other languages remain file-level entries with an unsupported-language warning. HTML generation still uses OpenAI.
 
 **GitHub:** https://github.com/WildestAI/DiffGraph-CLI
 
@@ -95,7 +95,7 @@ Visualises code changes inside VS Code. Available on:
 - VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext
 - OpenVSX: https://open-vsx.org/extension/WildestAI/wildest-vscode-ext
 
-**Verified published-package support:** Extension 1.0.5 requires VS Code 1.99.0 or newer. The Marketplace VSIX contains a runnable CLI for macOS arm64 only. Although its package manifest declares macOS x64, Linux arm64, Linux x64, and Windows x64 targets, those binaries are absent from the published VSIX. AI-off DiffGraph generation is not available in extension 1.0.5; it invokes the bundled AI/HTML CLI and requires the user's OpenAI API credentials.
+**Verified published-package support:** Extension 1.0.5 requires VS Code 1.99.0 or newer. The Marketplace VSIX contains a runnable CLI for macOS arm64 only. Although its package manifest declares macOS x64, Linux arm64, Linux x64, and Windows x64 targets, those binaries are absent from the published VSIX. Extension 1.0.5 does not consume the CLI's structural JSON artifact; its packaged flow invokes the AI/HTML CLI. JSON-backed rendering is planned, not shipped. AI-off DiffGraph generation is not available in extension 1.0.5; it invokes the bundled AI/HTML CLI and requires the user's OpenAI API credentials.
 
 ### Beta — 2026-08-18
 

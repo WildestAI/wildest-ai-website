@@ -102,6 +102,7 @@ const ReleaseTruth = () => {
               <div>
                 <h3 className="font-semibold mb-2">DiffGraph CLI</h3>
                 <p className="text-sm text-muted-foreground mb-2">Python {releaseTruth.cli.minimumPython} or newer.</p>
+                <p className="text-sm text-muted-foreground mb-2">Structural artifact schema: v{releaseTruth.cli.artifactSchemaVersion}.</p>
                 <p className="text-sm text-muted-foreground">{releaseTruth.cli.aiOff}</p>
               </div>
               <div>
@@ -112,6 +113,7 @@ const ReleaseTruth = () => {
                 <p className="text-sm text-muted-foreground mb-2">
                   Missing packaged runtimes: {releaseTruth.extension.missingRuntimeTargets.join(", ")}.
                 </p>
+                <p className="text-sm text-muted-foreground mb-2">{releaseTruth.extension.artifactSchemaCompatibility}</p>
                 <p className="text-sm text-muted-foreground">{releaseTruth.extension.aiOff}</p>
               </div>
             </CardContent>

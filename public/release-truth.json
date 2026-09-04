@@ -15,7 +15,8 @@
     "provider": "OpenAI",
     "model": "gpt-4o",
     "minimumPython": "3.10",
-    "aiOff": "Available for local structural JSON only: `wild --structural-json <path> diff`. The pinned revision extracts Python symbols and imports without an AI request; other languages remain file-level entries with an unsupported-language warning. HTML generation still uses OpenAI."
+    "aiOff": "Available for local structural JSON only: `wild --structural-json <path> diff`. The pinned revision extracts Python symbols and imports without an AI request; other languages remain file-level entries with an unsupported-language warning. HTML generation still uses OpenAI.",
+    "artifactSchemaVersion": "2.0"
   },
   "extension": {
     "status": "Available",
@@ -32,7 +33,8 @@
       "Linux x64",
       "Windows x64"
     ],
-    "aiOff": "Not available in extension 1.0.5. DiffGraph generation invokes the bundled AI/HTML CLI and requires the user's OpenAI API credentials."
+    "aiOff": "Not available in extension 1.0.5. DiffGraph generation invokes the bundled AI/HTML CLI and requires the user's OpenAI API credentials.",
+    "artifactSchemaCompatibility": "Extension 1.0.5 does not consume the CLI's structural JSON artifact; its packaged flow invokes the AI/HTML CLI. JSON-backed rendering is planned, not shipped."
   },
   "mcp": {
     "status": "Beta (source-only)",

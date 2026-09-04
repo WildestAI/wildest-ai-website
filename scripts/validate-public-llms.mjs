@@ -39,6 +39,7 @@ assert(
   'CLI installation must check out the exact sourceRevision used by release claims',
 );
 assert.match(truth.cli.minimumPython, /^\d+\.\d+$/, 'CLI minimumPython must be exact');
+assert.match(truth.cli.artifactSchemaVersion, /^\d+\.\d+$/, 'CLI artifactSchemaVersion must be exact');
 assert(truth.cli.aiOff.includes('--structural-json'), 'CLI AI-off claim must name its non-AI command');
 assert.match(truth.extension.version, /^\d+\.\d+\.\d+$/, 'extension version must be exact');
 assert.match(truth.extension.minimumVscode, /^\d+\.\d+\.\d+$/, 'extension minimumVscode must be exact');
@@ -57,6 +58,7 @@ assert.deepEqual(
   'release truth must classify every declared extension runtime target',
 );
 assert(truth.extension.aiOff.startsWith('Not available'), 'extension AI-off limitation must be explicit');
+assert.match(truth.extension.artifactSchemaCompatibility, /does not consume/i, 'extension schema compatibility must state the shipped limitation');
 assert.equal(typeof truth.mcp.supportedInstall, 'boolean', 'MCP supportedInstall must be boolean');
 assert(truth.dataHandling.localProcessing.includes('Structural JSON generation makes no AI request'));
 assert(truth.dataHandling.credentialHandling.includes('OPENAI_API_KEY'));
@@ -80,11 +82,13 @@ assert(releaseTruthSource.includes('import releaseTruth from "@/data/release-tru
 for (const field of [
   'cli.status',
   'cli.minimumPython',
+  'cli.artifactSchemaVersion',
   'cli.aiOff',
   'extension.status',
   'extension.minimumVscode',
   'extension.publishedRuntimeTargets',
   'extension.missingRuntimeTargets',
+  'extension.artifactSchemaCompatibility',
   'extension.aiOff',
   'mcp.status',
   'aiDataFlow',
@@ -147,10 +151,12 @@ for (const party of truth.dataHandling.thirdParties) {
 }
 requireInBoth(`${truth.cli.provider} \`${truth.cli.model}\``, 'current provider/model');
 requireInBoth(`Python ${truth.cli.minimumPython} or newer`, 'CLI runtime requirement');
+requireInBoth(`schema v${truth.cli.artifactSchemaVersion}`, 'CLI artifact schema version');
 requireInBoth('AI-off operation is available for local structural JSON only', 'CLI AI-off behavior');
 requireInBoth(`Extension ${truth.extension.version} requires VS Code ${truth.extension.minimumVscode} or newer`, 'extension runtime requirement');
 requireInBoth(`The Marketplace VSIX contains a runnable CLI for ${truth.extension.publishedRuntimeTargets.join(', ')} only`, 'published extension runtime support');
 for (const target of truth.extension.missingRuntimeTargets) requireInBoth(target, 'missing extension runtime target');
+requireInBoth(truth.extension.artifactSchemaCompatibility, 'extension artifact schema compatibility');
 requireInBoth(`AI-off DiffGraph generation is not available in extension ${truth.extension.version}`, 'extension AI-off limitation');
 requireInBoth(truth.extension.marketplace, 'VS Code Marketplace URL');
 

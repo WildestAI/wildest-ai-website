@@ -75,7 +75,7 @@ const DiffGraphProof = () => {
                   {"snippet" in evidence && evidence.snippet ? (
                     <pre className="mt-2 overflow-x-auto whitespace-pre-wrap rounded bg-background p-2 font-mono text-xs text-foreground">{evidence.snippet}</pre>
                   ) : (
-                    <p className="mt-2 text-muted-foreground">This structural relationship is backed by the parser finding at {sourceRange}.</p>
+                    <p className="mt-2 text-muted-foreground">This selected evidence is backed by the parser finding at {sourceRange}.</p>
                   )}
                   <a className="mt-2 inline-flex text-primary hover:underline" href={sampleDiffUrl}>Open the checked-in textual diff</a>
                 </div>

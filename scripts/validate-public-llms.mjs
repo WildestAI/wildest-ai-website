@@ -129,6 +129,13 @@ assert(diffGraphProofSource.includes('greeting.diff'), 'proof must link evidence
 assert(diffGraphProofSource.includes('artifact.schema_version'), 'proof must display schema version');
 assert(diffGraphProofSource.includes('artifact.generated_at'), 'proof must display generation date');
 assert(diffGraphProofSource.includes('artifact.diff_ref.kind'), 'proof must display comparison semantics');
+assert(diffGraphProofSource.includes('Source evidence'), 'proof must expose selected structural evidence in the interactive view');
+assert(diffGraphProofSource.includes('evidence.snippet'), 'proof must render available parser evidence snippets');
+assert(diffGraphProofSource.includes('Open the checked-in textual diff'), 'proof must link selected evidence to the checked-in textual diff');
+for (const entity of [...sampleArtifact.files, ...sampleArtifact.symbols, ...sampleArtifact.relationships]) {
+  assert(entity.evidence?.length, `${entity.id} must retain at least one source-evidence record`);
+  assert.equal(entity.analysis_source, 'structural', `${entity.id} must not claim AI-generated topology`);
+}
 assert(
   landingPageSource.includes('GPL-3.0-or-later extension'),
   'landing page must scope the open-source claim to the licensed extension',

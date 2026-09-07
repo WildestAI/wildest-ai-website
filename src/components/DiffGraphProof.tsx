@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import artifact from "@/data/greeting-structural.json";
 import { useState } from "react";
-import { ExternalLink, FileCode2, GitBranch, Info, Network } from "lucide-react";
+import { ExternalLink, FileCode2, GitBranch, Info, Network, Quote } from "lucide-react";
 
 const sampleDiffUrl = "/examples/greeting.diff";
 const sampleArtifactUrl = "/examples/greeting-structural.json";
@@ -16,6 +16,10 @@ const DiffGraphProof = () => {
   const symbol = artifact.symbols[0];
   const relationship = artifact.relationships[0];
   const selected = selection === "file" ? file : selection === "symbol" ? symbol : relationship;
+  const evidence = selected.evidence[0];
+  const sourceRange = evidence.line_start
+    ? `${evidence.file ?? file.path}:${evidence.line_start}${evidence.line_end && evidence.line_end !== evidence.line_start ? `-${evidence.line_end}` : ""}`
+    : evidence.file ?? file.path;
 
   return (
     <section className="py-20 bg-secondary/30" aria-labelledby="diffgraph-proof-title">
@@ -61,11 +65,20 @@ const DiffGraphProof = () => {
                 <p className="text-sm font-medium mb-2">{"name" in selected ? selected.name : selected.kind}</p>
                 <dl className="space-y-3 text-sm text-muted-foreground">
                   <div><dt className="font-medium text-foreground">Analysis source</dt><dd>{selected.analysis_source}</dd></div>
-                  <div><dt className="font-medium text-foreground">Evidence</dt><dd>{selected.evidence[0].kind} — <a className="text-primary hover:underline" href={sampleDiffUrl}>{selected.evidence[0].file ?? file.path}{selected.evidence[0].line_start ? `:${selected.evidence[0].line_start}` : ""}</a></dd></div>
+                  <div><dt className="font-medium text-foreground">Evidence</dt><dd>{evidence.kind} — <a className="text-primary hover:underline" href={sampleDiffUrl}>{sourceRange}</a></dd></div>
                   <div><dt className="font-medium text-foreground">Schema / generator</dt><dd>v{artifact.schema_version} / wild {artifact.wild_version}</dd></div>
                   <div><dt className="font-medium text-foreground">Generated</dt><dd>{artifact.generated_at}</dd></div>
                   <div><dt className="font-medium text-foreground">Input</dt><dd>{artifact.diff_ref.kind} diff; Python</dd></div>
                 </dl>
+                <div className="mt-5 rounded-md border border-border bg-muted/40 p-3 text-sm">
+                  <div className="flex items-center gap-2 font-medium text-foreground"><Quote className="h-4 w-4 text-primary" /> Source evidence</div>
+                  {"snippet" in evidence && evidence.snippet ? (
+                    <pre className="mt-2 overflow-x-auto whitespace-pre-wrap rounded bg-background p-2 font-mono text-xs text-foreground">{evidence.snippet}</pre>
+                  ) : (
+                    <p className="mt-2 text-muted-foreground">This selected evidence is backed by the parser finding at {sourceRange}.</p>
+                  )}
+                  <a className="mt-2 inline-flex text-primary hover:underline" href={sampleDiffUrl}>Open the checked-in textual diff</a>
+                </div>
                 <a href="https://github.com/WildestAI/DiffGraph-CLI/blob/main/diffgraph/schema/diffgraph-v2.schema.json" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm text-primary hover:underline mt-5">View schema <ExternalLink className="ml-1 h-4 w-4" /></a>
               </aside>
             </CardContent>

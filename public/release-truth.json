@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "asOf": "2026-08-18",
+  "asOf": "2026-09-19",
   "roadmapUrl": "https://github.com/WildestAI/wildest-ai-website/issues/8",
   "cli": {
     "status": "Available (source install)",
     "repository": "https://github.com/WildestAI/DiffGraph-CLI",
-    "sourceRevision": "336a3a6b5e68399ef4f97b844d15e7eec1f73cae",
+    "sourceRevision": "ef827a176e8183c849940c86d07ae60a390d9071",
     "install": [
       "git clone https://github.com/WildestAI/DiffGraph-CLI.git",
       "cd DiffGraph-CLI",
-      "git checkout 336a3a6b5e68399ef4f97b844d15e7eec1f73cae",
+      "git checkout ef827a176e8183c849940c86d07ae60a390d9071",
       "python -m pip install -e ."
     ],
     "provider": "OpenAI",

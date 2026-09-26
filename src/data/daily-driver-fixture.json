@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "fixtureVersion": "2026-08-12.1",
+  "status": "Sanitized structural-fixture baseline — not an end-to-end benchmark",
+  "source": {
+    "repository": "https://github.com/WildestAI/wildest-ai-website",
+    "commit": "b8592ebf994ac75b6b264cfa7f76e508b5184b48",
+    "commitUrl": "https://github.com/WildestAI/wildest-ai-website/commit/b8592ebf994ac75b6b264cfa7f76e508b5184b48",
+    "range": "src/greeting.py (sanitized modified-file diff; base blob 2a1b3c4 → head blob 5d6e7f8)",
+    "license": "Repository source is MIT; this minimal fixture is checked in as a sanitized example."
+  },
+  "artifact": {
+    "schemaVersion": "2.0",
+    "generator": "wild 1.1.0",
+    "mode": "AI-off structural JSON",
+    "files": {
+      "diff": {
+        "path": "public/examples/greeting.diff",
+        "sha256": "53391cc0d2c187952dfa477ffb12dce54a8cfefe2083272f9c8d9677e044c45d"
+      },
+      "artifact": {
+        "path": "public/examples/greeting-structural.json",
+        "sha256": "580a35c321ed7ae7be8ce6605f6aafb21f00a512b028d1f91495e83f566f35fd"
+      }
+    }
+  },
+  "repeat": {
+    "command": "node scripts/validate-acceptance-fixture.mjs",
+    "expected": "Validates the checked-in diff, structural artifact, schema, AI-off metadata, provenance fields, and SHA-256 digests without network access."
+  },
+  "limitations": [
+    "This fixture proves only a static, deterministic CLI artifact and its source evidence.",
+    "It does not measure clean installation, extension packaging, provider recovery, performance, cancellation, cache behavior, or reviewer-task outcomes.",
+    "Those end-to-end acceptance results remain required before the website can claim a measured daily-driver workflow."
+  ]
+}

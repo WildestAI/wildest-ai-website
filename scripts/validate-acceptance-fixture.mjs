@@ -39,6 +39,17 @@ assert.equal(artifact.wild_version, fixture.artifact.generator.replace('wild ', 
 assert.equal(artifact.metadata.llm_calls, 0, 'AI-off fixture must not record LLM calls');
 assert.equal(artifact.metadata.privacy_tier, 'local', 'AI-off fixture must retain local privacy tier');
 assert(diff.startsWith('diff --git '), 'fixture must retain Git diff evidence');
+const diffPaths = new Set(
+  [...diff.matchAll(/^diff --git a\/(.+?) b\/(.+)$/gm)].flatMap(([, oldPath, newPath]) => [oldPath, newPath]),
+);
+assert(diffPaths.size > 0, 'fixture diff must identify at least one changed path');
+for (const file of artifact.files) {
+  assert(diffPaths.has(file.path), `artifact file ${file.path} must appear in the fixture diff`);
+  assert(
+    file.evidence?.some((entry) => entry.kind === 'git_diff_name_status' && entry.detail === 'status=M; source=git'),
+    `artifact file ${file.path} must retain Git diff name-status evidence`,
+  );
+}
 assert(artifact.files.length > 0 && artifact.symbols.length > 0 && artifact.relationships.length > 0, 'fixture must contain usable structural topology');
 
 console.log(`Validated daily-driver fixture ${fixture.fixtureVersion} (${fixture.artifact.schemaVersion}, ${fixture.artifact.mode}).`);

@@ -6,7 +6,7 @@
     "repository": "https://github.com/WildestAI/wildest-ai-website",
     "commit": "b8592ebf994ac75b6b264cfa7f76e508b5184b48",
     "commitUrl": "https://github.com/WildestAI/wildest-ai-website/commit/b8592ebf994ac75b6b264cfa7f76e508b5184b48",
-    "range": "src/greeting.py (sanitized modified-file diff; base blob 2a1b3c4 → head blob 5d6e7f8)",
+    "range": "Fixture publication commit (adds these checked-in sanitized artifacts; original source commit and blob range are not asserted)",
     "license": "Repository source is MIT; this minimal fixture is checked in as a sanitized example."
   },
   "artifact": {
@@ -26,10 +26,10 @@
   },
   "repeat": {
     "command": "node scripts/validate-acceptance-fixture.mjs",
-    "expected": "Validates the checked-in diff, structural artifact, schema, AI-off metadata, provenance fields, and SHA-256 digests without network access."
+    "expected": "Validates the checked-in diff, structural artifact, schema, AI-off metadata, publication metadata, and SHA-256 digests without network access."
   },
   "limitations": [
-    "This fixture proves only a static, deterministic CLI artifact and its source evidence.",
+    "This fixture proves only a static, deterministic CLI artifact and its checked-in diff and artifact evidence; it does not establish the original source-change provenance.",
     "It does not measure clean installation, extension packaging, provider recovery, performance, cancellation, cache behavior, or reviewer-task outcomes.",
     "Those end-to-end acceptance results remain required before the website can claim a measured daily-driver workflow."
   ]

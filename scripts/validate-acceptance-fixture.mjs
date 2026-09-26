@@ -16,7 +16,7 @@ assert.match(fixture.fixtureVersion, /^\d{4}-\d{2}-\d{2}\.\d+$/, 'fixtureVersion
 assert.match(fixture.source.repository, /^https:\/\/github\.com\/WildestAI\//, 'fixture source must be public WildestAI repository');
 assert.match(fixture.source.commit, /^[0-9a-f]{40}$/, 'fixture source must pin an exact commit');
 assert.equal(fixture.source.commitUrl, `${fixture.source.repository}/commit/${fixture.source.commit}`, 'fixture commit URL must match pinned source');
-assert.match(fixture.source.range, /sanitized modified-file diff/i, 'fixture must describe the sanitized range');
+assert.match(fixture.source.range, /fixture publication commit.*sanitized artifacts.*not asserted/i, 'fixture must identify the publication commit without asserting original source provenance');
 assert.match(fixture.source.license, /MIT/i, 'fixture must disclose its source license');
 assert.equal(fixture.artifact.schemaVersion, '2.0', 'fixture must pin the supported artifact schema');
 assert.equal(fixture.artifact.mode, 'AI-off structural JSON', 'fixture must be explicit about AI-off mode');

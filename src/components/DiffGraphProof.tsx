@@ -2,11 +2,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import artifact from "@/data/greeting-structural.json";
+import fixture from "@/data/daily-driver-fixture.json";
 import { useState } from "react";
 import { ExternalLink, FileCode2, GitBranch, Info, Network, Quote } from "lucide-react";
 
 const sampleDiffUrl = "/examples/greeting.diff";
 const sampleArtifactUrl = "/examples/greeting-structural.json";
+const fixtureManifestUrl = "/examples/daily-driver-fixture.json";
 
 type Selection = "file" | "symbol" | "relationship";
 
@@ -36,10 +38,11 @@ const DiffGraphProof = () => {
             <div className="flex flex-wrap gap-3">
               <Button variant="outline" size="sm" asChild><a href={sampleArtifactUrl}><FileCode2 className="mr-2 h-4 w-4" /> View artifact</a></Button>
               <Button variant="outline" size="sm" asChild><a href={sampleDiffUrl}><GitBranch className="mr-2 h-4 w-4" /> View textual diff</a></Button>
+              <Button variant="outline" size="sm" asChild><a href={fixtureManifestUrl}><Info className="mr-2 h-4 w-4" /> View fixture manifest</a></Button>
             </div>
           </div>
 
-          <Card className="bg-background/80 border-border/50">
+          <Card className="bg-background/80 border-border/50 mb-6">
             <CardHeader className="space-y-3">
               <CardTitle className="text-xl">Interactive topology</CardTitle>
               <p className="text-sm text-muted-foreground">
@@ -81,6 +84,14 @@ const DiffGraphProof = () => {
                 </div>
                 <a href="https://github.com/WildestAI/DiffGraph-CLI/blob/main/diffgraph/schema/diffgraph-v2.schema.json" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm text-primary hover:underline mt-5">View schema <ExternalLink className="ml-1 h-4 w-4" /></a>
               </aside>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-background/80 border-border/50">
+            <CardContent className="pt-6 text-sm text-muted-foreground">
+              <p><span className="font-medium text-foreground">Versioned fixture:</span> {fixture.fixtureVersion} documents this checked-in sanitized diff and artifact at an exact public publication commit, schema v{fixture.artifact.schemaVersion}, and SHA-256 digests.</p>
+              <p className="mt-2">It is a static AI-off structural baseline, not an end-to-end benchmark. Install, extension, provider, recovery, timing, and reviewer-task measurements remain unreported.</p>
+              <a className="mt-3 inline-flex text-primary hover:underline" href={fixture.source.commitUrl} target="_blank" rel="noopener noreferrer">Verify fixture publication commit <ExternalLink className="ml-1 h-4 w-4" /></a>
             </CardContent>
           </Card>
         </div>

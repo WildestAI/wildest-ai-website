@@ -133,6 +133,8 @@ assert(diffGraphProofSource.includes('Source evidence'), 'proof must expose sele
 assert(diffGraphProofSource.includes('This selected evidence is backed by the parser finding'), 'proof fallback must describe file, symbol, and relationship selections neutrally');
 assert(diffGraphProofSource.includes('evidence.snippet'), 'proof must render available parser evidence snippets');
 assert(diffGraphProofSource.includes('Open the checked-in textual diff'), 'proof must link selected evidence to the checked-in textual diff');
+assert(diffGraphProofSource.includes('fixture.source.commitUrl'), 'proof must link the fixture to its pinned CLI source revision');
+assert(diffGraphProofSource.includes('Verify pinned CLI source revision'), 'proof must label the source-revision link accurately');
 for (const entity of [...sampleArtifact.files, ...sampleArtifact.symbols, ...sampleArtifact.relationships]) {
   assert(entity.evidence?.length, `${entity.id} must retain at least one source-evidence record`);
   assert.equal(entity.analysis_source, 'structural', `${entity.id} must not claim AI-generated topology`);

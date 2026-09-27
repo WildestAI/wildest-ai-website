@@ -1,103 +1,86 @@
 {
-  "schema_version": "2.0",
-  "generated_at": "2026-08-12T10:00:00Z",
-  "wild_version": "1.1.0",
   "diff_ref": {
-    "kind": "unstaged",
     "base_ref": null,
+    "comparison_mode": null,
     "head_ref": null,
+    "kind": "unstaged",
     "pathspecs": [],
-    "repo_root": "/example/repository"
+    "repo_root": "/fixture/repository",
+    "requested_base_ref": null,
+    "requested_head_ref": null
   },
   "files": [
     {
-      "id": "file::src/greeting.py",
-      "path": "src/greeting.py",
-      "old_path": null,
-      "language": "python",
-      "change_kind": "modified",
-      "lines_added": 2,
-      "lines_removed": 1,
       "analysis_source": "structural",
+      "change_kind": "modified",
       "evidence": [
         {
-          "kind": "git_diff_name_status",
-          "detail": "status=M; source=git"
+          "detail": "{\"new_mode\":\"100644\",\"new_oid\":\"3d346421bfd0e0eb75e58d8181328e8b2250da2f\",\"new_path\":\"src/greeting.py\",\"new_sha256\":\"708c14e9d93edcaba845fc9f94d8bb8a68d37b98da45fa9adf0102e83b3d0fb4\",\"old_mode\":\"100644\",\"old_oid\":\"097a41c21e49995dcb8be35f0e9ad453d6cc891f\",\"old_path\":\"src/greeting.py\",\"old_sha256\":\"a55c14346b5c0e11da873793db175efd28d4840a330a5edba18d03d7d7310626\",\"status\":\"M\"}",
+          "kind": "git_diff_name_status"
         }
       ],
-      "classification": {
-        "is_test": false,
-        "analysis_source": "structural",
-        "evidence": [
-          {
-            "kind": "path_pattern",
-            "pattern": "src/**"
-          }
-        ]
-      }
+      "id": "file::src/greeting.py",
+      "language": "python",
+      "lines_added": 2,
+      "lines_removed": 1,
+      "old_path": null,
+      "path": "src/greeting.py"
     }
   ],
-  "symbols": [
-    {
-      "id": "sym::src/greeting.py::greet",
-      "name": "greet",
-      "qualified_name": "greet",
-      "file_id": "file::src/greeting.py",
-      "kind": "function",
-      "parent_id": null,
-      "change_kind": "modified",
-      "analysis_source": "structural",
-      "location": {
-        "file": "src/greeting.py",
-        "line_start": 1,
-        "line_end": 2
-      },
-      "evidence": [
-        {
-          "kind": "ast_parse",
-          "file": "src/greeting.py",
-          "line_start": 1,
-          "line_end": 2,
-          "snippet": "def greet(name):"
-        }
-      ]
-    }
-  ],
+  "generated_at": "2026-09-27T09:32:03Z",
+  "metadata": {
+    "analysis_duration_ms": 56,
+    "cloud_providers_used": [],
+    "files_analyzed": 1,
+    "files_skipped": 0,
+    "languages_detected": ["python"],
+    "llm_calls": 0,
+    "llm_model": null,
+    "privacy_tier": "local",
+    "tiers_used": ["structural"],
+    "warnings": []
+  },
   "relationships": [
     {
+      "analysis_source": "structural",
+      "evidence": [
+        {
+          "detail": "analyzer=diffgraph-python-tree-sitter;parser=tree-sitter-language-pack@1.10.3;query=python-structure-v2;blob=3d346421bfd0e0eb75e58d8181328e8b2250da2f",
+          "file": "src/greeting.py",
+          "kind": "ast_parse",
+          "line_end": 3,
+          "line_start": 1
+        }
+      ],
       "id": "rel::file::src/greeting.py->sym::src/greeting.py::greet",
       "kind": "defines",
       "source_id": "file::src/greeting.py",
-      "target_id": "sym::src/greeting.py::greet",
-      "analysis_source": "structural",
-      "confidence": null,
-      "resolution_method": null,
-      "evidence": [
-        {
-          "kind": "ast_parse",
-          "file": "src/greeting.py",
-          "line_start": 1,
-          "line_end": 2
-        }
-      ],
-      "label": null
+      "target_id": "sym::src/greeting.py::greet"
     }
   ],
+  "schema_version": "2.0",
   "summary": null,
-  "metadata": {
-    "privacy_tier": "local",
-    "cloud_providers_used": [],
-    "analysis_duration_ms": 12,
-    "languages_detected": [
-      "python"
-    ],
-    "files_analyzed": 1,
-    "files_skipped": 0,
-    "llm_calls": 0,
-    "llm_model": null,
-    "tiers_used": [
-      "structural"
-    ],
-    "warnings": []
-  }
+  "symbols": [
+    {
+      "analysis_source": "structural",
+      "change_kind": "modified",
+      "evidence": [
+        {
+          "detail": "analyzer=diffgraph-python-tree-sitter;parser=tree-sitter-language-pack@1.10.3;query=python-structure-v2;blob=3d346421bfd0e0eb75e58d8181328e8b2250da2f",
+          "file": "src/greeting.py",
+          "kind": "ast_parse",
+          "line_end": 3,
+          "line_start": 1
+        }
+      ],
+      "file_id": "file::src/greeting.py",
+      "id": "sym::src/greeting.py::greet",
+      "kind": "function",
+      "location": {"file": "src/greeting.py", "line_end": 3, "line_start": 1},
+      "name": "greet",
+      "parent_id": null,
+      "qualified_name": "greet"
+    }
+  ],
+  "wild_version": "1.1.1"
 }

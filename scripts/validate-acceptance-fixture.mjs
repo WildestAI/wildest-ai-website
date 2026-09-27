@@ -52,16 +52,31 @@ function parseCompleteModifiedFile(metadata, path) {
 
   const oldLines = [];
   const newLines = [];
+  let oldHasNewline = true;
+  let newHasNewline = true;
+  let previousSides = 0;
   for (const line of body.split('\n')) {
     if (line === '') continue;
     if (line.startsWith(' ')) {
       oldLines.push(line.slice(1));
       newLines.push(line.slice(1));
+      oldHasNewline = true;
+      newHasNewline = true;
+      previousSides = 3;
     } else if (line.startsWith('-')) {
       oldLines.push(line.slice(1));
+      oldHasNewline = true;
+      previousSides = 1;
     } else if (line.startsWith('+')) {
       newLines.push(line.slice(1));
-    } else if (line !== '\\ No newline at end of file') {
+      newHasNewline = true;
+      previousSides = 2;
+    } else if (line === '\\ No newline at end of file') {
+      assert(previousSides !== 0, `fixture diff has a misplaced newline marker for ${path}`);
+      if (previousSides & 1) oldHasNewline = false;
+      if (previousSides & 2) newHasNewline = false;
+      previousSides = 0;
+    } else {
       assert.fail(`fixture diff has an unsupported hunk line for ${path}: ${line}`);
     }
   }
@@ -70,8 +85,8 @@ function parseCompleteModifiedFile(metadata, path) {
   return {
     oldOid: index[1],
     newOid: index[2],
-    oldContent: `${oldLines.join('\n')}\n`,
-    newContent: `${newLines.join('\n')}\n`,
+    oldContent: `${oldLines.join('\n')}${oldHasNewline ? '\n' : ''}`,
+    newContent: `${newLines.join('\n')}${newHasNewline ? '\n' : ''}`,
   };
 }
 

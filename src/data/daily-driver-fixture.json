@@ -26,7 +26,7 @@
   },
   "repeat": {
     "command": "node scripts/validate-acceptance-fixture.mjs",
-    "expected": "Validates the checked-in diff, artifact, released CLI revision and version, schema, AI-off metadata, sanitized publication metadata, and SHA-256 digests without network access."
+    "expected": "Validates the checked-in diff, artifact, pinned CLI source revision and generator version, schema, AI-off metadata, sanitized publication metadata, and SHA-256 digests without network access."
   },
   "limitations": [
     "This fixture proves only a static, deterministic CLI artifact and its checked-in diff and artifact evidence; it does not establish the original source-change provenance.",

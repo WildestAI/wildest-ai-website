@@ -89,7 +89,7 @@ const DiffGraphProof = () => {
 
           <Card className="bg-background/80 border-border/50">
             <CardContent className="pt-6 text-sm text-muted-foreground">
-              <p><span className="font-medium text-foreground">Versioned fixture:</span> {fixture.fixtureVersion} documents this checked-in sanitized diff and artifact from the pinned released CLI revision, schema v{fixture.artifact.schemaVersion}, and SHA-256 digests.</p>
+              <p><span className="font-medium text-foreground">Versioned fixture:</span> {fixture.fixtureVersion} documents this checked-in sanitized diff and artifact from the pinned CLI source revision, schema v{fixture.artifact.schemaVersion}, and SHA-256 digests.</p>
               <p className="mt-2">It is a static AI-off structural baseline, not an end-to-end benchmark. Install, extension, provider, recovery, timing, and reviewer-task measurements remain unreported.</p>
               <a className="mt-3 inline-flex text-primary hover:underline" href={fixture.source.commitUrl} target="_blank" rel="noopener noreferrer">Verify pinned CLI source revision <ExternalLink className="ml-1 h-4 w-4" /></a>
             </CardContent>

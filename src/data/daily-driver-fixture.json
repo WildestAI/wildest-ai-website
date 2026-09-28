@@ -1,32 +1,32 @@
 {
   "schemaVersion": 1,
-  "fixtureVersion": "2026-08-12.1",
+  "fixtureVersion": "2026-09-27.1",
   "status": "Sanitized structural-fixture baseline — not an end-to-end benchmark",
   "source": {
-    "repository": "https://github.com/WildestAI/wildest-ai-website",
-    "commit": "b8592ebf994ac75b6b264cfa7f76e508b5184b48",
-    "commitUrl": "https://github.com/WildestAI/wildest-ai-website/commit/b8592ebf994ac75b6b264cfa7f76e508b5184b48",
-    "range": "Fixture publication commit (adds these checked-in sanitized artifacts; original source commit and blob range are not asserted)",
-    "license": "Repository source is MIT; this minimal fixture is checked in as a sanitized example."
+    "repository": "https://github.com/WildestAI/DiffGraph-CLI",
+    "commit": "ef827a176e8183c849940c86d07ae60a390d9071",
+    "commitUrl": "https://github.com/WildestAI/DiffGraph-CLI/commit/ef827a176e8183c849940c86d07ae60a390d9071",
+    "range": "Generated from a clean, temporary Git repository with one unstaged Python change; the repository path and runtime-duration fields are sanitized before publication.",
+    "license": "DiffGraph-CLI is MIT licensed; this minimal fixture is checked in as a sanitized example."
   },
   "artifact": {
     "schemaVersion": "2.0",
-    "generator": "wild 1.1.0",
+    "generator": "wild 1.1.1",
     "mode": "AI-off structural JSON",
     "files": {
       "diff": {
         "path": "public/examples/greeting.diff",
-        "sha256": "53391cc0d2c187952dfa477ffb12dce54a8cfefe2083272f9c8d9677e044c45d"
+        "sha256": "dc9313e0f3807308a42f1ae9a8d358b7abf8c6e552be7b88a3dc53d2efde17d4"
       },
       "artifact": {
         "path": "public/examples/greeting-structural.json",
-        "sha256": "580a35c321ed7ae7be8ce6605f6aafb21f00a512b028d1f91495e83f566f35fd"
+        "sha256": "4ac2a7e60d49568e970233a2a1381574641e91d6d52aaef199f581fab23ed953"
       }
     }
   },
   "repeat": {
     "command": "node scripts/validate-acceptance-fixture.mjs",
-    "expected": "Validates the checked-in diff, structural artifact, schema, AI-off metadata, publication metadata, and SHA-256 digests without network access."
+    "expected": "Validates the checked-in diff, artifact, pinned CLI source revision and generator version, schema, AI-off metadata, sanitized publication metadata, and SHA-256 digests without network access."
   },
   "limitations": [
     "This fixture proves only a static, deterministic CLI artifact and its checked-in diff and artifact evidence; it does not establish the original source-change provenance.",

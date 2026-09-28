@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "test:release-truth": "node scripts/sync-release-truth.mjs --check && node scripts/validate-public-llms.mjs",
     "test:acceptance-fixture": "node scripts/validate-acceptance-fixture.mjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:review-task-protocol": "node scripts/validate-review-task-protocol.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

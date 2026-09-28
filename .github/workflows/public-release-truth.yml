@@ -11,11 +11,14 @@ on:
       - src/components/DiffGraphProof.tsx
       - src/data/daily-driver-fixture.json
       - public/examples/daily-driver-fixture.json
+      - public/examples/daily-driver-review-task.json
+      - src/data/daily-driver-review-task.json
       - public/examples/greeting.diff
       - public/examples/greeting-structural.json
       - src/pages/Index.tsx
       - scripts/sync-release-truth.mjs
       - scripts/validate-acceptance-fixture.mjs
+      - scripts/validate-review-task-protocol.mjs
       - scripts/validate-public-llms.mjs
       - .github/workflows/public-release-truth.yml
   push:
@@ -29,11 +32,14 @@ on:
       - src/components/DiffGraphProof.tsx
       - src/data/daily-driver-fixture.json
       - public/examples/daily-driver-fixture.json
+      - public/examples/daily-driver-review-task.json
+      - src/data/daily-driver-review-task.json
       - public/examples/greeting.diff
       - public/examples/greeting-structural.json
       - src/pages/Index.tsx
       - scripts/sync-release-truth.mjs
       - scripts/validate-acceptance-fixture.mjs
+      - scripts/validate-review-task-protocol.mjs
       - scripts/validate-public-llms.mjs
       - .github/workflows/public-release-truth.yml
   workflow_dispatch:
@@ -54,4 +60,5 @@ jobs:
         run: |
           node scripts/sync-release-truth.mjs --check
           node scripts/validate-acceptance-fixture.mjs
+          node scripts/validate-review-task-protocol.mjs
           node scripts/validate-public-llms.mjs --check-links

@@ -22,8 +22,13 @@ assert.deepEqual(protocol.task.requiredAnswers, [
   'relevant tests or checks',
   'next review action',
 ], 'protocol must preserve every reviewer-task prompt');
+for (const answer of protocol.task.requiredAnswers) {
+  assert.match(protocol.task.prompt, new RegExp(answer, 'i'), `reviewer prompt must ask: ${answer}`);
+}
 assert.match(protocol.recording.completionTime, /after the task is run/i, 'protocol must defer completion timing until measured');
 assert.match(protocol.recording.qualitativeFailurePoints, /after the task is run/i, 'protocol must defer failure points until measured');
+assert.match(protocol.recording.outcome, /after the task is run/i, 'protocol must defer outcome until measured');
 assert.equal(protocol.limitations.length, 2, 'protocol limitations must remain explicit');
+assert.match(protocol.limitations[0], /no reviewer has completed/i, 'protocol must retain its unmeasured-study limitation');
 
 console.log(`Validated reviewer-task protocol ${protocol.protocolVersion} (${protocol.status}).`);

@@ -10,11 +10,21 @@ const published = await readFile(publicPath, 'utf8');
 assert.equal(published, source, `${publicPath} is stale; copy the canonical protocol from ${sourcePath}`);
 
 const protocol = JSON.parse(source);
+const fixture = JSON.parse(await readFile('src/data/daily-driver-fixture.json', 'utf8'));
 assert.equal(protocol.schemaVersion, 1, 'unsupported reviewer-task protocol schema');
 assert.match(protocol.protocolVersion, /^\d{4}-\d{2}-\d{2}\.\d+$/, 'protocolVersion must be date-versioned');
 assert.equal(protocol.status, 'protocol-not-run', 'published protocol must not claim an unmeasured reviewer outcome');
 assert.match(protocol.purpose, /not a measurement result/i, 'protocol must distinguish instructions from results');
 assert.equal(protocol.setup.network, 'not required', 'protocol must retain a static/no-network fallback');
+assert.deepEqual(
+  protocol.fixture,
+  {
+    manifest: '/examples/daily-driver-fixture.json',
+    diff: `/${fixture.artifact.files.diff.path}`.replace('/public/', '/'),
+    artifact: `/${fixture.artifact.files.artifact.path}`.replace('/public/', '/'),
+  },
+  'reviewer protocol must point to the checked-in fixture manifest, diff, and artifact',
+);
 assert.deepEqual(protocol.task.requiredAnswers, [
   'what changed',
   'why it matters',

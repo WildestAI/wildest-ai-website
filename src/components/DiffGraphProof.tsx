@@ -10,6 +10,7 @@ const sampleDiffUrl = "/examples/greeting.diff";
 const sampleArtifactUrl = "/examples/greeting-structural.json";
 const fixtureManifestUrl = "/examples/daily-driver-fixture.json";
 const reviewerTaskProtocolUrl = "/examples/daily-driver-review-task.json";
+const schemaUrl = `https://github.com/WildestAI/DiffGraph-CLI/blob/${fixture.source.commit}/diffgraph/schema/diffgraph-v2.schema.json`;
 
 type Selection = "file" | "symbol" | "relationship";
 
@@ -84,7 +85,7 @@ const DiffGraphProof = () => {
                   )}
                   <a className="mt-2 inline-flex text-primary hover:underline" href={sampleDiffUrl}>Open the checked-in textual diff</a>
                 </div>
-                <a href="https://github.com/WildestAI/DiffGraph-CLI/blob/main/diffgraph/schema/diffgraph-v2.schema.json" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm text-primary hover:underline mt-5">View schema <ExternalLink className="ml-1 h-4 w-4" /></a>
+                <a href={schemaUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm text-primary hover:underline mt-5">View schema <ExternalLink className="ml-1 h-4 w-4" /></a>
               </aside>
             </CardContent>
           </Card>

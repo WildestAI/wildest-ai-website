@@ -12,12 +12,16 @@ assert.equal(published, source, `${publicPath} is stale; copy the canonical fixt
 
 const fixture = JSON.parse(source);
 const releaseTruth = JSON.parse(await readFile('src/data/release-truth.json', 'utf8'));
+const proofComponent = await readFile('src/components/DiffGraphProof.tsx', 'utf8');
 assert.equal(fixture.schemaVersion, 1, 'unsupported fixture manifest schema');
 assert.match(fixture.fixtureVersion, /^\d{4}-\d{2}-\d{2}\.\d+$/, 'fixtureVersion must be date-versioned');
 assert.equal(fixture.source.repository, releaseTruth.cli.repository, 'fixture source must be the pinned CLI repository');
 assert.match(fixture.source.commit, /^[0-9a-f]{40}$/, 'fixture source must pin an exact commit');
 assert.equal(fixture.source.commit, releaseTruth.cli.sourceRevision, 'fixture source must use the pinned CLI revision');
 assert.equal(fixture.source.commitUrl, `${fixture.source.repository}/commit/${fixture.source.commit}`, 'fixture commit URL must match pinned source');
+assert.match(proofComponent, /const schemaUrl = `https:\/\/github\.com\/WildestAI\/DiffGraph-CLI\/blob\/\$\{fixture\.source\.commit\}\/diffgraph\/schema\/diffgraph-v2\.schema\.json`;/, 'proof schema link must use the fixture-pinned CLI source revision');
+assert.match(proofComponent, /<a href=\{schemaUrl\}[^>]*>View schema\b/, 'proof schema link must use the pinned schema URL');
+assert(!proofComponent.includes('/DiffGraph-CLI/blob/main/'), 'proof must not link its release schema evidence to an unpinned main branch');
 assert.match(fixture.source.range, /clean, temporary Git repository.*sanitized/i, 'fixture must describe its sanitized reproduction range');
 assert.match(fixture.source.license, /MIT/i, 'fixture must disclose its source license');
 assert.equal(fixture.artifact.schemaVersion, releaseTruth.cli.artifactSchemaVersion, 'fixture must pin the artifact schema declared by the pinned CLI source revision');

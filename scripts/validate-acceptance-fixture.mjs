@@ -20,6 +20,7 @@ assert.match(fixture.source.commit, /^[0-9a-f]{40}$/, 'fixture source must pin a
 assert.equal(fixture.source.commit, releaseTruth.cli.sourceRevision, 'fixture source must use the pinned CLI revision');
 assert.equal(fixture.source.commitUrl, `${fixture.source.repository}/commit/${fixture.source.commit}`, 'fixture commit URL must match pinned source');
 assert.match(proofComponent, /const schemaUrl = `https:\/\/github\.com\/WildestAI\/DiffGraph-CLI\/blob\/\$\{fixture\.source\.commit\}\/diffgraph\/schema\/diffgraph-v2\.schema\.json`;/, 'proof schema link must use the fixture-pinned CLI source revision');
+assert.match(proofComponent, /<a href=\{schemaUrl\}[^>]*>View schema\b/, 'proof schema link must use the pinned schema URL');
 assert(!proofComponent.includes('/DiffGraph-CLI/blob/main/'), 'proof must not link its release schema evidence to an unpinned main branch');
 assert.match(fixture.source.range, /clean, temporary Git repository.*sanitized/i, 'fixture must describe its sanitized reproduction range');
 assert.match(fixture.source.license, /MIT/i, 'fixture must disclose its source license');

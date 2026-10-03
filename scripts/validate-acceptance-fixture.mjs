@@ -139,6 +139,35 @@ for (const file of artifact.files) {
   assert.equal(gitDetail.old_sha256, digest('sha256', diffFile.oldContent), `artifact file ${file.path} old SHA-256 must match its old content`);
   assert.equal(gitDetail.new_sha256, digest('sha256', diffFile.newContent), `artifact file ${file.path} new SHA-256 must match its new content`);
 }
+
+const modifiedFiles = new Map();
+for (const file of artifact.files) {
+  const diffEntry = diffEntries.find((entry) => entry.status === 'M' && entry.newPath === file.path);
+  const diffFile = parseCompleteModifiedFile(diffEntry.metadata, file.path);
+  const gitEvidence = file.evidence.find((entry) => entry.kind === 'git_diff_name_status');
+  modifiedFiles.set(file.path, {
+    lineCount: diffFile.newContent.split('\n').length - (diffFile.newContent.endsWith('\n') ? 1 : 0),
+    newOid: JSON.parse(gitEvidence.detail).new_oid,
+  });
+}
+
+for (const entry of [...artifact.symbols, ...artifact.relationships]) {
+  const evidence = entry.evidence?.find((item) => item.kind === 'ast_parse');
+  assert(evidence, `${entry.id} must retain Tree-sitter parser evidence`);
+  assert.equal(typeof evidence.file, 'string', `${entry.id} parser evidence must identify its file`);
+  const file = modifiedFiles.get(evidence.file);
+  assert(file, `${entry.id} parser evidence must refer to a modified fixture file`);
+  assert(Number.isInteger(evidence.line_start) && Number.isInteger(evidence.line_end), `${entry.id} parser evidence must retain integer line bounds`);
+  assert(evidence.line_start >= 1 && evidence.line_end >= evidence.line_start && evidence.line_end <= file.lineCount, `${entry.id} parser evidence lines must be within the reconstructed post-image`);
+  const blob = evidence.detail.match(/(?:^|;)blob=([0-9a-f]{40})(?:;|$)/)?.[1];
+  assert.equal(blob, file.newOid, `${entry.id} parser evidence blob must match the Git post-image`);
+}
+
+for (const symbol of artifact.symbols) {
+  const evidence = symbol.evidence.find((item) => item.kind === 'ast_parse');
+  assert.deepEqual(symbol.location, { file: evidence.file, line_start: evidence.line_start, line_end: evidence.line_end }, `${symbol.id} location must match its parser evidence`);
+}
+
 assert(artifact.files.length > 0 && artifact.symbols.length > 0 && artifact.relationships.length > 0, 'fixture must contain usable structural topology');
 
 console.log(`Validated daily-driver fixture ${fixture.fixtureVersion} (${fixture.artifact.schemaVersion}, ${fixture.artifact.mode}).`);

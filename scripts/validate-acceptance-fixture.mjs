@@ -152,15 +152,17 @@ for (const file of artifact.files) {
 }
 
 for (const entry of [...artifact.symbols, ...artifact.relationships]) {
-  const evidence = entry.evidence?.find((item) => item.kind === 'ast_parse');
-  assert(evidence, `${entry.id} must retain Tree-sitter parser evidence`);
-  assert.equal(typeof evidence.file, 'string', `${entry.id} parser evidence must identify its file`);
-  const file = modifiedFiles.get(evidence.file);
-  assert(file, `${entry.id} parser evidence must refer to a modified fixture file`);
-  assert(Number.isInteger(evidence.line_start) && Number.isInteger(evidence.line_end), `${entry.id} parser evidence must retain integer line bounds`);
-  assert(evidence.line_start >= 1 && evidence.line_end >= evidence.line_start && evidence.line_end <= file.lineCount, `${entry.id} parser evidence lines must be within the reconstructed post-image`);
-  const blob = evidence.detail.match(/(?:^|;)blob=([0-9a-f]{40})(?:;|$)/)?.[1];
-  assert.equal(blob, file.newOid, `${entry.id} parser evidence blob must match the Git post-image`);
+  const parserEvidence = entry.evidence?.filter((item) => item.kind === 'ast_parse') ?? [];
+  assert(parserEvidence.length > 0, `${entry.id} must retain Tree-sitter parser evidence`);
+  for (const evidence of parserEvidence) {
+    assert.equal(typeof evidence.file, 'string', `${entry.id} parser evidence must identify its file`);
+    const file = modifiedFiles.get(evidence.file);
+    assert(file, `${entry.id} parser evidence must refer to a modified fixture file`);
+    assert(Number.isInteger(evidence.line_start) && Number.isInteger(evidence.line_end), `${entry.id} parser evidence must retain integer line bounds`);
+    assert(evidence.line_start >= 1 && evidence.line_end >= evidence.line_start && evidence.line_end <= file.lineCount, `${entry.id} parser evidence lines must be within the reconstructed post-image`);
+    const blob = evidence.detail.match(/(?:^|;)blob=([0-9a-f]{40})(?:;|$)/)?.[1];
+    assert.equal(blob, file.newOid, `${entry.id} parser evidence blob must match the Git post-image`);
+  }
 }
 
 for (const symbol of artifact.symbols) {

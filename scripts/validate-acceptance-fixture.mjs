@@ -99,6 +99,9 @@ assert.equal(artifact.wild_version, fixture.artifact.generator.replace('wild ', 
 assert.equal(artifact.diff_ref.repo_root, '/fixture/repository', 'fixture repository path must be sanitized');
 assert.equal(artifact.metadata.llm_calls, 0, 'AI-off fixture must not record LLM calls');
 assert.equal(artifact.metadata.privacy_tier, 'local', 'AI-off fixture must retain local privacy tier');
+assert.deepEqual(artifact.metadata.cloud_providers_used, [], 'AI-off fixture must not record cloud providers');
+assert.equal(artifact.metadata.llm_model, null, 'AI-off fixture must not record an LLM model');
+assert.equal(artifact.summary, null, 'AI-off fixture must not publish AI prose as canonical output');
 assert(diff.startsWith('diff --git '), 'fixture must retain Git diff evidence');
 const diffEntries = [...diff.matchAll(/^diff --git a\/(.+?) b\/(.+?)\n([\s\S]*?)(?=^diff --git |(?![\s\S]))/gm)].map(
   ([, oldPath, newPath, metadata]) => ({
@@ -171,5 +174,17 @@ for (const symbol of artifact.symbols) {
 }
 
 assert(artifact.files.length > 0 && artifact.symbols.length > 0 && artifact.relationships.length > 0, 'fixture must contain usable structural topology');
+const topologyIds = new Set([...artifact.files, ...artifact.symbols].map((entry) => entry.id));
+for (const symbol of artifact.symbols) {
+  assert.equal(symbol.analysis_source, 'structural', `${symbol.id} must remain deterministically structural`);
+  assert(topologyIds.has(symbol.file_id), `${symbol.id} must reference a fixture file node`);
+  assert(symbol.evidence.every((entry) => entry.kind === 'ast_parse'), `${symbol.id} must retain parser-only topology evidence`);
+}
+for (const relationship of artifact.relationships) {
+  assert.equal(relationship.analysis_source, 'structural', `${relationship.id} must remain deterministically structural`);
+  assert(topologyIds.has(relationship.source_id), `${relationship.id} source must reference fixture topology`);
+  assert(topologyIds.has(relationship.target_id), `${relationship.id} target must reference fixture topology`);
+  assert(relationship.evidence.every((entry) => entry.kind === 'ast_parse'), `${relationship.id} must retain parser-only topology evidence`);
+}
 
 console.log(`Validated daily-driver fixture ${fixture.fixtureVersion} (${fixture.artifact.schemaVersion}, ${fixture.artifact.mode}).`);

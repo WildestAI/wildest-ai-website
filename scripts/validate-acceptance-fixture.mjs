@@ -174,17 +174,18 @@ for (const symbol of artifact.symbols) {
 }
 
 assert(artifact.files.length > 0 && artifact.symbols.length > 0 && artifact.relationships.length > 0, 'fixture must contain usable structural topology');
+const fileIds = new Set(artifact.files.map((entry) => entry.id));
 const topologyIds = new Set([...artifact.files, ...artifact.symbols].map((entry) => entry.id));
 for (const symbol of artifact.symbols) {
   assert.equal(symbol.analysis_source, 'structural', `${symbol.id} must remain deterministically structural`);
-  assert(topologyIds.has(symbol.file_id), `${symbol.id} must reference a fixture file node`);
-  assert(symbol.evidence.every((entry) => entry.kind === 'ast_parse'), `${symbol.id} must retain parser-only topology evidence`);
+  assert(fileIds.has(symbol.file_id), `${symbol.id} must reference a fixture file node`);
+  assert(symbol.evidence.length > 0 && symbol.evidence.every((entry) => entry.kind === 'ast_parse'), `${symbol.id} must retain parser-only topology evidence`);
 }
 for (const relationship of artifact.relationships) {
   assert.equal(relationship.analysis_source, 'structural', `${relationship.id} must remain deterministically structural`);
   assert(topologyIds.has(relationship.source_id), `${relationship.id} source must reference fixture topology`);
   assert(topologyIds.has(relationship.target_id), `${relationship.id} target must reference fixture topology`);
-  assert(relationship.evidence.every((entry) => entry.kind === 'ast_parse'), `${relationship.id} must retain parser-only topology evidence`);
+  assert(relationship.evidence.length > 0 && relationship.evidence.every((entry) => entry.kind === 'ast_parse'), `${relationship.id} must retain parser-only topology evidence`);
 }
 
 console.log(`Validated daily-driver fixture ${fixture.fixtureVersion} (${fixture.artifact.schemaVersion}, ${fixture.artifact.mode}).`);

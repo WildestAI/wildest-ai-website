@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "2026-09-28.1",
+  "status": "protocol-not-run",
+  "purpose": "Repeatable reviewer-task protocol for the sanitized daily-driver fixture. This file is not a measurement result.",
+  "fixture": {
+    "manifest": "/examples/daily-driver-fixture.json",
+    "diff": "/examples/greeting.diff",
+    "artifact": "/examples/greeting-structural.json"
+  },
+  "setup": {
+    "network": "not required",
+    "instructions": [
+      "Open the checked-in fixture manifest, textual diff, and structural artifact from the links above.",
+      "Do not use external repository history or provider credentials; evaluate only the published static evidence."
+    ]
+  },
+  "task": {
+    "prompt": "Using the published fixture evidence, state what changed, why it matters, the risk and evidence, relevant tests or checks, and the next review action.",
+    "requiredAnswers": [
+      "what changed",
+      "why it matters",
+      "risk and evidence",
+      "relevant tests or checks",
+      "next review action"
+    ]
+  },
+  "recording": {
+    "completionTime": "Record elapsed time in seconds after the task is run; do not infer it from this protocol.",
+    "qualitativeFailurePoints": "Record confusion, missing evidence, or blocked decisions verbatim after the task is run.",
+    "outcome": "Record pass, fail, or incomplete after the task is run."
+  },
+  "limitations": [
+    "No reviewer has completed this protocol yet, so it publishes no completion time, outcome, or qualitative failure points.",
+    "This protocol evaluates the static AI-off fixture only; it does not measure installation, extension, provider, recovery, performance, cancellation, or cache behavior."
+  ]
+}

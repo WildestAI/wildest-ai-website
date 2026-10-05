@@ -15,9 +15,9 @@ WildestAI helps developers, reviewers, and AI agents answer three questions ever
 
 ## Product availability
 
-Release truth as of **2026-08-18**. Planned status is tracked in the [public product roadmap](https://github.com/WildestAI/wildest-ai-website/issues/8).
+Release truth as of **2026-09-19**. Planned status is tracked in the [public product roadmap](https://github.com/WildestAI/wildest-ai-website/issues/8).
 
-### Available — 2026-08-18
+### Available — 2026-09-19
 
 #### `wild` CLI — Available (source install)
 
@@ -49,7 +49,7 @@ Install from source:
 ```bash
 git clone https://github.com/WildestAI/DiffGraph-CLI.git
 cd DiffGraph-CLI
-git checkout 336a3a6b5e68399ef4f97b844d15e7eec1f73cae
+git checkout ef827a176e8183c849940c86d07ae60a390d9071
 python -m pip install -e .
 ```
 
@@ -65,13 +65,13 @@ Available on the VS Code Marketplace and OpenVSX.
 
 **Verified published-package support:** Extension 1.0.5 requires VS Code 1.99.0 or newer. The Marketplace VSIX contains a runnable CLI for macOS arm64 only. Although its package manifest declares macOS x64, Linux arm64, Linux x64, and Windows x64 targets, those binaries are absent from the published VSIX. Extension 1.0.5 does not consume the CLI's structural JSON artifact; its packaged flow invokes the AI/HTML CLI. JSON-backed rendering is planned, not shipped. AI-off DiffGraph generation is not available in extension 1.0.5; it invokes the bundled AI/HTML CLI and requires the user's OpenAI API credentials.
 
-### Beta — 2026-08-18
+### Beta — 2026-09-19
 
 #### MCP Server — Beta (source-only)
 
 An MCP server exists in the DiffGraph-CLI source repository for evaluation, but it is not part of a versioned release, the package does not declare its MCP dependency, and there is no supported MCP entry point. Treat it as source-only beta code, not as a generally available installation surface.
 
-### Planned — 2026-08-18
+### Planned — 2026-09-19
 
 These surfaces are roadmap items, not currently available products. Status is tracked in [roadmap issue #8](https://github.com/WildestAI/wildest-ai-website/issues/8).
 

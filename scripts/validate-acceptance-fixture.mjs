@@ -62,6 +62,16 @@ assert.equal(
   fixture.artifact.files.artifact.path,
   'proof artifact link must match the manifest artifact path',
 );
+assert.match(
+  proofComponent,
+  /<a href=\{sampleArtifactUrl\}[^>]*>[\s\S]*?View artifact<\/a>/,
+  'proof artifact anchor must reference the published artifact URL constant',
+);
+assert.match(
+  proofComponent,
+  /<a href=\{sampleDiffUrl\}[^>]*>[\s\S]*?View textual diff<\/a>/,
+  'proof diff anchor must reference the published diff URL constant',
+);
 assert.equal(
   `public${proofComponent.match(/const sampleDiffUrl = "([^"]+)";/)?.[1] ?? ''}`,
   fixture.artifact.files.diff.path,

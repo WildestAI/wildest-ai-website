@@ -11,6 +11,8 @@ const published = await readFile(publicPath, 'utf8');
 assert.equal(published, source, `${publicPath} is stale; copy the canonical fixture manifest from ${sourcePath}`);
 
 const fixture = JSON.parse(source);
+const canonicalArtifactPath = 'src/data/greeting-structural.json';
+const canonicalArtifact = await readFile(canonicalArtifactPath, 'utf8');
 const releaseTruth = JSON.parse(await readFile('src/data/release-truth.json', 'utf8'));
 const proofComponent = await readFile('src/components/DiffGraphProof.tsx', 'utf8');
 assert.equal(fixture.schemaVersion, 1, 'unsupported fixture manifest schema');
@@ -39,7 +41,34 @@ for (const [name, entry] of Object.entries(fixture.artifact.files)) {
   assert.equal(actual, entry.sha256, `${name} checksum does not match fixture manifest`);
 }
 
-const artifact = JSON.parse(await readFile(fixture.artifact.files.artifact.path, 'utf8'));
+const publishedArtifact = await readFile(fixture.artifact.files.artifact.path, 'utf8');
+assert.equal(
+  publishedArtifact,
+  canonicalArtifact,
+  `${fixture.artifact.files.artifact.path} is stale; copy the canonical artifact from ${canonicalArtifactPath}`,
+);
+assert.match(
+  proofComponent,
+  /const sampleArtifactUrl = "\/examples\/greeting-structural\.json";/,
+  'proof must link its rendered canonical artifact to the published fixture artifact',
+);
+assert.match(
+  proofComponent,
+  /const sampleDiffUrl = "\/examples\/greeting\.diff";/,
+  'proof must link its evidence view to the published fixture diff',
+);
+assert.equal(
+  `public${proofComponent.match(/const sampleArtifactUrl = "([^"]+)";/)?.[1] ?? ''}`,
+  fixture.artifact.files.artifact.path,
+  'proof artifact link must match the manifest artifact path',
+);
+assert.equal(
+  `public${proofComponent.match(/const sampleDiffUrl = "([^"]+)";/)?.[1] ?? ''}`,
+  fixture.artifact.files.diff.path,
+  'proof diff link must match the manifest diff path',
+);
+
+const artifact = JSON.parse(publishedArtifact);
 const diff = await readFile(fixture.artifact.files.diff.path, 'utf8');
 const digest = (algorithm, content) => createHash(algorithm).update(content).digest('hex');
 const gitBlobOid = (content) => digest('sha1', Buffer.concat([Buffer.from(`blob ${Buffer.byteLength(content)}\0`), Buffer.from(content)]));

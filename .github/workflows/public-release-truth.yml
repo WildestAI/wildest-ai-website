@@ -10,6 +10,7 @@ on:
       - src/components/ReleaseTruth.tsx
       - src/components/DiffGraphProof.tsx
       - src/data/daily-driver-fixture.json
+      - src/data/greeting-structural.json
       - public/examples/daily-driver-fixture.json
       - public/examples/daily-driver-review-task.json
       - src/data/daily-driver-review-task.json
@@ -31,6 +32,7 @@ on:
       - src/components/ReleaseTruth.tsx
       - src/components/DiffGraphProof.tsx
       - src/data/daily-driver-fixture.json
+      - src/data/greeting-structural.json
       - public/examples/daily-driver-fixture.json
       - public/examples/daily-driver-review-task.json
       - src/data/daily-driver-review-task.json

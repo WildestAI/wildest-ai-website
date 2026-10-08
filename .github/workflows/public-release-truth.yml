@@ -13,7 +13,9 @@ on:
       - src/data/greeting-structural.json
       - public/examples/daily-driver-fixture.json
       - public/examples/daily-driver-review-task.json
+      - public/examples/daily-driver-acceptance-coverage.json
       - src/data/daily-driver-review-task.json
+      - src/data/daily-driver-acceptance-coverage.json
       - public/examples/greeting.diff
       - public/examples/greeting-structural.json
       - src/pages/Index.tsx
@@ -35,7 +37,9 @@ on:
       - src/data/greeting-structural.json
       - public/examples/daily-driver-fixture.json
       - public/examples/daily-driver-review-task.json
+      - public/examples/daily-driver-acceptance-coverage.json
       - src/data/daily-driver-review-task.json
+      - src/data/daily-driver-acceptance-coverage.json
       - public/examples/greeting.diff
       - public/examples/greeting-structural.json
       - src/pages/Index.tsx

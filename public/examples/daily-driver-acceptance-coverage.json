@@ -55,7 +55,7 @@
     {
       "id": "non-secret-release-gate",
       "status": "baseline-evidence",
-      "evidence": ["/.github/workflows/public-release-truth.yml"],
+      "evidence": ["https://github.com/WildestAI/wildest-ai-website/blob/main/.github/workflows/public-release-truth.yml"],
       "note": "CI validates synchronized public fixture, artifact, reviewer protocol, and release-truth evidence without secrets."
     }
   ]

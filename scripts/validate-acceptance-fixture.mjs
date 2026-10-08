@@ -58,7 +58,13 @@ for (const entry of coverage.criteria) {
   assert.equal(entry.status, expectedCoverage.get(entry.id), `unexpected coverage status for ${entry.id}`);
   assert.equal(typeof entry.note, 'string', `${entry.id} must explain its evidence boundary`);
   assert(Array.isArray(entry.evidence), `${entry.id} evidence must be an array`);
-  for (const evidence of entry.evidence) assert.match(evidence, /^\//, `${entry.id} evidence must use a public absolute path`);
+  for (const evidence of entry.evidence) {
+    assert.match(
+      evidence,
+      /^(?:\/|https:\/\/github\.com\/WildestAI\/wildest-ai-website\/blob\/main\/)/,
+      `${entry.id} evidence must use a public path or repository source URL`,
+    );
+  }
 }
 assert.equal(new Set(coverage.criteria.map((entry) => entry.id)).size, expectedCoverage.size, 'coverage criterion IDs must be unique');
 assert(coverage.criteria.find((entry) => entry.id === 'sanitized-fixture-and-artifact').evidence.includes('/examples/daily-driver-fixture.json'), 'fixture coverage must link the fixture manifest');

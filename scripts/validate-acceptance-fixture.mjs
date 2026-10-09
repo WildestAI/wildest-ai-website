@@ -11,6 +11,12 @@ const published = await readFile(publicPath, 'utf8');
 assert.equal(published, source, `${publicPath} is stale; copy the canonical fixture manifest from ${sourcePath}`);
 
 const fixture = JSON.parse(source);
+const coverageSourcePath = 'src/data/daily-driver-acceptance-coverage.json';
+const coveragePublicPath = 'public/examples/daily-driver-acceptance-coverage.json';
+const coverageSource = await readFile(coverageSourcePath, 'utf8');
+const coveragePublished = await readFile(coveragePublicPath, 'utf8');
+assert.equal(coveragePublished, coverageSource, `${coveragePublicPath} is stale; copy the canonical coverage from ${coverageSourcePath}`);
+const coverage = JSON.parse(coverageSource);
 const canonicalArtifactPath = 'src/data/greeting-structural.json';
 const canonicalArtifact = await readFile(canonicalArtifactPath, 'utf8');
 const releaseTruth = JSON.parse(await readFile('src/data/release-truth.json', 'utf8'));
@@ -32,6 +38,37 @@ assert.match(fixture.artifact.generator, /^wild \d+\.\d+\.\d+$/, 'fixture must p
 assert.equal(fixture.repeat.command, 'node scripts/validate-acceptance-fixture.mjs', 'fixture repeat command must be deterministic');
 assert.match(fixture.repeat.expected, /without network access/i, 'fixture validation must be offline');
 assert.equal(fixture.limitations.length, 3, 'fixture limitations must remain explicit');
+assert.equal(coverage.schemaVersion, 1, 'unsupported acceptance coverage schema');
+assert.equal(coverage.fixtureVersion, fixture.fixtureVersion, 'acceptance coverage must be versioned with its fixture');
+assert.equal(coverage.status, 'partial-evidence', 'coverage must not overstate the incomplete daily-driver evidence');
+assert.match(coverage.purpose, /unmeasured/i, 'coverage must describe its honest evidence boundary');
+const expectedCoverage = new Map([
+  ['sanitized-fixture-and-artifact', 'baseline-evidence'],
+  ['clean-install-and-first-graph', 'not-measured'],
+  ['ai-off-and-provider-paths', 'not-measured'],
+  ['recovery-paths', 'not-measured'],
+  ['performance-and-cache-measurements', 'not-measured'],
+  ['released-cli-extension-json-compatibility', 'not-measured'],
+  ['reviewer-task-outcome', 'protocol-only'],
+  ['website-claim-and-static-fallback', 'baseline-evidence'],
+  ['non-secret-release-gate', 'baseline-evidence'],
+]);
+assert.equal(coverage.criteria.length, expectedCoverage.size, 'coverage must account for every daily-driver acceptance criterion');
+for (const entry of coverage.criteria) {
+  assert.equal(entry.status, expectedCoverage.get(entry.id), `unexpected coverage status for ${entry.id}`);
+  assert.equal(typeof entry.note, 'string', `${entry.id} must explain its evidence boundary`);
+  assert(Array.isArray(entry.evidence), `${entry.id} evidence must be an array`);
+  for (const evidence of entry.evidence) {
+    assert.match(
+      evidence,
+      /^(?:\/|https:\/\/github\.com\/WildestAI\/wildest-ai-website\/blob\/main\/)/,
+      `${entry.id} evidence must use a public path or repository source URL`,
+    );
+  }
+}
+assert.equal(new Set(coverage.criteria.map((entry) => entry.id)).size, expectedCoverage.size, 'coverage criterion IDs must be unique');
+assert(coverage.criteria.find((entry) => entry.id === 'sanitized-fixture-and-artifact').evidence.includes('/examples/daily-driver-fixture.json'), 'fixture coverage must link the fixture manifest');
+assert(coverage.criteria.find((entry) => entry.id === 'reviewer-task-outcome').evidence.includes('/examples/daily-driver-review-task.json'), 'reviewer coverage must link the protocol');
 
 for (const [name, entry] of Object.entries(fixture.artifact.files)) {
   assert.match(entry.path, /^public\/examples\//, `${name} must be a checked-in public example`);

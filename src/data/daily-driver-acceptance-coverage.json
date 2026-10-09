@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "fixtureVersion": "2026-09-27.1",
+  "status": "partial-evidence",
+  "purpose": "Public, versioned accounting of which daily-driver acceptance evidence is checked in and which release criteria remain unmeasured.",
+  "criteria": [
+    {
+      "id": "sanitized-fixture-and-artifact",
+      "status": "baseline-evidence",
+      "evidence": ["/examples/daily-driver-fixture.json", "/examples/greeting.diff", "/examples/greeting-structural.json"],
+      "note": "Checked-in sanitized AI-off fixture, exact pinned CLI revision, structural artifact, textual diff, and SHA-256 digests are validated offline."
+    },
+    {
+      "id": "clean-install-and-first-graph",
+      "status": "not-measured",
+      "evidence": [],
+      "note": "A clean supported-environment CLI and packaged-extension install run with elapsed phases has not been recorded."
+    },
+    {
+      "id": "ai-off-and-provider-paths",
+      "status": "not-measured",
+      "evidence": [],
+      "note": "The fixture proves AI-off CLI artifact metadata only; direct BYOK and OpenAI-compatible/local-compatible provider outcomes are not recorded."
+    },
+    {
+      "id": "recovery-paths",
+      "status": "not-measured",
+      "evidence": [],
+      "note": "Missing CLI, schema mismatch, provider, timeout/cancellation, and parser/resolver recovery outcomes are not measured end to end."
+    },
+    {
+      "id": "performance-and-cache-measurements",
+      "status": "not-measured",
+      "evidence": [],
+      "note": "Cold/warm history, graph-first-paint, structural-diff, cancellation, and cache measurements have not been published."
+    },
+    {
+      "id": "released-cli-extension-json-compatibility",
+      "status": "not-measured",
+      "evidence": [],
+      "note": "The released extension does not consume the structural JSON artifact, so packaged compatibility and schema-mismatch fallback remain unmeasured."
+    },
+    {
+      "id": "reviewer-task-outcome",
+      "status": "protocol-only",
+      "evidence": ["/examples/daily-driver-review-task.json"],
+      "note": "A static, no-network reviewer-task protocol is checked in, but no reviewer completion time, outcome, or failure points are published."
+    },
+    {
+      "id": "website-claim-and-static-fallback",
+      "status": "baseline-evidence",
+      "evidence": ["/examples/daily-driver-fixture.json", "/examples/daily-driver-review-task.json"],
+      "note": "The website publishes static checked-in proof and explicitly distinguishes it from unmeasured end-to-end results."
+    },
+    {
+      "id": "non-secret-release-gate",
+      "status": "baseline-evidence",
+      "evidence": ["https://github.com/WildestAI/wildest-ai-website/blob/main/.github/workflows/public-release-truth.yml"],
+      "note": "CI validates synchronized public fixture, artifact, reviewer protocol, and release-truth evidence without secrets."
+    }
+  ]
+}

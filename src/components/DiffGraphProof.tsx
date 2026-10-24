@@ -11,7 +11,7 @@ const sampleArtifactUrl = "/examples/greeting-structural.json";
 const fixtureManifestUrl = "/examples/daily-driver-fixture.json";
 const reviewerTaskProtocolUrl = "/examples/daily-driver-review-task.json";
 const acceptanceCoverageUrl = "/examples/daily-driver-acceptance-coverage.json";
-const schemaUrl = `https://github.com/WildestAI/DiffGraph-CLI/blob/${fixture.source.commit}/diffgraph/schema/diffgraph-v2.schema.json`;
+const schemaUrl = `https://github.com/WildestAI/wild/blob/${fixture.source.commit}/diffgraph/schema/diffgraph-v2.schema.json`;
 
 type Selection = "file" | "symbol" | "relationship";
 

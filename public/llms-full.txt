@@ -49,8 +49,8 @@ The CLI is the core engine and local entry point.
 
 **Installation:**
 ```bash
-git clone https://github.com/WildestAI/DiffGraph-CLI.git
-cd DiffGraph-CLI
+git clone https://github.com/WildestAI/wild.git
+cd wild
 git checkout ef827a176e8183c849940c86d07ae60a390d9071
 python -m pip install -e .
 ```
@@ -87,7 +87,7 @@ wild <any-other-git-command>     # pass through to git
 
 **Runtime, schema, and AI-off support:** Python 3.10 or newer is required. The pinned CLI produces structural artifacts using schema v2.0. AI-off operation is available for local structural JSON only with `wild --structural-json <path> diff`; the pinned revision extracts Python symbols and imports without an AI request, while other languages remain file-level entries with an unsupported-language warning. HTML generation still uses OpenAI.
 
-**GitHub:** https://github.com/WildestAI/DiffGraph-CLI
+**GitHub:** https://github.com/WildestAI/wild
 
 #### VS Code Extension — Available
 
@@ -101,7 +101,7 @@ Visualises code changes inside VS Code. Available on:
 
 #### MCP Server — Beta (source-only)
 
-An MCP server exists in the DiffGraph-CLI source repository for evaluation. It is not part of a versioned release, the package does not declare its MCP dependency, and there is no supported MCP entry point. It is therefore source-only beta code, not a generally available or supported installation surface. Release-ready setup instructions are intentionally omitted.
+An MCP server exists in the wild source repository for evaluation. It is not part of a versioned release, the package does not declare its MCP dependency, and there is no supported MCP entry point. It is therefore source-only beta code, not a generally available or supported installation surface. Release-ready setup instructions are intentionally omitted.
 
 ### Planned — 2026-09-19
 
@@ -160,7 +160,7 @@ These are roadmap items, not currently available products. Their status is track
 ## Links
 
 - Website: https://wildest.ai
-- GitHub (CLI): https://github.com/WildestAI/DiffGraph-CLI
+- GitHub (CLI): https://github.com/WildestAI/wild
 - VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext
 - OpenVSX: https://open-vsx.org/extension/WildestAI/wildest-vscode-ext
 - Product roadmap: https://github.com/WildestAI/wildest-ai-website/issues/8

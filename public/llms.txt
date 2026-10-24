@@ -47,8 +47,8 @@ A command-line tool that wraps `git` and provides AI-powered analysis on `wild d
 
 Install from source:
 ```bash
-git clone https://github.com/WildestAI/DiffGraph-CLI.git
-cd DiffGraph-CLI
+git clone https://github.com/WildestAI/wild.git
+cd wild
 git checkout ef827a176e8183c849940c86d07ae60a390d9071
 python -m pip install -e .
 ```
@@ -69,7 +69,7 @@ Available on the VS Code Marketplace and OpenVSX.
 
 #### MCP Server — Beta (source-only)
 
-An MCP server exists in the DiffGraph-CLI source repository for evaluation, but it is not part of a versioned release, the package does not declare its MCP dependency, and there is no supported MCP entry point. Treat it as source-only beta code, not as a generally available installation surface.
+An MCP server exists in the wild source repository for evaluation, but it is not part of a versioned release, the package does not declare its MCP dependency, and there is no supported MCP entry point. Treat it as source-only beta code, not as a generally available installation surface.
 
 ### Planned — 2026-09-19
 
@@ -95,7 +95,7 @@ These surfaces are roadmap items, not currently available products. Status is tr
 ## Resources
 
 - Website: https://wildest.ai
-- GitHub (CLI): https://github.com/WildestAI/DiffGraph-CLI
+- GitHub (CLI): https://github.com/WildestAI/wild
 - VS Code extension: https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext
 - OpenVSX extension: https://open-vsx.org/extension/WildestAI/wildest-vscode-ext
 - Product roadmap: https://github.com/WildestAI/wildest-ai-website/issues/8

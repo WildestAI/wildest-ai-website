@@ -3,11 +3,11 @@
   "fixtureVersion": "2026-09-27.1",
   "status": "Sanitized structural-fixture baseline — not an end-to-end benchmark",
   "source": {
-    "repository": "https://github.com/WildestAI/DiffGraph-CLI",
+    "repository": "https://github.com/WildestAI/wild",
     "commit": "ef827a176e8183c849940c86d07ae60a390d9071",
-    "commitUrl": "https://github.com/WildestAI/DiffGraph-CLI/commit/ef827a176e8183c849940c86d07ae60a390d9071",
+    "commitUrl": "https://github.com/WildestAI/wild/commit/ef827a176e8183c849940c86d07ae60a390d9071",
     "range": "Generated from a clean, temporary Git repository with one unstaged Python change; the repository path and runtime-duration fields are sanitized before publication.",
-    "license": "DiffGraph-CLI is MIT licensed; this minimal fixture is checked in as a sanitized example."
+    "license": "wild is MIT licensed; this minimal fixture is checked in as a sanitized example."
   },
   "artifact": {
     "schemaVersion": "2.0",

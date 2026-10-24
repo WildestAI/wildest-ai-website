@@ -4,11 +4,11 @@
   "roadmapUrl": "https://github.com/WildestAI/wildest-ai-website/issues/8",
   "cli": {
     "status": "Available (source install)",
-    "repository": "https://github.com/WildestAI/DiffGraph-CLI",
+    "repository": "https://github.com/WildestAI/wild",
     "sourceRevision": "ef827a176e8183c849940c86d07ae60a390d9071",
     "install": [
-      "git clone https://github.com/WildestAI/DiffGraph-CLI.git",
-      "cd DiffGraph-CLI",
+      "git clone https://github.com/WildestAI/wild.git",
+      "cd wild",
       "git checkout ef827a176e8183c849940c86d07ae60a390d9071",
       "python -m pip install -e ."
     ],
@@ -63,7 +63,7 @@
   },
   "resources": [
     "https://wildest.ai",
-    "https://github.com/WildestAI/DiffGraph-CLI",
+    "https://github.com/WildestAI/wild",
     "https://marketplace.visualstudio.com/items?itemName=WildestAI.wildest-vscode-ext",
     "https://open-vsx.org/extension/WildestAI/wildest-vscode-ext"
   ]

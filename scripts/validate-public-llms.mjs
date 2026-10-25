@@ -34,6 +34,11 @@ assert(
   'asOf must be a real calendar date',
 );
 assert.match(truth.cli.sourceRevision, /^[0-9a-f]{40}$/, 'CLI sourceRevision must be an exact commit');
+assert.equal(
+  truth.cli.install[0],
+  `git clone ${truth.cli.repository}.git`,
+  'CLI installation must clone the same canonical repository used for release claims',
+);
 assert(
   truth.cli.install.includes(`git checkout ${truth.cli.sourceRevision}`),
   'CLI installation must check out the exact sourceRevision used by release claims',

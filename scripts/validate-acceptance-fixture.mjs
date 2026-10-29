@@ -30,6 +30,12 @@ assert.equal(fixture.source.commitUrl, `${fixture.source.repository}/commit/${fi
 assert.match(proofComponent, /const schemaUrl = `https:\/\/github\.com\/WildestAI\/wild\/blob\/\$\{fixture\.source\.commit\}\/diffgraph\/schema\/diffgraph-v2\.schema\.json`;/, 'proof schema link must use the fixture-pinned CLI source revision');
 assert.match(proofComponent, /<a href=\{schemaUrl\}[^>]*>View schema\b/, 'proof schema link must use the pinned schema URL');
 assert(!proofComponent.includes('/wild/blob/main/'), 'proof must not link its release schema evidence to an unpinned main branch');
+assert.match(proofComponent, /import artifact from "@\/data\/greeting-structural\.json";/, 'proof must bundle the canonical artifact instead of loading it at runtime');
+assert.match(proofComponent, /import fixture from "@\/data\/daily-driver-fixture\.json";/, 'proof must bundle the fixture manifest instead of loading it at runtime');
+assert(!/\b(?:fetch|XMLHttpRequest|axios)\b/.test(proofComponent), 'proof must keep its rendered topology usable without runtime network requests');
+assert.match(proofComponent, /const fixtureManifestUrl = "\/examples\/daily-driver-fixture\.json";/, 'proof fixture link must remain a checked-in public asset');
+assert.match(proofComponent, /const reviewerTaskProtocolUrl = "\/examples\/daily-driver-review-task\.json";/, 'proof reviewer protocol link must remain a checked-in public asset');
+assert.match(proofComponent, /const acceptanceCoverageUrl = "\/examples\/daily-driver-acceptance-coverage\.json";/, 'proof coverage link must remain a checked-in public asset');
 assert.match(fixture.source.range, /clean, temporary Git repository.*sanitized/i, 'fixture must describe its sanitized reproduction range');
 assert.match(fixture.source.license, /MIT/i, 'fixture must disclose its source license');
 assert.equal(fixture.artifact.schemaVersion, releaseTruth.cli.artifactSchemaVersion, 'fixture must pin the artifact schema declared by the pinned CLI source revision');

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import artifact from "@/data/greeting-structural.json";
 import fixture from "@/data/daily-driver-fixture.json";
+import coverage from "@/data/daily-driver-acceptance-coverage.json";
 import { useState } from "react";
 import { ExternalLink, FileCode2, GitBranch, Info, Network, Quote } from "lucide-react";
 
@@ -17,6 +18,8 @@ type Selection = "file" | "symbol" | "relationship";
 
 const DiffGraphProof = () => {
   const [selection, setSelection] = useState<Selection>("symbol");
+  const measuredCriteria = coverage.criteria.filter((criterion) => criterion.status === "baseline-evidence");
+  const incompleteCriteria = coverage.criteria.filter((criterion) => criterion.status !== "baseline-evidence");
   const file = artifact.files[0];
   const symbol = artifact.symbols[0];
   const relationship = artifact.relationships[0];
@@ -95,7 +98,22 @@ const DiffGraphProof = () => {
           <Card className="bg-background/80 border-border/50">
             <CardContent className="pt-6 text-sm text-muted-foreground">
               <p><span className="font-medium text-foreground">Versioned fixture:</span> {fixture.fixtureVersion} documents this checked-in sanitized diff and artifact from the pinned CLI source revision, schema v{fixture.artifact.schemaVersion}, and SHA-256 digests.</p>
-              <p className="mt-2">It is a static AI-off structural baseline, not an end-to-end benchmark. Install, extension, provider, recovery, timing, and reviewer-task measurements remain unreported. The linked review protocol is a static, no-network task template—not a completed reviewer study. The evidence-coverage record lists every daily-driver criterion and marks unmeasured evidence plainly.</p>
+              <p className="mt-2">It is a static AI-off structural baseline, not an end-to-end benchmark. Install, extension, provider, recovery, timing, and reviewer-task measurements remain unreported. The linked review protocol is a static, no-network task template—not a completed reviewer study.</p>
+              <div className="mt-4 rounded-md border border-border bg-muted/40 p-4" aria-labelledby="evidence-status-title">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 id="evidence-status-title" className="font-medium text-foreground">Daily-driver evidence status</h3>
+                  <span className="text-xs">{measuredCriteria.length} documented · {incompleteCriteria.length} still incomplete</span>
+                </div>
+                <p className="mt-2">Only checked-in baseline evidence is presented as documented. The remaining criteria have not been measured end to end.</p>
+                <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {coverage.criteria.map((criterion) => (
+                    <li key={criterion.id} className="rounded border border-border bg-background px-3 py-2">
+                      <span className="font-medium text-foreground">{criterion.status === "baseline-evidence" ? "Documented" : criterion.status === "protocol-only" ? "Protocol only" : "Not measured"}</span>
+                      <span className="block text-xs">{criterion.note}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
               <a className="mt-3 inline-flex text-primary hover:underline" href={fixture.source.commitUrl} target="_blank" rel="noopener noreferrer">Verify pinned CLI source revision <ExternalLink className="ml-1 h-4 w-4" /></a>
             </CardContent>
           </Card>

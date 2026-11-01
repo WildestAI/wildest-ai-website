@@ -32,6 +32,8 @@ assert.match(proofComponent, /<a href=\{schemaUrl\}[^>]*>View schema\b/, 'proof 
 assert(!proofComponent.includes('/wild/blob/main/'), 'proof must not link its release schema evidence to an unpinned main branch');
 assert.match(proofComponent, /import artifact from "@\/data\/greeting-structural\.json";/, 'proof must bundle the canonical artifact instead of loading it at runtime');
 assert.match(proofComponent, /import fixture from "@\/data\/daily-driver-fixture\.json";/, 'proof must bundle the fixture manifest instead of loading it at runtime');
+assert.match(proofComponent, /import coverage from "@\/data\/daily-driver-acceptance-coverage\.json";/, 'proof must bundle the acceptance coverage instead of loading it at runtime');
+assert.match(proofComponent, /Daily-driver evidence status/, 'proof must render an honest static evidence status summary');
 assert(!/\b(?:fetch|XMLHttpRequest|axios)\b/.test(proofComponent), 'proof must keep its rendered topology usable without runtime network requests');
 assert.match(proofComponent, /const fixtureManifestUrl = "\/examples\/daily-driver-fixture\.json";/, 'proof fixture link must remain a checked-in public asset');
 assert.match(proofComponent, /const reviewerTaskProtocolUrl = "\/examples\/daily-driver-review-task\.json";/, 'proof reviewer protocol link must remain a checked-in public asset');

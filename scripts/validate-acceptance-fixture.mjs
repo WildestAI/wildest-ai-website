@@ -55,8 +55,10 @@ assert.match(coverage.purpose, /unmeasured/i, 'coverage must describe its honest
 const expectedCoverage = new Map([
   ['sanitized-fixture-and-artifact', 'baseline-evidence'],
   ['clean-install-and-first-graph', 'not-measured'],
+  ['standalone-html-and-conventional-diff-proof', 'not-measured'],
   ['ai-off-and-provider-paths', 'not-measured'],
   ['recovery-paths', 'not-measured'],
+  ['cross-file-context-and-conservative-cases', 'not-measured'],
   ['performance-and-cache-measurements', 'not-measured'],
   ['released-cli-extension-json-compatibility', 'not-measured'],
   ['reviewer-task-outcome', 'protocol-only'],
@@ -79,6 +81,16 @@ for (const entry of coverage.criteria) {
 assert.equal(new Set(coverage.criteria.map((entry) => entry.id)).size, expectedCoverage.size, 'coverage criterion IDs must be unique');
 assert(coverage.criteria.find((entry) => entry.id === 'sanitized-fixture-and-artifact').evidence.includes('/examples/daily-driver-fixture.json'), 'fixture coverage must link the fixture manifest');
 assert(coverage.criteria.find((entry) => entry.id === 'reviewer-task-outcome').evidence.includes('/examples/daily-driver-review-task.json'), 'reviewer coverage must link the protocol');
+assert.match(
+  coverage.criteria.find((entry) => entry.id === 'standalone-html-and-conventional-diff-proof').note,
+  /standalone HTML report.*conventional diff/i,
+  'coverage must distinguish checked-in evidence from the unmeasured standalone-report and conventional-diff proof',
+);
+assert.match(
+  coverage.criteria.find((entry) => entry.id === 'cross-file-context-and-conservative-cases').note,
+  /cross-file.*inheritance.*unresolved\/external/i,
+  'coverage must explicitly retain the unmeasured cross-file and conservative-context boundary',
+);
 
 for (const [name, entry] of Object.entries(fixture.artifact.files)) {
   assert.match(entry.path, /^public\/examples\//, `${name} must be a checked-in public example`);

@@ -17,6 +17,12 @@
       "note": "A clean supported-environment CLI and packaged-extension install run with elapsed phases has not been recorded."
     },
     {
+      "id": "standalone-html-and-conventional-diff-proof",
+      "status": "not-measured",
+      "evidence": [],
+      "note": "The checked-in structural JSON and textual diff are not a published graph-first standalone HTML report or a measured conventional diff/PR comparison with provenance."
+    },
+    {
       "id": "ai-off-and-provider-paths",
       "status": "not-measured",
       "evidence": [],
@@ -27,6 +33,12 @@
       "status": "not-measured",
       "evidence": [],
       "note": "Missing CLI, schema mismatch, provider, timeout/cancellation, and parser/resolver recovery outcomes are not measured end to end."
+    },
+    {
+      "id": "cross-file-context-and-conservative-cases",
+      "status": "not-measured",
+      "evidence": [],
+      "note": "This one-file fixture does not yet exercise cross-file calls or imports, inheritance context, or unresolved/external conservative cases."
     },
     {
       "id": "performance-and-cache-measurements",

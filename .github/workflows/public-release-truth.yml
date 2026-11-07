@@ -8,6 +8,7 @@ on:
       - public/release-truth.json
       - src/data/release-truth.json
       - src/**
+      - index.html
       - package.json
       - bun.lockb
       - src/data/daily-driver-fixture.json
@@ -32,6 +33,7 @@ on:
       - public/release-truth.json
       - src/data/release-truth.json
       - src/**
+      - index.html
       - package.json
       - bun.lockb
       - src/data/daily-driver-fixture.json
@@ -56,7 +58,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - name: Check out reviewed source
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -69,8 +71,8 @@ jobs:
       - name: Validate synchronized claims, public links, and production build
         run: |
           bun run lint
-          bun run build
           node scripts/sync-release-truth.mjs --check
+          bun run build
           node scripts/validate-acceptance-fixture.mjs
           node scripts/validate-review-task-protocol.mjs
           node scripts/validate-public-llms.mjs --check-links

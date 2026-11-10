@@ -8,6 +8,8 @@ import { useState } from "react";
 import { ExternalLink, FileCode2, GitBranch, Info, Network, Quote } from "lucide-react";
 
 const sampleDiffUrl = "/examples/greeting.diff";
+const sampleBeforeBlobUrl = "/examples/greeting.before.py";
+const sampleAfterBlobUrl = "/examples/greeting.after.py";
 const sampleArtifactUrl = "/examples/greeting-structural.json";
 const fixtureManifestUrl = "/examples/daily-driver-fixture.json";
 const reviewerTaskProtocolUrl = "/examples/daily-driver-review-task.json";
@@ -44,6 +46,8 @@ const DiffGraphProof = () => {
             <div className="flex flex-wrap gap-3">
               <Button variant="outline" size="sm" asChild><a href={sampleArtifactUrl}><FileCode2 className="mr-2 h-4 w-4" /> View artifact</a></Button>
               <Button variant="outline" size="sm" asChild><a href={sampleDiffUrl}><GitBranch className="mr-2 h-4 w-4" /> View textual diff</a></Button>
+              <Button variant="outline" size="sm" asChild><a href={sampleBeforeBlobUrl}><FileCode2 className="mr-2 h-4 w-4" /> View Git pre-image</a></Button>
+              <Button variant="outline" size="sm" asChild><a href={sampleAfterBlobUrl}><FileCode2 className="mr-2 h-4 w-4" /> View Git post-image</a></Button>
               <Button variant="outline" size="sm" asChild><a href={fixtureManifestUrl}><Info className="mr-2 h-4 w-4" /> View fixture manifest</a></Button>
               <Button variant="outline" size="sm" asChild><a href={reviewerTaskProtocolUrl}><Info className="mr-2 h-4 w-4" /> View review protocol</a></Button>
               <Button variant="outline" size="sm" asChild><a href={acceptanceCoverageUrl}><Info className="mr-2 h-4 w-4" /> View evidence coverage</a></Button>
@@ -97,7 +101,7 @@ const DiffGraphProof = () => {
 
           <Card className="bg-background/80 border-border/50">
             <CardContent className="pt-6 text-sm text-muted-foreground">
-              <p><span className="font-medium text-foreground">Versioned fixture:</span> {fixture.fixtureVersion} documents this checked-in sanitized diff and artifact from the pinned CLI source revision, schema v{fixture.artifact.schemaVersion}, and SHA-256 digests.</p>
+              <p><span className="font-medium text-foreground">Versioned fixture:</span> {fixture.fixtureVersion} documents checked-in Git pre/post blobs, a sanitized diff, and artifact from the pinned CLI source revision, schema v{fixture.artifact.schemaVersion}, and SHA-256 digests.</p>
               <p className="mt-2">It is a static AI-off structural baseline, not an end-to-end benchmark. Install, extension, provider, recovery, timing, and reviewer-task measurements remain unreported. The linked review protocol is a static, no-network task template—not a completed reviewer study.</p>
               <div className="mt-4 rounded-md border border-border bg-muted/40 p-4" aria-labelledby="evidence-status-title">
                 <div className="flex flex-wrap items-center justify-between gap-2">

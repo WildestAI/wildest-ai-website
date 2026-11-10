@@ -21,15 +21,23 @@
       "artifact": {
         "path": "public/examples/greeting-structural.json",
         "sha256": "4ac2a7e60d49568e970233a2a1381574641e91d6d52aaef199f581fab23ed953"
+      },
+      "beforeBlob": {
+        "path": "public/examples/greeting.before.py",
+        "sha256": "a55c14346b5c0e11da873793db175efd28d4840a330a5edba18d03d7d7310626"
+      },
+      "afterBlob": {
+        "path": "public/examples/greeting.after.py",
+        "sha256": "708c14e9d93edcaba845fc9f94d8bb8a68d37b98da45fa9adf0102e83b3d0fb4"
       }
     }
   },
   "repeat": {
     "command": "node scripts/validate-acceptance-fixture.mjs",
-    "expected": "Validates the checked-in diff, artifact, pinned CLI source revision and generator version, schema, AI-off metadata, Tree-sitter parser evidence against reconstructed Git post-images, sanitized publication metadata, and SHA-256 digests without network access."
+    "expected": "Validates the checked-in diff, public Git pre/post blob evidence, artifact, pinned CLI source revision and generator version, schema, AI-off metadata, Tree-sitter parser evidence against reconstructed Git post-images, sanitized publication metadata, and SHA-256 digests without network access."
   },
   "limitations": [
-    "This fixture proves only a static, deterministic CLI artifact and its checked-in diff and artifact evidence; it does not establish the original source-change provenance.",
+    "This fixture proves only a static, deterministic CLI artifact with checked-in Git pre/post blobs, diff, and artifact evidence; it does not establish the original source-change provenance.",
     "It does not measure clean installation, extension packaging, provider recovery, performance, cancellation, cache behavior, or reviewer-task outcomes.",
     "Those end-to-end acceptance results remain required before the website can claim a measured daily-driver workflow."
   ]

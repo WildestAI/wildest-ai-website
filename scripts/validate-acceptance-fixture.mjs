@@ -100,6 +100,12 @@ for (const [name, entry] of Object.entries(fixture.artifact.files)) {
   assert.equal(actual, entry.sha256, `${name} checksum does not match fixture manifest`);
 }
 
+const beforeBlob = await readFile(fixture.artifact.files.beforeBlob.path, 'utf8');
+const afterBlob = await readFile(fixture.artifact.files.afterBlob.path, 'utf8');
+assert.equal(fixture.artifact.files.beforeBlob.path, 'public/examples/greeting.before.py', 'fixture must publish a Git pre-image');
+assert.equal(fixture.artifact.files.afterBlob.path, 'public/examples/greeting.after.py', 'fixture must publish a Git post-image');
+assert.match(proofComponent, /<a href=\{sampleBeforeBlobUrl\}[^>]*>[\s\S]*?View Git pre-image<\/a>/, 'proof pre-image anchor must reference the published Git pre-image');
+assert.match(proofComponent, /<a href=\{sampleAfterBlobUrl\}[^>]*>[\s\S]*?View Git post-image<\/a>/, 'proof post-image anchor must reference the published Git post-image');
 const publishedArtifact = await readFile(fixture.artifact.files.artifact.path, 'utf8');
 assert.equal(
   publishedArtifact,
@@ -237,6 +243,10 @@ for (const file of artifact.files) {
   assert(gitDetail.new_oid.startsWith(diffFile.newOid), `artifact file ${file.path} new blob must match its abbreviated diff index`);
   assert.equal(gitDetail.old_oid, gitBlobOid(diffFile.oldContent), `artifact file ${file.path} old blob must match its old content`);
   assert.equal(gitDetail.new_oid, gitBlobOid(diffFile.newContent), `artifact file ${file.path} new blob must match its new content`);
+  assert.equal(beforeBlob, diffFile.oldContent, `published pre-image must match ${file.path}'s Git pre-image`);
+  assert.equal(afterBlob, diffFile.newContent, `published post-image must match ${file.path}'s Git post-image`);
+  assert.equal(gitBlobOid(beforeBlob), gitDetail.old_oid, `published pre-image must retain ${file.path}'s old Git blob`);
+  assert.equal(gitBlobOid(afterBlob), gitDetail.new_oid, `published post-image must retain ${file.path}'s new Git blob`);
   assert.equal(gitDetail.old_sha256, digest('sha256', diffFile.oldContent), `artifact file ${file.path} old SHA-256 must match its old content`);
   assert.equal(gitDetail.new_sha256, digest('sha256', diffFile.newContent), `artifact file ${file.path} new SHA-256 must match its new content`);
 }

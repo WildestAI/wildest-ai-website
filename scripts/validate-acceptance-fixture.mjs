@@ -104,6 +104,10 @@ const beforeBlob = await readFile(fixture.artifact.files.beforeBlob.path, 'utf8'
 const afterBlob = await readFile(fixture.artifact.files.afterBlob.path, 'utf8');
 assert.equal(fixture.artifact.files.beforeBlob.path, 'public/examples/greeting.before.py', 'fixture must publish a Git pre-image');
 assert.equal(fixture.artifact.files.afterBlob.path, 'public/examples/greeting.after.py', 'fixture must publish a Git post-image');
+const beforeBlobUrl = `/${fixture.artifact.files.beforeBlob.path.replace(/^public\//, '')}`;
+const afterBlobUrl = `/${fixture.artifact.files.afterBlob.path.replace(/^public\//, '')}`;
+assert(proofComponent.includes(`const sampleBeforeBlobUrl = "${beforeBlobUrl}";`), 'proof pre-image URL must match the manifest path');
+assert(proofComponent.includes(`const sampleAfterBlobUrl = "${afterBlobUrl}";`), 'proof post-image URL must match the manifest path');
 assert.match(proofComponent, /<a href=\{sampleBeforeBlobUrl\}[^>]*>[\s\S]*?View Git pre-image<\/a>/, 'proof pre-image anchor must reference the published Git pre-image');
 assert.match(proofComponent, /<a href=\{sampleAfterBlobUrl\}[^>]*>[\s\S]*?View Git post-image<\/a>/, 'proof post-image anchor must reference the published Git post-image');
 const publishedArtifact = await readFile(fixture.artifact.files.artifact.path, 'utf8');

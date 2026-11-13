@@ -3,6 +3,9 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { createServer } from 'vite';
 
 const sourcePath = 'src/data/daily-driver-fixture.json';
 const publicPath = 'public/examples/daily-driver-fixture.json';
@@ -141,16 +144,20 @@ assert.match(
   /<a href=\{sampleDiffUrl\}[^>]*>[\s\S]*?View textual diff<\/a>/,
   'proof diff anchor must reference the published diff URL constant',
 );
-assert.match(
-  proofComponent,
-  /Artifact SHA-256[\s\S]*?fixture\.artifact\.files\.artifact\.sha256/,
-  'proof must surface the canonical artifact digest',
-);
-assert.match(
-  proofComponent,
-  /Diff SHA-256[\s\S]*?fixture\.artifact\.files\.diff\.sha256/,
-  'proof must surface the canonical diff digest',
-);
+const vite = await createServer({
+  appType: 'custom',
+  server: { middlewareMode: true },
+});
+try {
+  const { default: DiffGraphProof } = await vite.ssrLoadModule('/src/components/DiffGraphProof.tsx');
+  const renderedProof = renderToStaticMarkup(createElement(DiffGraphProof));
+  assert(renderedProof.includes('Artifact SHA-256'), 'rendered proof must label the canonical artifact digest');
+  assert(renderedProof.includes(fixture.artifact.files.artifact.sha256), 'rendered proof must surface the canonical artifact digest');
+  assert(renderedProof.includes('Diff SHA-256'), 'rendered proof must label the fixture diff digest');
+  assert(renderedProof.includes(fixture.artifact.files.diff.sha256), 'rendered proof must surface the fixture diff digest');
+} finally {
+  await vite.close();
+}
 assert.equal(
   `public${proofComponent.match(/const sampleDiffUrl = "([^"]+)";/)?.[1] ?? ''}`,
   fixture.artifact.files.diff.path,

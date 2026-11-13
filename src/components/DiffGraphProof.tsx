@@ -82,6 +82,8 @@ const DiffGraphProof = () => {
                   <div><dt className="font-medium text-foreground">Analysis source</dt><dd>{selected.analysis_source}</dd></div>
                   <div><dt className="font-medium text-foreground">Evidence</dt><dd>{evidence.kind} — <a className="text-primary hover:underline" href={sampleDiffUrl}>{sourceRange}</a></dd></div>
                   <div><dt className="font-medium text-foreground">Schema / generator</dt><dd>v{artifact.schema_version} / wild {artifact.wild_version}</dd></div>
+                  <div><dt className="font-medium text-foreground">Artifact SHA-256</dt><dd><code className="break-all text-xs">{fixture.artifact.files.artifact.sha256}</code></dd></div>
+                  <div><dt className="font-medium text-foreground">Diff SHA-256</dt><dd><code className="break-all text-xs">{fixture.artifact.files.diff.sha256}</code></dd></div>
                   <div><dt className="font-medium text-foreground">Generated</dt><dd>{artifact.generated_at}</dd></div>
                   <div><dt className="font-medium text-foreground">Input</dt><dd>{artifact.diff_ref.kind} diff; Python</dd></div>
                 </dl>

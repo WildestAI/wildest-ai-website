@@ -141,6 +141,16 @@ assert.match(
   /<a href=\{sampleDiffUrl\}[^>]*>[\s\S]*?View textual diff<\/a>/,
   'proof diff anchor must reference the published diff URL constant',
 );
+assert.match(
+  proofComponent,
+  /Artifact SHA-256[\s\S]*?fixture\.artifact\.files\.artifact\.sha256/,
+  'proof must surface the canonical artifact digest',
+);
+assert.match(
+  proofComponent,
+  /Diff SHA-256[\s\S]*?fixture\.artifact\.files\.diff\.sha256/,
+  'proof must surface the canonical diff digest',
+);
 assert.equal(
   `public${proofComponent.match(/const sampleDiffUrl = "([^"]+)";/)?.[1] ?? ''}`,
   fixture.artifact.files.diff.path,

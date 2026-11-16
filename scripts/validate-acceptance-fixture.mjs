@@ -24,6 +24,17 @@ const canonicalArtifactPath = 'src/data/greeting-structural.json';
 const canonicalArtifact = await readFile(canonicalArtifactPath, 'utf8');
 const releaseTruth = JSON.parse(await readFile('src/data/release-truth.json', 'utf8'));
 const proofComponent = await readFile('src/components/DiffGraphProof.tsx', 'utf8');
+assert.match(proofComponent, /role="group" aria-label="DiffGraph topology"/, 'interactive topology must expose a labeled control group');
+assert.equal(
+  (proofComponent.match(/aria-controls="selected-diffgraph-evidence"/g) ?? []).length,
+  3,
+  'each topology control must identify the evidence panel it updates',
+);
+assert.match(
+  proofComponent,
+  /<aside id="selected-diffgraph-evidence"[^>]*aria-live="polite"[^>]*aria-label="Selected DiffGraph evidence"/,
+  'selected evidence must be a named polite live region',
+);
 assert.equal(fixture.schemaVersion, 1, 'unsupported fixture manifest schema');
 assert.match(fixture.fixtureVersion, /^\d{4}-\d{2}-\d{2}\.\d+$/, 'fixtureVersion must be date-versioned');
 assert.equal(fixture.source.repository, releaseTruth.cli.repository, 'fixture source must be the pinned CLI repository');

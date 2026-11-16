@@ -62,20 +62,20 @@ const DiffGraphProof = () => {
               </p>
             </CardHeader>
             <CardContent className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,.8fr)] gap-6">
-              <div className="rounded-lg border border-border bg-muted/30 p-5" aria-label="DiffGraph topology">
+              <div className="rounded-lg border border-border bg-muted/30 p-5" role="group" aria-label="DiffGraph topology">
                 <div className="flex flex-col items-center gap-3 text-center">
-                  <button type="button" onClick={() => setSelection("file")} aria-pressed={selection === "file"} className={`w-full max-w-sm rounded-lg border p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${selection === "file" ? "border-primary bg-primary/10" : "border-border bg-background hover:bg-accent"}`}>
+                  <button type="button" onClick={() => setSelection("file")} aria-pressed={selection === "file"} aria-controls="selected-diffgraph-evidence" className={`w-full max-w-sm rounded-lg border p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${selection === "file" ? "border-primary bg-primary/10" : "border-border bg-background hover:bg-accent"}`}>
                     <span className="block text-xs text-muted-foreground">Changed file</span><span className="font-mono text-sm font-semibold">{file.path}</span>
                   </button>
                   <div className="h-8 border-l-2 border-dashed border-primary/60" aria-hidden="true" />
-                  <button type="button" onClick={() => setSelection("relationship")} aria-pressed={selection === "relationship"} className={`rounded-full border px-3 py-1 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${selection === "relationship" ? "border-primary bg-primary/10" : "border-border bg-background hover:bg-accent"}`}>{relationship.kind}</button>
+                  <button type="button" onClick={() => setSelection("relationship")} aria-pressed={selection === "relationship"} aria-controls="selected-diffgraph-evidence" className={`rounded-full border px-3 py-1 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${selection === "relationship" ? "border-primary bg-primary/10" : "border-border bg-background hover:bg-accent"}`}>{relationship.kind}</button>
                   <div className="h-8 border-l-2 border-dashed border-primary/60" aria-hidden="true" />
-                  <button type="button" onClick={() => setSelection("symbol")} aria-pressed={selection === "symbol"} className={`w-full max-w-sm rounded-lg border p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${selection === "symbol" ? "border-primary bg-primary/10" : "border-border bg-background hover:bg-accent"}`}>
+                  <button type="button" onClick={() => setSelection("symbol")} aria-pressed={selection === "symbol"} aria-controls="selected-diffgraph-evidence" className={`w-full max-w-sm rounded-lg border p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${selection === "symbol" ? "border-primary bg-primary/10" : "border-border bg-background hover:bg-accent"}`}>
                     <span className="block text-xs text-muted-foreground">Changed {symbol.kind}</span><span className="font-mono text-sm font-semibold">{symbol.qualified_name}()</span>
                   </button>
                 </div>
               </div>
-              <aside className="rounded-lg border border-border bg-background p-5" aria-live="polite">
+              <aside id="selected-diffgraph-evidence" className="rounded-lg border border-border bg-background p-5" aria-live="polite" aria-label="Selected DiffGraph evidence">
                 <div className="flex items-center gap-2 mb-3"><Info className="h-4 w-4 text-primary" /><h3 className="font-semibold">Selected evidence</h3></div>
                 <p className="text-sm font-medium mb-2">{"name" in selected ? selected.name : selected.kind}</p>
                 <dl className="space-y-3 text-sm text-muted-foreground">

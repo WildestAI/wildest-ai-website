@@ -152,8 +152,22 @@ assert.match(
 );
 const standaloneHtml = await readFile(fixture.artifact.files.standaloneHtml.path, 'utf8');
 assert.match(standaloneHtml, /Offline standalone rendering/, 'standalone report must disclose its offline fixture boundary');
-assert.match(standaloneHtml, /greeting-structural\.json/, 'standalone report must link the canonical artifact');
-assert.match(standaloneHtml, /greeting\.diff/, 'standalone report must link the conventional diff evidence');
+const standaloneReportUrl = new URL(
+  `/${fixture.artifact.files.standaloneHtml.path.replace(/^public\//, '')}`,
+  'https://fixture.invalid',
+);
+const standaloneHrefUrls = [...standaloneHtml.matchAll(/<a\s+[^>]*href="([^"]+)"/g)]
+  .map(([, href]) => new URL(href, standaloneReportUrl).href);
+for (const [name, entry] of Object.entries({
+  artifact: fixture.artifact.files.artifact,
+  diff: fixture.artifact.files.diff,
+})) {
+  const expectedUrl = new URL(`/${entry.path.replace(/^public\//, '')}`, standaloneReportUrl).href;
+  assert(
+    standaloneHrefUrls.includes(expectedUrl),
+    `standalone report must link the canonical ${name} at ${expectedUrl}`,
+  );
+}
 
 assert.equal(
   `public${proofComponent.match(/const sampleArtifactUrl = "([^"]+)";/)?.[1] ?? ''}`,

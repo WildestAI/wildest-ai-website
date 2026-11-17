@@ -22,6 +22,10 @@
         "path": "public/examples/greeting-structural.json",
         "sha256": "4ac2a7e60d49568e970233a2a1381574641e91d6d52aaef199f581fab23ed953"
       },
+      "standaloneHtml": {
+        "path": "public/examples/greeting-structural.html",
+        "sha256": "a7868fcaf256290486c546cb3332e737eef040f6ef6cb59c22f6dc1c57cc2512"
+      },
       "beforeBlob": {
         "path": "public/examples/greeting.before.py",
         "sha256": "a55c14346b5c0e11da873793db175efd28d4840a330a5edba18d03d7d7310626"

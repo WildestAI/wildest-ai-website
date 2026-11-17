@@ -69,7 +69,7 @@ assert.match(coverage.purpose, /unmeasured/i, 'coverage must describe its honest
 const expectedCoverage = new Map([
   ['sanitized-fixture-and-artifact', 'baseline-evidence'],
   ['clean-install-and-first-graph', 'not-measured'],
-  ['standalone-html-and-conventional-diff-proof', 'not-measured'],
+  ['standalone-html-and-conventional-diff-proof', 'baseline-evidence'],
   ['ai-off-and-provider-paths', 'not-measured'],
   ['recovery-paths', 'not-measured'],
   ['cross-file-context-and-conservative-cases', 'not-measured'],
@@ -97,8 +97,8 @@ assert(coverage.criteria.find((entry) => entry.id === 'sanitized-fixture-and-art
 assert(coverage.criteria.find((entry) => entry.id === 'reviewer-task-outcome').evidence.includes('/examples/daily-driver-review-task.json'), 'reviewer coverage must link the protocol');
 assert.match(
   coverage.criteria.find((entry) => entry.id === 'standalone-html-and-conventional-diff-proof').note,
-  /standalone HTML report.*conventional diff/i,
-  'coverage must distinguish checked-in evidence from the unmeasured standalone-report and conventional-diff proof',
+  /standalone HTML report.*canonical structural JSON.*conventional textual diff/i,
+  'coverage must distinguish checked-in standalone proof from an unmeasured conventional diff/PR comparison',
 );
 assert.match(
   coverage.criteria.find((entry) => entry.id === 'cross-file-context-and-conservative-cases').note,
@@ -140,6 +140,21 @@ assert.match(
   /const sampleDiffUrl = "\/examples\/greeting\.diff";/,
   'proof must link its evidence view to the published fixture diff',
 );
+assert.match(
+  proofComponent,
+  /const sampleStandaloneHtmlUrl = "\/examples\/greeting-structural\.html"/,
+  'proof must link the checked-in standalone report',
+);
+assert.match(
+  proofComponent,
+  /<a href=\{sampleStandaloneHtmlUrl\}[^>]*>[\s\S]*?Open standalone graph<\/a>/,
+  'proof standalone-report anchor must reference the public URL constant',
+);
+const standaloneHtml = await readFile(fixture.artifact.files.standaloneHtml.path, 'utf8');
+assert.match(standaloneHtml, /Offline standalone rendering/, 'standalone report must disclose its offline fixture boundary');
+assert.match(standaloneHtml, /greeting-structural\.json/, 'standalone report must link the canonical artifact');
+assert.match(standaloneHtml, /greeting\.diff/, 'standalone report must link the conventional diff evidence');
+
 assert.equal(
   `public${proofComponent.match(/const sampleArtifactUrl = "([^"]+)";/)?.[1] ?? ''}`,
   fixture.artifact.files.artifact.path,

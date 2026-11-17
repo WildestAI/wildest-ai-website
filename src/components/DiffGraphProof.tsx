@@ -11,6 +11,7 @@ const sampleDiffUrl = "/examples/greeting.diff";
 const sampleBeforeBlobUrl = "/examples/greeting.before.py";
 const sampleAfterBlobUrl = "/examples/greeting.after.py";
 const sampleArtifactUrl = "/examples/greeting-structural.json";
+const sampleStandaloneHtmlUrl = "/examples/greeting-structural.html";
 const fixtureManifestUrl = "/examples/daily-driver-fixture.json";
 const reviewerTaskProtocolUrl = "/examples/daily-driver-review-task.json";
 const acceptanceCoverageUrl = "/examples/daily-driver-acceptance-coverage.json";
@@ -45,6 +46,7 @@ const DiffGraphProof = () => {
             </div>
             <div className="flex flex-wrap gap-3">
               <Button variant="outline" size="sm" asChild><a href={sampleArtifactUrl}><FileCode2 className="mr-2 h-4 w-4" /> View artifact</a></Button>
+              <Button variant="outline" size="sm" asChild><a href={sampleStandaloneHtmlUrl}><Network className="mr-2 h-4 w-4" /> Open standalone graph</a></Button>
               <Button variant="outline" size="sm" asChild><a href={sampleDiffUrl}><GitBranch className="mr-2 h-4 w-4" /> View textual diff</a></Button>
               <Button variant="outline" size="sm" asChild><a href={sampleBeforeBlobUrl}><FileCode2 className="mr-2 h-4 w-4" /> View Git pre-image</a></Button>
               <Button variant="outline" size="sm" asChild><a href={sampleAfterBlobUrl}><FileCode2 className="mr-2 h-4 w-4" /> View Git post-image</a></Button>
@@ -83,6 +85,7 @@ const DiffGraphProof = () => {
                   <div><dt className="font-medium text-foreground">Evidence</dt><dd>{evidence.kind} — <a className="text-primary hover:underline" href={sampleDiffUrl}>{sourceRange}</a></dd></div>
                   <div><dt className="font-medium text-foreground">Schema / generator</dt><dd>v{artifact.schema_version} / wild {artifact.wild_version}</dd></div>
                   <div><dt className="font-medium text-foreground">Artifact SHA-256</dt><dd><code className="break-all text-xs">{fixture.artifact.files.artifact.sha256}</code></dd></div>
+                  <div><dt className="font-medium text-foreground">Standalone report SHA-256</dt><dd><code className="break-all text-xs">{fixture.artifact.files.standaloneHtml.sha256}</code></dd></div>
                   <div><dt className="font-medium text-foreground">Diff SHA-256</dt><dd><code className="break-all text-xs">{fixture.artifact.files.diff.sha256}</code></dd></div>
                   <div><dt className="font-medium text-foreground">Generated</dt><dd>{artifact.generated_at}</dd></div>
                   <div><dt className="font-medium text-foreground">Input</dt><dd>{artifact.diff_ref.kind} diff; Python</dd></div>

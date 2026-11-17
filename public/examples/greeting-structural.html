@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WildestAI DiffGraph fixture — greeting.py</title>
+  <style>
+    :root { color-scheme: light dark; font-family: ui-sans-serif, system-ui, sans-serif; }
+    body { margin: 0; background: #0b1020; color: #e8edf8; }
+    main { max-width: 860px; margin: 0 auto; padding: 2rem 1rem 3rem; }
+    h1 { margin-bottom: .25rem; } p { color: #bdc8df; line-height: 1.55; }
+    .notice { border-left: 4px solid #77a8ff; background: #13203d; padding: .8rem 1rem; border-radius: .3rem; }
+    .graph { display: grid; gap: 1rem; margin: 2rem 0; justify-items: center; }
+    .node { width: min(100%, 34rem); border: 1px solid #557bb7; border-radius: .65rem; background: #111b31; padding: 1rem; }
+    .node small, dt { color: #9fb2d5; } code { color: #d3e4ff; overflow-wrap: anywhere; }
+    .edge { color: #9fb2d5; font-size: .9rem; } .arrow { font-size: 2rem; line-height: 1; }
+    dl { display: grid; grid-template-columns: max-content 1fr; gap: .5rem 1rem; }
+    dd { margin: 0; } a { color: #9dc4ff; } footer { font-size: .85rem; color: #9fb2d5; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>DiffGraph: <code>src/greeting.py</code></h1>
+    <p class="notice">Offline standalone rendering of the checked-in, AI-off structural fixture. This page embeds no network calls and is evidence for the canonical JSON artifact—not a performance measurement or a product screenshot.</p>
+    <section class="graph" aria-label="DiffGraph topology">
+      <article class="node"><small>Modified Python file · +2 −1</small><br><code>src/greeting.py</code></article>
+      <div class="edge" aria-label="defines relationship"><div class="arrow" aria-hidden="true">↓</div>defines</div>
+      <article class="node"><small>Modified function · lines 1–3</small><br><code>greet()</code></article>
+    </section>
+    <section aria-labelledby="evidence"><h2 id="evidence">Deterministic evidence</h2>
+      <dl><dt>Schema</dt><dd>DiffGraph v2.0</dd><dt>Generator</dt><dd>wild 1.1.1</dd><dt>Analysis</dt><dd>Tree-sitter structural baseline</dd><dt>Parser finding</dt><dd><code>src/greeting.py:1–3</code></dd><dt>Artifact</dt><dd><a href="greeting-structural.json">Canonical JSON artifact</a></dd><dt>Git inputs</dt><dd><a href="greeting.before.py">pre-image</a> · <a href="greeting.after.py">post-image</a> · <a href="greeting.diff">textual diff</a></dd></dl>
+    </section>
+    <footer><p>Sanitized fixture only. Verify its pinned provenance, hashes, and limitations in <a href="daily-driver-fixture.json">the fixture manifest</a>.</p></footer>
+  </main>
+</body>
+</html>

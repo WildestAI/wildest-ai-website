@@ -156,8 +156,37 @@ const standaloneReportUrl = new URL(
   `/${fixture.artifact.files.standaloneHtml.path.replace(/^public\//, '')}`,
   'https://fixture.invalid',
 );
-const standaloneHrefUrls = [...standaloneHtml.matchAll(/<a\s+[^>]*href="([^"]+)"/g)]
-  .map(([, href]) => new URL(href, standaloneReportUrl).href);
+function extractAnchorHrefs(html) {
+  const hrefs = [];
+  const anchorStart = /<a\b/gi;
+  let match;
+  while ((match = anchorStart.exec(html))) {
+    let index = anchorStart.lastIndex;
+    let quote = null;
+    while (index < html.length) {
+      const character = html[index++];
+      if (quote) {
+        if (character === quote) quote = null;
+      } else if (character === '"' || character === "'") {
+        quote = character;
+      } else if (character === '>') {
+        break;
+      }
+    }
+    const tag = html.slice(match.index, index);
+    const href = tag.match(/(?:^|\s)href\s*=\s*(?:"([^"]*)"|'([^']*)')/i);
+    if (href) hrefs.push(href[1] ?? href[2]);
+  }
+  return hrefs;
+}
+
+assert.deepEqual(
+  extractAnchorHrefs('<a data-href="ignored.json" href=\'kept.json\'>fixture</a><span href="not-an-anchor.json">ignore</span>'),
+  ['kept.json'],
+  'standalone link validation must read href attributes from anchor elements only',
+);
+const standaloneHrefUrls = extractAnchorHrefs(standaloneHtml)
+  .map((href) => new URL(href, standaloneReportUrl).href);
 for (const [name, entry] of Object.entries({
   artifact: fixture.artifact.files.artifact,
   diff: fixture.artifact.files.diff,

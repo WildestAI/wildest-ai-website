@@ -158,32 +158,68 @@ const standaloneReportUrl = new URL(
 );
 function extractAnchorHrefs(html) {
   const hrefs = [];
-  const anchorStart = /<a\b/gi;
-  let match;
-  while ((match = anchorStart.exec(html))) {
-    let index = anchorStart.lastIndex;
-    let quote = null;
-    while (index < html.length) {
-      const character = html[index++];
-      if (quote) {
-        if (character === quote) quote = null;
-      } else if (character === '"' || character === "'") {
-        quote = character;
-      } else if (character === '>') {
-        break;
-      }
+  let index = 0;
+  while (index < html.length) {
+    const start = html.indexOf('<', index);
+    if (start === -1) break;
+    if (html.startsWith('<!--', start)) {
+      const end = html.indexOf('-->', start + 4);
+      index = end === -1 ? html.length : end + 3;
+      continue;
     }
-    const tag = html.slice(match.index, index);
-    const href = tag.match(/(?:^|\s)href\s*=\s*(?:"([^"]*)"|'([^']*)')/i);
-    if (href) hrefs.push(href[1] ?? href[2]);
+
+    let cursor = start + 1;
+    if (html[cursor] === '/') {
+      index = cursor + 1;
+      continue;
+    }
+    while (/\s/.test(html[cursor] ?? '')) cursor += 1;
+    const nameStart = cursor;
+    while (/[A-Za-z0-9:-]/.test(html[cursor] ?? '')) cursor += 1;
+    const tagName = html.slice(nameStart, cursor).toLowerCase();
+    if (!tagName) {
+      index = cursor + 1;
+      continue;
+    }
+
+    const attributes = new Map();
+    while (cursor < html.length) {
+      while (/\s/.test(html[cursor] ?? '')) cursor += 1;
+      if (html[cursor] === '>' || html[cursor] === '/') break;
+      const attributeStart = cursor;
+      while (!/[\s=>/]/.test(html[cursor] ?? '')) cursor += 1;
+      const attributeName = html.slice(attributeStart, cursor).toLowerCase();
+      while (/\s/.test(html[cursor] ?? '')) cursor += 1;
+      let value = '';
+      if (html[cursor] === '=') {
+        cursor += 1;
+        while (/\s/.test(html[cursor] ?? '')) cursor += 1;
+        const quote = html[cursor];
+        if (quote === '"' || quote === "'") {
+          cursor += 1;
+          const valueStart = cursor;
+          while (cursor < html.length && html[cursor] !== quote) cursor += 1;
+          value = html.slice(valueStart, cursor);
+          if (html[cursor] === quote) cursor += 1;
+        } else {
+          const valueStart = cursor;
+          while (!/[\s>]/.test(html[cursor] ?? '')) cursor += 1;
+          value = html.slice(valueStart, cursor);
+        }
+      }
+      if (attributeName) attributes.set(attributeName, value);
+    }
+    while (cursor < html.length && html[cursor] !== '>') cursor += 1;
+    index = cursor + 1;
+    if (tagName === 'a' && attributes.has('href')) hrefs.push(attributes.get('href'));
   }
   return hrefs;
 }
 
 assert.deepEqual(
-  extractAnchorHrefs('<a data-href="ignored.json" href=\'kept.json\'>fixture</a><span href="not-an-anchor.json">ignore</span>'),
+  extractAnchorHrefs("<!-- <a href='comment.json'>comment</a> --><a data-note=' href=\"ignored.json\"' href='kept.json'>fixture</a><span href=\"not-an-anchor.json\">ignore</span>"),
   ['kept.json'],
-  'standalone link validation must read href attributes from anchor elements only',
+  'standalone link validation must parse href attributes from real anchor elements only',
 );
 const standaloneHrefUrls = extractAnchorHrefs(standaloneHtml)
   .map((href) => new URL(href, standaloneReportUrl).href);

@@ -18,9 +18,13 @@
     },
     {
       "id": "standalone-html-and-conventional-diff-proof",
-      "status": "not-measured",
-      "evidence": [],
-      "note": "The checked-in structural JSON and textual diff are not a published graph-first standalone HTML report or a measured conventional diff/PR comparison with provenance."
+      "status": "baseline-evidence",
+      "evidence": [
+        "/examples/greeting-structural.html",
+        "/examples/greeting-structural.json",
+        "/examples/greeting.diff"
+      ],
+      "note": "A checked-in offline standalone HTML report, canonical structural JSON, and conventional textual diff share the same sanitized fixture; this is not a measured conventional diff/PR comparison."
     },
     {
       "id": "ai-off-and-provider-paths",

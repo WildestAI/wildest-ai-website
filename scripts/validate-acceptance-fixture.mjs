@@ -6,6 +6,7 @@ import { readFile } from 'node:fs/promises';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createServer } from 'vite';
+import { parseFragment } from 'parse5';
 
 const sourcePath = 'src/data/daily-driver-fixture.json';
 const publicPath = 'public/examples/daily-driver-fixture.json';
@@ -69,7 +70,7 @@ assert.match(coverage.purpose, /unmeasured/i, 'coverage must describe its honest
 const expectedCoverage = new Map([
   ['sanitized-fixture-and-artifact', 'baseline-evidence'],
   ['clean-install-and-first-graph', 'not-measured'],
-  ['standalone-html-and-conventional-diff-proof', 'not-measured'],
+  ['standalone-html-and-conventional-diff-proof', 'baseline-evidence'],
   ['ai-off-and-provider-paths', 'not-measured'],
   ['recovery-paths', 'not-measured'],
   ['cross-file-context-and-conservative-cases', 'not-measured'],
@@ -97,8 +98,8 @@ assert(coverage.criteria.find((entry) => entry.id === 'sanitized-fixture-and-art
 assert(coverage.criteria.find((entry) => entry.id === 'reviewer-task-outcome').evidence.includes('/examples/daily-driver-review-task.json'), 'reviewer coverage must link the protocol');
 assert.match(
   coverage.criteria.find((entry) => entry.id === 'standalone-html-and-conventional-diff-proof').note,
-  /standalone HTML report.*conventional diff/i,
-  'coverage must distinguish checked-in evidence from the unmeasured standalone-report and conventional-diff proof',
+  /standalone HTML report.*canonical structural JSON.*conventional textual diff/i,
+  'coverage must distinguish checked-in standalone proof from an unmeasured conventional diff/PR comparison',
 );
 assert.match(
   coverage.criteria.find((entry) => entry.id === 'cross-file-context-and-conservative-cases').note,
@@ -140,6 +141,54 @@ assert.match(
   /const sampleDiffUrl = "\/examples\/greeting\.diff";/,
   'proof must link its evidence view to the published fixture diff',
 );
+assert.match(
+  proofComponent,
+  /const sampleStandaloneHtmlUrl = "\/examples\/greeting-structural\.html"/,
+  'proof must link the checked-in standalone report',
+);
+assert.match(
+  proofComponent,
+  /<a href=\{sampleStandaloneHtmlUrl\}[^>]*>[\s\S]*?Open standalone graph<\/a>/,
+  'proof standalone-report anchor must reference the public URL constant',
+);
+const standaloneHtml = await readFile(fixture.artifact.files.standaloneHtml.path, 'utf8');
+assert.match(standaloneHtml, /Offline standalone rendering/, 'standalone report must disclose its offline fixture boundary');
+const standaloneReportUrl = new URL(
+  `/${fixture.artifact.files.standaloneHtml.path.replace(/^public\//, '')}`,
+  'https://fixture.invalid',
+);
+function extractAnchorHrefs(html) {
+  const hrefs = [];
+  const walk = (node) => {
+    if (node.tagName === 'a') {
+      const href = node.attrs?.find((attribute) => attribute.name === 'href')?.value;
+      if (href !== undefined) hrefs.push(href);
+    }
+    for (const child of node.childNodes ?? []) walk(child);
+  };
+  walk(parseFragment(html));
+  return hrefs;
+}
+
+assert.deepEqual(
+  extractAnchorHrefs("<!-- <a href='comment.json'>comment</a --><textarea><a href='textarea.json'>not a link</a></textarea><a data-note=' href=\"ignored.json\"' href='kept.json'>fixture</a><span href=\"not-an-anchor.json\">ignore</span>"),
+  ['kept.json'],
+  'standalone link validation must parse href attributes from real HTML anchors only',
+);
+
+const standaloneHrefUrls = extractAnchorHrefs(standaloneHtml)
+  .map((href) => new URL(href, standaloneReportUrl).href);
+for (const [name, entry] of Object.entries({
+  artifact: fixture.artifact.files.artifact,
+  diff: fixture.artifact.files.diff,
+})) {
+  const expectedUrl = new URL(`/${entry.path.replace(/^public\//, '')}`, standaloneReportUrl).href;
+  assert(
+    standaloneHrefUrls.includes(expectedUrl),
+    `standalone report must link the canonical ${name} at ${expectedUrl}`,
+  );
+}
+
 assert.equal(
   `public${proofComponent.match(/const sampleArtifactUrl = "([^"]+)";/)?.[1] ?? ''}`,
   fixture.artifact.files.artifact.path,

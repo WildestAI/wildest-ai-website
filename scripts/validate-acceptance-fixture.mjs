@@ -6,6 +6,7 @@ import { readFile } from 'node:fs/promises';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createServer } from 'vite';
+import { parseFragment } from 'parse5';
 
 const sourcePath = 'src/data/daily-driver-fixture.json';
 const publicPath = 'public/examples/daily-driver-fixture.json';
@@ -158,69 +159,23 @@ const standaloneReportUrl = new URL(
 );
 function extractAnchorHrefs(html) {
   const hrefs = [];
-  let index = 0;
-  while (index < html.length) {
-    const start = html.indexOf('<', index);
-    if (start === -1) break;
-    if (html.startsWith('<!--', start)) {
-      const end = html.indexOf('-->', start + 4);
-      index = end === -1 ? html.length : end + 3;
-      continue;
+  const walk = (node) => {
+    if (node.tagName === 'a') {
+      const href = node.attrs?.find((attribute) => attribute.name === 'href')?.value;
+      if (href !== undefined) hrefs.push(href);
     }
-
-    let cursor = start + 1;
-    if (html[cursor] === '/') {
-      index = cursor + 1;
-      continue;
-    }
-    while (/\s/.test(html[cursor] ?? '')) cursor += 1;
-    const nameStart = cursor;
-    while (/[A-Za-z0-9:-]/.test(html[cursor] ?? '')) cursor += 1;
-    const tagName = html.slice(nameStart, cursor).toLowerCase();
-    if (!tagName) {
-      index = cursor + 1;
-      continue;
-    }
-
-    const attributes = new Map();
-    while (cursor < html.length) {
-      while (/\s/.test(html[cursor] ?? '')) cursor += 1;
-      if (html[cursor] === '>' || html[cursor] === '/') break;
-      const attributeStart = cursor;
-      while (!/[\s=>/]/.test(html[cursor] ?? '')) cursor += 1;
-      const attributeName = html.slice(attributeStart, cursor).toLowerCase();
-      while (/\s/.test(html[cursor] ?? '')) cursor += 1;
-      let value = '';
-      if (html[cursor] === '=') {
-        cursor += 1;
-        while (/\s/.test(html[cursor] ?? '')) cursor += 1;
-        const quote = html[cursor];
-        if (quote === '"' || quote === "'") {
-          cursor += 1;
-          const valueStart = cursor;
-          while (cursor < html.length && html[cursor] !== quote) cursor += 1;
-          value = html.slice(valueStart, cursor);
-          if (html[cursor] === quote) cursor += 1;
-        } else {
-          const valueStart = cursor;
-          while (!/[\s>]/.test(html[cursor] ?? '')) cursor += 1;
-          value = html.slice(valueStart, cursor);
-        }
-      }
-      if (attributeName) attributes.set(attributeName, value);
-    }
-    while (cursor < html.length && html[cursor] !== '>') cursor += 1;
-    index = cursor + 1;
-    if (tagName === 'a' && attributes.has('href')) hrefs.push(attributes.get('href'));
-  }
+    for (const child of node.childNodes ?? []) walk(child);
+  };
+  walk(parseFragment(html));
   return hrefs;
 }
 
 assert.deepEqual(
-  extractAnchorHrefs("<!-- <a href='comment.json'>comment</a> --><a data-note=' href=\"ignored.json\"' href='kept.json'>fixture</a><span href=\"not-an-anchor.json\">ignore</span>"),
+  extractAnchorHrefs("<!-- <a href='comment.json'>comment</a --><textarea><a href='textarea.json'>not a link</a></textarea><a data-note=' href=\"ignored.json\"' href='kept.json'>fixture</a><span href=\"not-an-anchor.json\">ignore</span>"),
   ['kept.json'],
-  'standalone link validation must parse href attributes from real anchor elements only',
+  'standalone link validation must parse href attributes from real HTML anchors only',
 );
+
 const standaloneHrefUrls = extractAnchorHrefs(standaloneHtml)
   .map((href) => new URL(href, standaloneReportUrl).href);
 for (const [name, entry] of Object.entries({

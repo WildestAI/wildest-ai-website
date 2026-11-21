@@ -204,6 +204,31 @@ assert.match(
   /<a href=\{sampleDiffUrl\}[^>]*>[\s\S]*?View textual diff<\/a>/,
   'proof diff anchor must reference the published diff URL constant',
 );
+assert.match(
+  proofComponent,
+  /const sourceEvidenceUrl = evidence\.kind === "ast_parse" \? sampleAfterBlobUrl : sampleDiffUrl;/,
+  'parser-backed topology evidence must link to its checked-in Git post-image',
+);
+assert.match(
+  proofComponent,
+  /const sourceEvidenceLabel = evidence\.kind === "ast_parse" \? "Git post-image" : "Textual diff";/,
+  'selected evidence must identify whether its source link is a Git post-image or textual diff',
+);
+assert.match(
+  proofComponent,
+  /href=\{sourceEvidenceUrl\} aria-label=\{`\$\{sourceEvidenceLabel\}: \$\{sourceRange\}`\}>\{sourceRange\}<\/a>/,
+  'selected evidence range must use the source-evidence URL',
+);
+assert.match(
+  proofComponent,
+  /href=\{sampleBeforeBlobUrl\}>View Git pre-image<\/a>/,
+  'selected evidence panel must expose the checked-in Git pre-image',
+);
+assert.match(
+  proofComponent,
+  /href=\{sampleAfterBlobUrl\}>View Git post-image<\/a>/,
+  'selected evidence panel must expose the checked-in Git post-image',
+);
 const vite = await createServer({
   appType: 'custom',
   server: { middlewareMode: true },

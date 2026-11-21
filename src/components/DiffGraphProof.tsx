@@ -31,6 +31,8 @@ const DiffGraphProof = () => {
   const sourceRange = evidence.line_start
     ? `${evidence.file ?? file.path}:${evidence.line_start}${evidence.line_end && evidence.line_end !== evidence.line_start ? `-${evidence.line_end}` : ""}`
     : evidence.file ?? file.path;
+  const sourceEvidenceUrl = evidence.kind === "ast_parse" ? sampleAfterBlobUrl : sampleDiffUrl;
+  const sourceEvidenceLabel = evidence.kind === "ast_parse" ? "Git post-image" : "Textual diff";
 
   return (
     <section className="py-20 bg-secondary/30" aria-labelledby="diffgraph-proof-title">
@@ -82,7 +84,7 @@ const DiffGraphProof = () => {
                 <p className="text-sm font-medium mb-2">{"name" in selected ? selected.name : selected.kind}</p>
                 <dl className="space-y-3 text-sm text-muted-foreground">
                   <div><dt className="font-medium text-foreground">Analysis source</dt><dd>{selected.analysis_source}</dd></div>
-                  <div><dt className="font-medium text-foreground">Evidence</dt><dd>{evidence.kind} — <a className="text-primary hover:underline" href={sampleDiffUrl}>{sourceRange}</a></dd></div>
+                  <div><dt className="font-medium text-foreground">Evidence</dt><dd>{evidence.kind} — <a className="text-primary hover:underline" href={sourceEvidenceUrl} aria-label={`${sourceEvidenceLabel}: ${sourceRange}`}>{sourceRange}</a> <span aria-hidden="true">·</span> <a className="text-primary hover:underline" href={sampleDiffUrl}>View textual diff</a></dd></div>
                   <div><dt className="font-medium text-foreground">Schema / generator</dt><dd>v{artifact.schema_version} / wild {artifact.wild_version}</dd></div>
                   <div><dt className="font-medium text-foreground">Artifact SHA-256</dt><dd><code className="break-all text-xs">{fixture.artifact.files.artifact.sha256}</code></dd></div>
                   <div><dt className="font-medium text-foreground">Standalone report SHA-256</dt><dd><code className="break-all text-xs">{fixture.artifact.files.standaloneHtml.sha256}</code></dd></div>
@@ -97,7 +99,11 @@ const DiffGraphProof = () => {
                   ) : (
                     <p className="mt-2 text-muted-foreground">This selected evidence is backed by the parser finding at {sourceRange}.</p>
                   )}
-                  <a className="mt-2 inline-flex text-primary hover:underline" href={sampleDiffUrl}>Open the checked-in textual diff</a>
+                  <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+                    <a className="inline-flex text-primary hover:underline" href={sampleBeforeBlobUrl}>View Git pre-image</a>
+                    <a className="inline-flex text-primary hover:underline" href={sampleAfterBlobUrl}>View Git post-image</a>
+                    <a className="inline-flex text-primary hover:underline" href={sampleDiffUrl}>Open the checked-in textual diff</a>
+                  </div>
                 </div>
                 <a href={schemaUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm text-primary hover:underline mt-5">View schema <ExternalLink className="ml-1 h-4 w-4" /></a>
               </aside>

@@ -19,6 +19,35 @@ const schemaUrl = `https://github.com/WildestAI/wild/blob/${fixture.source.commi
 
 type Selection = "file" | "symbol" | "relationship";
 
+type GitBlobProvenance = {
+  old_oid: string;
+  new_oid: string;
+  old_mode: string;
+  new_mode: string;
+};
+
+function readGitBlobProvenance(file: typeof artifact.files[number]): GitBlobProvenance | undefined {
+  const detail = file.evidence.find((entry) => entry.kind === "git_diff_name_status")?.detail;
+  if (!detail) return undefined;
+
+  try {
+    const parsed: unknown = JSON.parse(detail);
+    if (
+      typeof parsed === "object" && parsed !== null &&
+      "old_oid" in parsed && typeof parsed.old_oid === "string" &&
+      "new_oid" in parsed && typeof parsed.new_oid === "string" &&
+      "old_mode" in parsed && typeof parsed.old_mode === "string" &&
+      "new_mode" in parsed && typeof parsed.new_mode === "string"
+    ) {
+      return parsed as GitBlobProvenance;
+    }
+  } catch {
+    // The proof remains usable when an older fixture has no machine-readable provenance.
+  }
+
+  return undefined;
+}
+
 const DiffGraphProof = () => {
   const [selection, setSelection] = useState<Selection>("symbol");
   const measuredCriteria = coverage.criteria.filter((criterion) => criterion.status === "baseline-evidence");
@@ -26,6 +55,10 @@ const DiffGraphProof = () => {
   const file = artifact.files[0];
   const symbol = artifact.symbols[0];
   const relationship = artifact.relationships[0];
+  const blobProvenance = readGitBlobProvenance(file);
+  const comparisonInput = artifact.diff_ref.kind === "unstaged"
+    ? "Working tree vs index (no commit range)"
+    : `${artifact.diff_ref.base_ref ?? "unresolved base"} → ${artifact.diff_ref.head_ref ?? "unresolved head"}`;
   const selected = selection === "file" ? file : selection === "symbol" ? symbol : relationship;
   const evidence = selected.evidence[0];
   const sourceRange = evidence.line_start
@@ -90,7 +123,8 @@ const DiffGraphProof = () => {
                   <div><dt className="font-medium text-foreground">Standalone report SHA-256</dt><dd><code className="break-all text-xs">{fixture.artifact.files.standaloneHtml.sha256}</code></dd></div>
                   <div><dt className="font-medium text-foreground">Diff SHA-256</dt><dd><code className="break-all text-xs">{fixture.artifact.files.diff.sha256}</code></dd></div>
                   <div><dt className="font-medium text-foreground">Generated</dt><dd>{artifact.generated_at}</dd></div>
-                  <div><dt className="font-medium text-foreground">Input</dt><dd>{artifact.diff_ref.kind} diff; Python</dd></div>
+                  <div><dt className="font-medium text-foreground">Input</dt><dd>{comparisonInput}; Python</dd></div>
+                  {blobProvenance && <div><dt className="font-medium text-foreground">Immutable Git blobs</dt><dd className="space-y-1"><span className="block">Pre-image <a className="text-primary hover:underline" href={sampleBeforeBlobUrl}><code className="break-all text-xs">{blobProvenance.old_oid}</code></a> <span className="text-xs">({blobProvenance.old_mode})</span></span><span className="block">Post-image <a className="text-primary hover:underline" href={sampleAfterBlobUrl}><code className="break-all text-xs">{blobProvenance.new_oid}</code></a> <span className="text-xs">({blobProvenance.new_mode})</span></span></dd></div>}
                 </dl>
                 <div className="mt-5 rounded-md border border-border bg-muted/40 p-3 text-sm">
                   <div className="flex items-center gap-2 font-medium text-foreground"><Quote className="h-4 w-4 text-primary" /> Source evidence</div>

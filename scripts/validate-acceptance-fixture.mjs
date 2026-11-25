@@ -240,6 +240,11 @@ try {
   assert(renderedProof.includes(fixture.artifact.files.artifact.sha256), 'rendered proof must surface the canonical artifact digest');
   assert(renderedProof.includes('Diff SHA-256'), 'rendered proof must label the fixture diff digest');
   assert(renderedProof.includes(fixture.artifact.files.diff.sha256), 'rendered proof must surface the fixture diff digest');
+  assert(renderedProof.includes('Working tree vs index (no commit range)'), 'rendered proof must name unstaged input semantics instead of inventing a commit range');
+  assert(renderedProof.includes('Immutable Git blobs'), 'rendered proof must label immutable Git input provenance');
+  const firstFileEvidence = JSON.parse(JSON.parse(publishedArtifact).files[0].evidence.find((entry) => entry.kind === 'git_diff_name_status').detail);
+  assert(renderedProof.includes(firstFileEvidence.old_oid), 'rendered proof must surface the fixture pre-image blob identity');
+  assert(renderedProof.includes(firstFileEvidence.new_oid), 'rendered proof must surface the fixture post-image blob identity');
 } finally {
   await vite.close();
 }

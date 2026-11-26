@@ -168,8 +168,13 @@ function walkHtmlElements(html, visitor, { includeDeclarativeShadowContent = fal
   walk(parseFragment(html));
 }
 
-function attributeValue(node, name) {
-  return node.attrs?.find((attribute) => attribute.name === name)?.value;
+function attributeValue(node, qualifiedName) {
+  const [prefix, name] = qualifiedName.includes(':')
+    ? qualifiedName.split(':', 2)
+    : [undefined, qualifiedName];
+  return node.attrs?.find((attribute) => (
+    attribute.name === name && (prefix === undefined ? attribute.prefix === undefined : attribute.prefix === prefix)
+  ))?.value;
 }
 
 function normalizeUrlValue(value) {
@@ -292,6 +297,16 @@ assert.doesNotThrow(
   () => assertOfflineStandaloneReport('<svg><image href="images/tracker.png" /></svg>'),
   'offline gate must allow local SVG image resources',
 );
+for (const svgImage of [
+  '<svg><image xlink:href="images/local.png" href="https://example.invalid/tracker.png" /></svg>',
+  '<svg><image href="https://example.invalid/tracker.png" xlink:href="images/local.png" /></svg>',
+]) {
+  assert.throws(
+    () => assertOfflineStandaloneReport(svgImage),
+    /must not load a network resource/,
+    'offline gate must reject a remote unprefixed SVG href regardless of xlink attribute order',
+  );
+}
 assert.throws(
   () => assertOfflineStandaloneReport('<iframe srcdoc="<img src=\'https://example.invalid/tracker.png\'>"></iframe>'),
   /must not define an iframe srcdoc document/,

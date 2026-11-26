@@ -180,6 +180,12 @@ function srcsetUrls(value) {
   return value.split(',').map((candidate) => candidate.trim().split(/[\t\n\f\r ]+/, 1)[0]).filter(Boolean);
 }
 
+function decodeCssEscapes(value) {
+  return value.replace(/\\([0-9a-f]{1,6})(?:[\t\n\f\r ]+)?|\\(.)/gi, (_, hex, escaped) => (
+    hex === undefined ? escaped : String.fromCodePoint(Number.parseInt(hex, 16))
+  ));
+}
+
 function extractAnchorHrefs(html) {
   const hrefs = [];
   walkHtmlElements(html, (node) => {
@@ -202,14 +208,19 @@ function assertOfflineStandaloneReport(html) {
     ['track', ['src']],
     ['embed', ['src']],
     ['object', ['data']],
+    ['image', ['href', 'xlink:href']],
   ]);
   const networkReference = /^(?:https?:)?\/\//i;
   const hasNetworkReference = (value) => networkReference.test(normalizeUrlValue(value));
+  const cssHasNetworkReference = (value) => /(?:https?:)?\/\//i.test(decodeCssEscapes(value));
 
   walkHtmlElements(html, (node) => {
     assert.notEqual(node.tagName, 'base', 'standalone report must not define a base URL');
     if (node.tagName === 'meta' && attributeValue(node, 'http-equiv')?.toLowerCase() === 'refresh') {
       assert.fail('standalone report must not use a refresh redirect');
+    }
+    if (node.tagName === 'iframe' && attributeValue(node, 'srcdoc') !== undefined) {
+      assert.fail('standalone report must not define an iframe srcdoc document');
     }
     const resourceAttributes = [
       ...(automaticResourceAttributes.get(node.tagName) ?? []),
@@ -225,7 +236,7 @@ function assertOfflineStandaloneReport(html) {
       ? node.childNodes?.map((child) => child.value ?? '').join('') ?? ''
       : attributeValue(node, 'style');
     if (css !== undefined) {
-      assert(!/(?:https?:)?\/\//i.test(css), 'standalone report styles must not load a network resource');
+      assert(!cssHasNetworkReference(css), 'standalone report styles must not load a network resource');
     }
   }, { includeDeclarativeShadowContent: true });
 }
@@ -271,6 +282,29 @@ assert.throws(
   () => assertOfflineStandaloneReport('<div style="background-image: url(https://example.invalid/tracker.png)"></div>'),
   /styles must not load a network resource/,
   'offline gate must reject remote style attribute resources',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<svg><image href="https://example.invalid/tracker.png" /></svg>'),
+  /must not load a network resource/,
+  'offline gate must reject remote SVG image resources',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<svg><image href="images/tracker.png" /></svg>'),
+  'offline gate must allow local SVG image resources',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<iframe srcdoc="<img src=\'https://example.invalid/tracker.png\'>"></iframe>'),
+  /must not define an iframe srcdoc document/,
+  'offline gate must reject embedded iframe documents',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(https:\\2f\\2f example.invalid/tracker.png)"></div>'),
+  /styles must not load a network resource/,
+  'offline gate must reject CSS-escaped remote style URLs',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(images/tracker.png)"></div>'),
+  'offline gate must allow local style URLs',
 );
 
 const standaloneHrefUrls = extractAnchorHrefs(standaloneHtml)

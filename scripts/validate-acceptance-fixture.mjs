@@ -157,23 +157,76 @@ const standaloneReportUrl = new URL(
   `/${fixture.artifact.files.standaloneHtml.path.replace(/^public\//, '')}`,
   'https://fixture.invalid',
 );
-function extractAnchorHrefs(html) {
-  const hrefs = [];
+function walkHtmlElements(html, visitor) {
   const walk = (node) => {
-    if (node.tagName === 'a') {
-      const href = node.attrs?.find((attribute) => attribute.name === 'href')?.value;
-      if (href !== undefined) hrefs.push(href);
-    }
+    if (node.tagName) visitor(node);
     for (const child of node.childNodes ?? []) walk(child);
   };
   walk(parseFragment(html));
+}
+
+function attributeValue(node, name) {
+  return node.attrs?.find((attribute) => attribute.name === name)?.value;
+}
+
+function extractAnchorHrefs(html) {
+  const hrefs = [];
+  walkHtmlElements(html, (node) => {
+    if (node.tagName !== 'a') return;
+    const href = attributeValue(node, 'href');
+    if (href !== undefined) hrefs.push(href);
+  });
   return hrefs;
+}
+
+function assertOfflineStandaloneReport(html) {
+  const automaticResourceAttributes = new Map([
+    ['script', ['src']],
+    ['link', ['href']],
+    ['img', ['src', 'srcset']],
+    ['iframe', ['src']],
+    ['audio', ['src']],
+    ['video', ['src', 'poster']],
+    ['source', ['src', 'srcset']],
+    ['track', ['src']],
+    ['embed', ['src']],
+    ['object', ['data']],
+  ]);
+  const networkReference = /^(?:https?:)?\/\//i;
+
+  walkHtmlElements(html, (node) => {
+    assert.notEqual(node.tagName, 'base', 'standalone report must not define a base URL');
+    if (node.tagName === 'meta' && attributeValue(node, 'http-equiv')?.toLowerCase() === 'refresh') {
+      assert.fail('standalone report must not use a refresh redirect');
+    }
+    for (const attribute of automaticResourceAttributes.get(node.tagName) ?? []) {
+      const value = attributeValue(node, attribute);
+      if (value === undefined) continue;
+      assert(!networkReference.test(value), `standalone report must not load a network resource: <${node.tagName} ${attribute}=${value}>`);
+    }
+    if (node.tagName === 'style') {
+      const css = node.childNodes?.map((child) => child.value ?? '').join('') ?? '';
+      assert(!/(?:https?:)?\/\//i.test(css), 'standalone report styles must not load a network resource');
+    }
+  });
 }
 
 assert.deepEqual(
   extractAnchorHrefs("<!-- <a href='comment.json'>comment</a --><textarea><a href='textarea.json'>not a link</a></textarea><a data-note=' href=\"ignored.json\"' href='kept.json'>fixture</a><span href=\"not-an-anchor.json\">ignore</span>"),
   ['kept.json'],
   'standalone link validation must parse href attributes from real HTML anchors only',
+);
+
+assertOfflineStandaloneReport(standaloneHtml);
+assert.throws(
+  () => assertOfflineStandaloneReport('<img src="https://example.invalid/tracker.png">'),
+  /must not load a network resource/,
+  'offline gate must reject remote automatic resources',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<meta http-equiv="refresh" content="0;url=https://example.invalid">'),
+  /must not use a refresh redirect/,
+  'offline gate must reject refresh redirects',
 );
 
 const standaloneHrefUrls = extractAnchorHrefs(standaloneHtml)

@@ -199,7 +199,7 @@ function cssResourceUrls(value) {
     return '';
   };
   decoded.replace(/url\(\s*(?:"([^"]*)"|'([^']*)'|([^\s)]+))\s*\)/gi, collectUrl);
-  decoded.replace(/@import\s+(?:"([^"]*)"|'([^']*)')/gi, collectUrl);
+  decoded.replace(/@import(?:\s|\/\*[\s\S]*?\*\/)*(?:"([^"]*)"|'([^']*)')/gi, collectUrl);
   return urls;
 }
 
@@ -360,6 +360,20 @@ assert.doesNotThrow(
 assert.doesNotThrow(
   () => assertOfflineStandaloneReport('<div style="background-image: url(images//local.png)"></div>'),
   'offline gate must allow relative style URLs with double slashes in their path',
+);
+for (const css of [
+  '@import"https://example.invalid/tracker.css";',
+  '@import/* deliberately no whitespace */"https://example.invalid/tracker.css";',
+]) {
+  assert.throws(
+    () => assertOfflineStandaloneReport(`<style>${css}</style>`),
+    /styles must not load a network resource/,
+    'offline gate must reject remote CSS imports without whitespace',
+  );
+}
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<style>@import/* local resource */"styles/local.css";</style>'),
+  'offline gate must allow local CSS imports with comments',
 );
 
 const standaloneHrefUrls = extractAnchorHrefs(standaloneHtml)

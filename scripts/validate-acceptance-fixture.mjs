@@ -191,6 +191,18 @@ function decodeCssEscapes(value) {
   ));
 }
 
+function cssResourceUrls(value) {
+  const decoded = decodeCssEscapes(value);
+  const urls = [];
+  const collectUrl = (_, doubleQuoted, singleQuoted, bare) => {
+    urls.push(doubleQuoted ?? singleQuoted ?? bare);
+    return '';
+  };
+  decoded.replace(/url\(\s*(?:"([^"]*)"|'([^']*)'|([^\s)]+))\s*\)/gi, collectUrl);
+  decoded.replace(/@import\s+(?:"([^"]*)"|'([^']*)')/gi, collectUrl);
+  return urls;
+}
+
 function extractAnchorHrefs(html) {
   const hrefs = [];
   walkHtmlElements(html, (node) => {
@@ -217,7 +229,7 @@ function assertOfflineStandaloneReport(html) {
   ]);
   const networkReference = /^(?:(?:https?:)?\/\/|https?:)/i;
   const hasNetworkReference = (value) => networkReference.test(normalizeUrlValue(value));
-  const cssHasNetworkReference = (value) => /(?:(?:https?:)?\/\/|https?:)/i.test(decodeCssEscapes(value));
+  const cssHasNetworkReference = (value) => cssResourceUrls(value).some(hasNetworkReference);
 
   walkHtmlElements(html, (node) => {
     assert.notEqual(node.tagName, 'base', 'standalone report must not define a base URL');
@@ -344,6 +356,10 @@ assert.throws(
 assert.doesNotThrow(
   () => assertOfflineStandaloneReport('<div style="background-image: url(images/tracker.png)"></div>'),
   'offline gate must allow local style URLs',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(images//local.png)"></div>'),
+  'offline gate must allow relative style URLs with double slashes in their path',
 );
 
 const standaloneHrefUrls = extractAnchorHrefs(standaloneHtml)

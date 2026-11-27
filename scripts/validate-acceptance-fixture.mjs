@@ -215,7 +215,7 @@ function assertOfflineStandaloneReport(html) {
     ['object', ['data']],
     ['image', ['href', 'xlink:href']],
   ]);
-  const networkReference = /^(?:https?:)?\/\//i;
+  const networkReference = /^(?:(?:https?:)?\/\/|https?:)/i;
   const hasNetworkReference = (value) => networkReference.test(normalizeUrlValue(value));
   const cssHasNetworkReference = (value) => /(?:https?:)?\/\//i.test(decodeCssEscapes(value));
 
@@ -257,6 +257,15 @@ assert.throws(
   () => assertOfflineStandaloneReport('<img src="https://example.invalid/tracker.png">'),
   /must not load a network resource/,
   'offline gate must reject remote automatic resources',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<img src="https:example.invalid/tracker.png">'),
+  /must not load a network resource/,
+  'offline gate must reject remote automatic resources without slash-prefixed schemes',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<img src="images/local.png">'),
+  'offline gate must allow local automatic resources',
 );
 assert.throws(
   () => assertOfflineStandaloneReport('<meta http-equiv="refresh" content="0;url=https://example.invalid">'),

@@ -217,7 +217,7 @@ function assertOfflineStandaloneReport(html) {
   ]);
   const networkReference = /^(?:(?:https?:)?\/\/|https?:)/i;
   const hasNetworkReference = (value) => networkReference.test(normalizeUrlValue(value));
-  const cssHasNetworkReference = (value) => /https?:/i.test(decodeCssEscapes(value));
+  const cssHasNetworkReference = (value) => /(?:(?:https?:)?\/\/|https?:)/i.test(decodeCssEscapes(value));
 
   walkHtmlElements(html, (node) => {
     assert.notEqual(node.tagName, 'base', 'standalone report must not define a base URL');
@@ -301,6 +301,16 @@ assert.throws(
   () => assertOfflineStandaloneReport('<div style="background-image: url(https:example.invalid/tracker.png)"></div>'),
   /styles must not load a network resource/,
   'offline gate must reject slashless remote style attribute resources',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(//example.invalid/tracker.png)"></div>'),
+  /styles must not load a network resource/,
+  'offline gate must reject protocol-relative style attribute resources',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<style>.report { background-image: url(//example.invalid/tracker.png); }</style>'),
+  /styles must not load a network resource/,
+  'offline gate must reject protocol-relative style block resources',
 );
 assert.throws(
   () => assertOfflineStandaloneReport('<svg><image href="https://example.invalid/tracker.png" /></svg>'),

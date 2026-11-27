@@ -191,15 +191,57 @@ function decodeCssEscapes(value) {
   ));
 }
 
+function cssWithoutComments(value) {
+  let result = '';
+  let quote;
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index];
+    if (quote) {
+      result += character;
+      if (character === '\\') result += value[++index] ?? '';
+      else if (character === quote) quote = undefined;
+      continue;
+    }
+    if (character === '"' || character === "'") {
+      quote = character;
+      result += character;
+    } else if (character === '/' && value[index + 1] === '*') {
+      const end = value.indexOf('*/', index + 2);
+      result += ' '.repeat((end < 0 ? value.length : end + 2) - index);
+      index = end < 0 ? value.length : end + 1;
+    } else result += character;
+  }
+  return result;
+}
+
+function isOutsideCssString(value, end) {
+  let quote;
+  for (let index = 0; index < end; index += 1) {
+    const character = value[index];
+    if (quote) {
+      if (character === '\\') index += 1;
+      else if (character === quote) quote = undefined;
+    } else if (character === '"' || character === "'") quote = character;
+  }
+  return quote === undefined;
+}
+
 function cssResourceUrls(value) {
-  const decoded = decodeCssEscapes(value);
+  const css = cssWithoutComments(decodeCssEscapes(value));
   const urls = [];
   const collectUrl = (_, doubleQuoted, singleQuoted, bare) => {
     urls.push(doubleQuoted ?? singleQuoted ?? bare);
     return '';
   };
-  decoded.replace(/url\(\s*(?:"([^"]*)"|'([^']*)'|([^\s)]+))\s*\)/gi, collectUrl);
-  decoded.replace(/@import(?:\s|\/\*[\s\S]*?\*\/)*(?:"([^"]*)"|'([^']*)')/gi, collectUrl);
+  for (const match of css.matchAll(/url\(\s*(?:"([^"]*)"|'([^']*)'|([^\s)]+))(?:\s*\)|\s*$)/gi)) {
+    if (isOutsideCssString(css, match.index)) collectUrl(...match);
+  }
+  for (const match of css.matchAll(/@import\s*(?:"([^"]*)"|'([^']*)')/gi)) {
+    if (isOutsideCssString(css, match.index)) collectUrl(...match);
+  }
+  for (const match of css.matchAll(/image-set\(\s*(?:"([^"]*)"|'([^']*)')/gi)) {
+    if (isOutsideCssString(css, match.index)) collectUrl(...match);
+  }
   return urls;
 }
 
@@ -357,6 +399,24 @@ assert.doesNotThrow(
   () => assertOfflineStandaloneReport('<div style="background-image: url(images/tracker.png)"></div>'),
   'offline gate must allow local style URLs',
 );
+assert.throws(
+  () => assertOfflineStandaloneReport(`<div style="background-image: image-set('https://example.invalid/tracker.png' 1x)"></div>`),
+  /styles must not load a network resource/,
+  'offline gate must reject remote image-set string candidates',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport(`<div style="background-image: image-set('images/tracker.png' 1x)"></div>`),
+  'offline gate must allow local image-set string candidates',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(https://example.invalid/tracker.png"></div>'),
+  /styles must not load a network resource/,
+  'offline gate must reject EOF-terminated remote style URLs',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(images/tracker.png"></div>'),
+  'offline gate must allow EOF-terminated local style URLs',
+);
 assert.doesNotThrow(
   () => assertOfflineStandaloneReport('<div style="background-image: url(images//local.png)"></div>'),
   'offline gate must allow relative style URLs with double slashes in their path',
@@ -374,6 +434,10 @@ for (const css of [
 assert.doesNotThrow(
   () => assertOfflineStandaloneReport('<style>@import/* local resource */"styles/local.css";</style>'),
   'offline gate must allow local CSS imports with comments',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<style>/* @import"https://example.invalid/unused.css"; */</style>'),
+  'offline gate must ignore commented CSS imports',
 );
 
 const standaloneHrefUrls = extractAnchorHrefs(standaloneHtml)

@@ -157,23 +157,433 @@ const standaloneReportUrl = new URL(
   `/${fixture.artifact.files.standaloneHtml.path.replace(/^public\//, '')}`,
   'https://fixture.invalid',
 );
-function extractAnchorHrefs(html) {
-  const hrefs = [];
+function walkHtmlElements(html, visitor, { includeDeclarativeShadowContent = false } = {}) {
   const walk = (node) => {
-    if (node.tagName === 'a') {
-      const href = node.attrs?.find((attribute) => attribute.name === 'href')?.value;
-      if (href !== undefined) hrefs.push(href);
-    }
+    if (node.tagName) visitor(node);
     for (const child of node.childNodes ?? []) walk(child);
+    if (includeDeclarativeShadowContent && attributeValue(node, 'shadowrootmode') !== undefined) {
+      for (const child of node.content?.childNodes ?? []) walk(child);
+    }
   };
   walk(parseFragment(html));
+}
+
+function attributeValue(node, qualifiedName) {
+  const [prefix, name] = qualifiedName.includes(':')
+    ? qualifiedName.split(':', 2)
+    : [undefined, qualifiedName];
+  return node.attrs?.find((attribute) => (
+    attribute.name === name && (prefix === undefined ? attribute.prefix === undefined : attribute.prefix === prefix)
+  ))?.value;
+}
+
+function normalizeUrlValue(value) {
+  return value.replace(/[\t\n\f\r ]/g, '');
+}
+
+function srcsetUrls(value) {
+  return value.split(',').map((candidate) => candidate.trim().split(/[\t\n\f\r ]+/, 1)[0]).filter(Boolean);
+}
+
+function decodeCssEscapes(value) {
+  return value.replace(/\\([0-9a-f]{1,6})(?:[\t\n\f\r ]+)?|\\(.)/gi, (_, hex, escaped) => (
+    hex === undefined ? escaped : String.fromCodePoint(Number.parseInt(hex, 16))
+  ));
+}
+
+function cssWithoutComments(value) {
+  let result = '';
+  let quote;
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index];
+    if (quote) {
+      result += character;
+      if (character === '\\') result += value[++index] ?? '';
+      else if (character === quote || character === '\n' || character === '\r' || character === '\f') quote = undefined;
+      continue;
+    }
+    if (character === '"' || character === "'") {
+      quote = character;
+      result += character;
+    } else if (character === '/' && value[index + 1] === '*') {
+      const end = value.indexOf('*/', index + 2);
+      result += ' '.repeat((end < 0 ? value.length : end + 2) - index);
+      index = end < 0 ? value.length : end + 1;
+    } else result += character;
+  }
+  return result;
+}
+
+function isOutsideCssString(value, end) {
+  let quote;
+  for (let index = 0; index < end; index += 1) {
+    const character = value[index];
+    if (quote) {
+      if (character === '\\') index += 1;
+      else if (character === quote || character === '\n' || character === '\r' || character === '\f') quote = undefined;
+    } else if (character === '"' || character === "'") quote = character;
+  }
+  return quote === undefined;
+}
+
+function cssIdentifierAt(value, start) {
+  let decoded = '';
+  let index = start;
+  while (index < value.length) {
+    const character = value[index];
+    if (/[a-z0-9_-]/i.test(character)) {
+      decoded += character;
+      index += 1;
+      continue;
+    }
+    if (character !== '\\' || index + 1 >= value.length) break;
+    const escape = value.slice(index).match(/^\\([0-9a-f]{1,6})(?:[\t\n\f\r ]+)?|^\\(.)/i);
+    if (!escape) break;
+    decoded += escape[1] === undefined
+      ? escape[2]
+      : String.fromCodePoint(Number.parseInt(escape[1], 16));
+    index += escape[0].length;
+  }
+  return { decoded, end: index };
+}
+
+function cssFunctions(value, name) {
+  const functions = [];
+  const expression = name.toLowerCase();
+  let quote;
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index];
+    if (quote) {
+      if (character === '\\') index += 1;
+      else if (character === quote || character === '\n' || character === '\r' || character === '\f') quote = undefined;
+      continue;
+    }
+    if (character === '"' || character === "'") {
+      quote = character;
+      continue;
+    }
+    const identifier = cssIdentifierAt(value, index);
+    if (identifier.decoded.toLowerCase() !== expression
+      || /[a-z0-9_-]/i.test(value[index - 1] ?? '')
+      || /[a-z0-9_-]/i.test(value[identifier.end] ?? '')) continue;
+    let cursor = identifier.end;
+    while (/[\t\n\f\r ]/.test(value[cursor] ?? '')) cursor += 1;
+    if (value[cursor] !== '(') continue;
+    const start = ++cursor;
+    let depth = 1;
+    let nestedQuote;
+    for (; cursor < value.length; cursor += 1) {
+      const nested = value[cursor];
+      if (nestedQuote) {
+        if (nested === '\\') cursor += 1;
+        else if (nested === nestedQuote || nested === '\n' || nested === '\r' || nested === '\f') nestedQuote = undefined;
+      } else if (nested === '\\') cursor += 1;
+      else if (nested === '"' || nested === "'") nestedQuote = nested;
+      else if (nested === '(') depth += 1;
+      else if (nested === ')' && --depth === 0) break;
+    }
+    functions.push(value.slice(start, cursor));
+    index = cursor;
+  }
+  return functions;
+}
+
+function cssString(value) {
+  const quote = value[0];
+  if (quote !== '"' && quote !== "'") return undefined;
+  let result = '';
+  for (let index = 1; index < value.length; index += 1) {
+    const character = value[index];
+    if (character === quote) return result;
+    if (character === '\\') {
+      result += character + (value[++index] ?? '');
+    } else if (character === '\n' || character === '\r' || character === '\f') return undefined;
+    else result += character;
+  }
+  return undefined;
+}
+
+function cssResourceUrls(value) {
+  const css = cssWithoutComments(value);
+  const urls = [];
+  const addUrl = (url) => {
+    if (url !== undefined) urls.push(decodeCssEscapes(url));
+  };
+  for (const argument of cssFunctions(css, 'url')) {
+    const trimmed = argument.trimStart();
+    addUrl(cssString(trimmed) ?? trimmed.match(/^([^\t\n\f\r )]+)/)?.[1]);
+  }
+  for (const match of css.matchAll(/@import\s*(?:"([^"]*)"|'([^']*)')/gi)) {
+    if (isOutsideCssString(css, match.index)) addUrl(match[1] ?? match[2]);
+  }
+  for (const argument of cssFunctions(css, 'image-set')) {
+    let depth = 0;
+    let quote;
+    let candidateStart = 0;
+    const candidates = [];
+    for (let index = 0; index <= argument.length; index += 1) {
+      const character = argument[index];
+      if (quote) {
+        if (character === '\\') index += 1;
+        else if (character === quote || character === '\n' || character === '\r' || character === '\f') quote = undefined;
+      } else if (character === '"' || character === "'") quote = character;
+      else if (character === '(') depth += 1;
+      else if (character === ')') depth -= 1;
+      else if ((character === ',' && depth === 0) || character === undefined) {
+        candidates.push(argument.slice(candidateStart, index).trimStart());
+        candidateStart = index + 1;
+      }
+    }
+    for (const candidate of candidates) {
+      if (/^url\s*\(/i.test(candidate)) continue;
+      addUrl(cssString(candidate));
+    }
+  }
+  return urls;
+}
+
+function extractAnchorHrefs(html) {
+  const hrefs = [];
+  walkHtmlElements(html, (node) => {
+    if (node.tagName !== 'a') return;
+    const href = attributeValue(node, 'href');
+    if (href !== undefined) hrefs.push(href);
+  });
   return hrefs;
+}
+
+function assertOfflineStandaloneReport(html) {
+  const automaticResourceAttributes = new Map([
+    ['script', ['src']],
+    ['link', ['href']],
+    ['img', ['src', 'srcset']],
+    ['iframe', ['src']],
+    ['audio', ['src']],
+    ['video', ['src', 'poster']],
+    ['source', ['src', 'srcset']],
+    ['track', ['src']],
+    ['embed', ['src']],
+    ['object', ['data']],
+    ['image', ['href', 'xlink:href']],
+  ]);
+  const networkReference = /^(?:(?:https?:)?\/\/|https?:)/i;
+  const hasNetworkReference = (value) => networkReference.test(normalizeUrlValue(value));
+  const cssHasNetworkReference = (value) => cssResourceUrls(value).some(hasNetworkReference);
+
+  walkHtmlElements(html, (node) => {
+    assert.notEqual(node.tagName, 'base', 'standalone report must not define a base URL');
+    if (node.tagName === 'meta' && attributeValue(node, 'http-equiv')?.toLowerCase() === 'refresh') {
+      assert.fail('standalone report must not use a refresh redirect');
+    }
+    if (node.tagName === 'iframe' && attributeValue(node, 'srcdoc') !== undefined) {
+      assert.fail('standalone report must not define an iframe srcdoc document');
+    }
+    const resourceAttributes = [
+      ...(automaticResourceAttributes.get(node.tagName) ?? []),
+      ...(node.tagName === 'input' && attributeValue(node, 'type')?.toLowerCase() === 'image' ? ['src'] : []),
+    ];
+    for (const attribute of resourceAttributes) {
+      const value = attributeValue(node, attribute);
+      if (value === undefined) continue;
+      const urls = attribute === 'srcset' ? srcsetUrls(value) : [value];
+      assert(!urls.some(hasNetworkReference), `standalone report must not load a network resource: <${node.tagName} ${attribute}=${value}>`);
+    }
+    const css = node.tagName === 'style'
+      ? node.childNodes?.map((child) => child.value ?? '').join('') ?? ''
+      : attributeValue(node, 'style');
+    if (css !== undefined) {
+      assert(!cssHasNetworkReference(css), 'standalone report styles must not load a network resource');
+    }
+  }, { includeDeclarativeShadowContent: true });
 }
 
 assert.deepEqual(
   extractAnchorHrefs("<!-- <a href='comment.json'>comment</a --><textarea><a href='textarea.json'>not a link</a></textarea><a data-note=' href=\"ignored.json\"' href='kept.json'>fixture</a><span href=\"not-an-anchor.json\">ignore</span>"),
   ['kept.json'],
   'standalone link validation must parse href attributes from real HTML anchors only',
+);
+
+assertOfflineStandaloneReport(standaloneHtml);
+assert.throws(
+  () => assertOfflineStandaloneReport('<img src="https://example.invalid/tracker.png">'),
+  /must not load a network resource/,
+  'offline gate must reject remote automatic resources',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<img src="https:example.invalid/tracker.png">'),
+  /must not load a network resource/,
+  'offline gate must reject remote automatic resources without slash-prefixed schemes',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<img src="images/local.png">'),
+  'offline gate must allow local automatic resources',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<meta http-equiv="refresh" content="0;url=https://example.invalid">'),
+  /must not use a refresh redirect/,
+  'offline gate must reject refresh redirects',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<img src=" \nhttps://example.invalid/tracker.png">'),
+  /must not load a network resource/,
+  'offline gate must normalize browser URL whitespace',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<img srcset="local.png 1x, https://example.invalid/tracker.png 2x">'),
+  /must not load a network resource/,
+  'offline gate must inspect every srcset candidate',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<input type="image" src="https://example.invalid/button.png">'),
+  /must not load a network resource/,
+  'offline gate must reject remote image input resources',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<template shadowrootmode="open"><img src="https://example.invalid/tracker.png"></template>'),
+  /must not load a network resource/,
+  'offline gate must inspect declarative shadow content',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(https://example.invalid/tracker.png)"></div>'),
+  /styles must not load a network resource/,
+  'offline gate must reject remote style attribute resources',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(https:example.invalid/tracker.png)"></div>'),
+  /styles must not load a network resource/,
+  'offline gate must reject slashless remote style attribute resources',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(//example.invalid/tracker.png)"></div>'),
+  /styles must not load a network resource/,
+  'offline gate must reject protocol-relative style attribute resources',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<style>.report { background-image: url(//example.invalid/tracker.png); }</style>'),
+  /styles must not load a network resource/,
+  'offline gate must reject protocol-relative style block resources',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<svg><image href="https://example.invalid/tracker.png" /></svg>'),
+  /must not load a network resource/,
+  'offline gate must reject remote SVG image resources',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<svg><image href="images/tracker.png" /></svg>'),
+  'offline gate must allow local SVG image resources',
+);
+for (const svgImage of [
+  '<svg><image xlink:href="images/local.png" href="https://example.invalid/tracker.png" /></svg>',
+  '<svg><image href="https://example.invalid/tracker.png" xlink:href="images/local.png" /></svg>',
+]) {
+  assert.throws(
+    () => assertOfflineStandaloneReport(svgImage),
+    /must not load a network resource/,
+    'offline gate must reject a remote unprefixed SVG href regardless of xlink attribute order',
+  );
+}
+assert.throws(
+  () => assertOfflineStandaloneReport('<iframe srcdoc="<img src=\'https://example.invalid/tracker.png\'>"></iframe>'),
+  /must not define an iframe srcdoc document/,
+  'offline gate must reject embedded iframe documents',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(https:\\2f\\2f example.invalid/tracker.png)"></div>'),
+  /styles must not load a network resource/,
+  'offline gate must reject CSS-escaped remote style URLs',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(images/tracker.png)"></div>'),
+  'offline gate must allow local style URLs',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<div style="background-image: u\\72l(https://example.invalid/tracker.png)"></div>'),
+  /styles must not load a network resource/,
+  'offline gate must decode escaped CSS function names',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<div style="background-image: u\\72l(images/tracker.png)"></div>'),
+  'offline gate must allow local resources from escaped CSS function names',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport(`<style>
+div { content:"\n; background-image:url(https://example.invalid/tracker.png) }
+</style><div>visible</div>`),
+  /styles must not load a network resource/,
+  'offline gate must recover from an unescaped newline in a CSS string',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport(`<div style="background-image: image-set('https://example.invalid/tracker.png' 1x)"></div>`),
+  /styles must not load a network resource/,
+  'offline gate must reject remote image-set string candidates',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport(`<div style="background-image: image-set('images/tracker.png' 1x)"></div>`),
+  'offline gate must allow local image-set string candidates',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport(`<style>.report { background-image: image-set("images/local.png" 1x, "https://example.invalid/tracker.png" 2x); }</style><div class="report"></div>`),
+  /styles must not load a network resource/,
+  'offline gate must inspect every image-set string candidate',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport(`<style>.report { background-image: image-set(url("images/local.png") 1x, "https://example.invalid/tracker.png" 2x); }</style><div class="report"></div>`),
+  /styles must not load a network resource/,
+  'offline gate must inspect image-set candidates after nested functions',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport(`<style>.report { background-image: image-set("images/local.png" type("image/png") 1x, "https://example.invalid/tracker.png" 2x); }</style><div class="report"></div>`),
+  /styles must not load a network resource/,
+  'offline gate must ignore type strings while inspecting every image-set candidate',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport(`<style>.report { background-image: image-set("images/local.png" 1x, "images/retina.png" 2x); }</style><div class="report"></div>`),
+  'offline gate must allow an all-local image-set candidate list',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport(`<style>.report { background-image: image-set(url("images/local.png") 1x, "images/retina.png" type("image/png") 2x); }</style><div class="report"></div>`),
+  'offline gate must allow local image-set candidates with nested functions',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport(`<div style='font-family:"\\22";background-image:url(https://example.invalid/tracker.png)'>visible</div>`),
+  /styles must not load a network resource/,
+  'offline gate must preserve CSS string boundaries before decoding escapes',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(https://example.invalid/tracker.png"></div>'),
+  /styles must not load a network resource/,
+  'offline gate must reject EOF-terminated remote style URLs',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(images/tracker.png"></div>'),
+  'offline gate must allow EOF-terminated local style URLs',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(images//local.png)"></div>'),
+  'offline gate must allow relative style URLs with double slashes in their path',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(images/local\\(.png), url(https://example.invalid/tracker.png)"></div>'),
+  /network resource/,
+  'offline gate must continue after escaped parentheses in an unquoted local CSS URL',
+);
+for (const css of [
+  '@import"https://example.invalid/tracker.css";',
+  '@import/* deliberately no whitespace */"https://example.invalid/tracker.css";',
+]) {
+  assert.throws(
+    () => assertOfflineStandaloneReport(`<style>${css}</style>`),
+    /styles must not load a network resource/,
+    'offline gate must reject remote CSS imports without whitespace',
+  );
+}
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<style>@import/* local resource */"styles/local.css";</style>'),
+  'offline gate must allow local CSS imports with comments',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<style>/* @import"https://example.invalid/unused.css"; */</style>'),
+  'offline gate must ignore commented CSS imports',
 );
 
 const standaloneHrefUrls = extractAnchorHrefs(standaloneHtml)

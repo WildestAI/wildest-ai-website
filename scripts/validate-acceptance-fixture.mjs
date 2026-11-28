@@ -226,6 +226,27 @@ function isOutsideCssString(value, end) {
   return quote === undefined;
 }
 
+function cssIdentifierAt(value, start) {
+  let decoded = '';
+  let index = start;
+  while (index < value.length) {
+    const character = value[index];
+    if (/[a-z0-9_-]/i.test(character)) {
+      decoded += character;
+      index += 1;
+      continue;
+    }
+    if (character !== '\\' || index + 1 >= value.length) break;
+    const escape = value.slice(index).match(/^\\([0-9a-f]{1,6})(?:[\t\n\f\r ]+)?|^\\(.)/i);
+    if (!escape) break;
+    decoded += escape[1] === undefined
+      ? escape[2]
+      : String.fromCodePoint(Number.parseInt(escape[1], 16));
+    index += escape[0].length;
+  }
+  return { decoded, end: index };
+}
+
 function cssFunctions(value, name) {
   const functions = [];
   const expression = name.toLowerCase();
@@ -241,10 +262,11 @@ function cssFunctions(value, name) {
       quote = character;
       continue;
     }
-    if (value.slice(index, index + expression.length).toLowerCase() !== expression
+    const identifier = cssIdentifierAt(value, index);
+    if (identifier.decoded.toLowerCase() !== expression
       || /[a-z0-9_-]/i.test(value[index - 1] ?? '')
-      || /[a-z0-9_-]/i.test(value[index + expression.length] ?? '')) continue;
-    let cursor = index + expression.length;
+      || /[a-z0-9_-]/i.test(value[identifier.end] ?? '')) continue;
+    let cursor = identifier.end;
     while (/[\t\n\f\r ]/.test(value[cursor] ?? '')) cursor += 1;
     if (value[cursor] !== '(') continue;
     const start = ++cursor;
@@ -472,6 +494,15 @@ assert.throws(
 assert.doesNotThrow(
   () => assertOfflineStandaloneReport('<div style="background-image: url(images/tracker.png)"></div>'),
   'offline gate must allow local style URLs',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<div style="background-image: u\\72l(https://example.invalid/tracker.png)"></div>'),
+  /styles must not load a network resource/,
+  'offline gate must decode escaped CSS function names',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport('<div style="background-image: u\\72l(images/tracker.png)"></div>'),
+  'offline gate must allow local resources from escaped CSS function names',
 );
 assert.throws(
   () => assertOfflineStandaloneReport(`<style>

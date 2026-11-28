@@ -199,7 +199,7 @@ function cssWithoutComments(value) {
     if (quote) {
       result += character;
       if (character === '\\') result += value[++index] ?? '';
-      else if (character === quote) quote = undefined;
+      else if (character === quote || character === '\n' || character === '\r' || character === '\f') quote = undefined;
       continue;
     }
     if (character === '"' || character === "'") {
@@ -220,7 +220,7 @@ function isOutsideCssString(value, end) {
     const character = value[index];
     if (quote) {
       if (character === '\\') index += 1;
-      else if (character === quote) quote = undefined;
+      else if (character === quote || character === '\n' || character === '\r' || character === '\f') quote = undefined;
     } else if (character === '"' || character === "'") quote = character;
   }
   return quote === undefined;
@@ -398,6 +398,13 @@ assert.throws(
 assert.doesNotThrow(
   () => assertOfflineStandaloneReport('<div style="background-image: url(images/tracker.png)"></div>'),
   'offline gate must allow local style URLs',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport(`<style>
+div { content:"\n; background-image:url(https://example.invalid/tracker.png) }
+</style><div>visible</div>`),
+  /styles must not load a network resource/,
+  'offline gate must recover from an unescaped newline in a CSS string',
 );
 assert.throws(
   () => assertOfflineStandaloneReport(`<div style="background-image: image-set('https://example.invalid/tracker.png' 1x)"></div>`),

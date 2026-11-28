@@ -239,8 +239,11 @@ function cssResourceUrls(value) {
   for (const match of css.matchAll(/@import\s*(?:"([^"]*)"|'([^']*)')/gi)) {
     if (isOutsideCssString(css, match.index)) collectUrl(...match);
   }
-  for (const match of css.matchAll(/image-set\(\s*(?:"([^"]*)"|'([^']*)')/gi)) {
-    if (isOutsideCssString(css, match.index)) collectUrl(...match);
+  for (const match of css.matchAll(/image-set\(([^)]*)\)/gi)) {
+    if (!isOutsideCssString(css, match.index)) continue;
+    for (const candidate of match[1].matchAll(/"([^"]*)"|'([^']*)'/g)) {
+      urls.push(candidate[1] ?? candidate[2]);
+    }
   }
   return urls;
 }
@@ -414,6 +417,15 @@ assert.throws(
 assert.doesNotThrow(
   () => assertOfflineStandaloneReport(`<div style="background-image: image-set('images/tracker.png' 1x)"></div>`),
   'offline gate must allow local image-set string candidates',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport(`<style>.report { background-image: image-set("images/local.png" 1x, "https://example.invalid/tracker.png" 2x); }</style><div class="report"></div>`),
+  /styles must not load a network resource/,
+  'offline gate must inspect every image-set string candidate',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport(`<style>.report { background-image: image-set("images/local.png" 1x, "images/retina.png" 2x); }</style><div class="report"></div>`),
+  'offline gate must allow an all-local image-set candidate list',
 );
 assert.throws(
   () => assertOfflineStandaloneReport('<div style="background-image: url(https://example.invalid/tracker.png"></div>'),

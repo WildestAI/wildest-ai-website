@@ -226,23 +226,94 @@ function isOutsideCssString(value, end) {
   return quote === undefined;
 }
 
+function cssFunctions(value, name) {
+  const functions = [];
+  const expression = name.toLowerCase();
+  let quote;
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index];
+    if (quote) {
+      if (character === '\\') index += 1;
+      else if (character === quote || character === '\n' || character === '\r' || character === '\f') quote = undefined;
+      continue;
+    }
+    if (character === '"' || character === "'") {
+      quote = character;
+      continue;
+    }
+    if (value.slice(index, index + expression.length).toLowerCase() !== expression
+      || /[a-z0-9_-]/i.test(value[index - 1] ?? '')
+      || /[a-z0-9_-]/i.test(value[index + expression.length] ?? '')) continue;
+    let cursor = index + expression.length;
+    while (/[\t\n\f\r ]/.test(value[cursor] ?? '')) cursor += 1;
+    if (value[cursor] !== '(') continue;
+    const start = ++cursor;
+    let depth = 1;
+    let nestedQuote;
+    for (; cursor < value.length; cursor += 1) {
+      const nested = value[cursor];
+      if (nestedQuote) {
+        if (nested === '\\') cursor += 1;
+        else if (nested === nestedQuote || nested === '\n' || nested === '\r' || nested === '\f') nestedQuote = undefined;
+      } else if (nested === '"' || nested === "'") nestedQuote = nested;
+      else if (nested === '(') depth += 1;
+      else if (nested === ')' && --depth === 0) break;
+    }
+    functions.push(value.slice(start, cursor));
+    index = cursor;
+  }
+  return functions;
+}
+
+function cssString(value) {
+  const quote = value[0];
+  if (quote !== '"' && quote !== "'") return undefined;
+  let result = '';
+  for (let index = 1; index < value.length; index += 1) {
+    const character = value[index];
+    if (character === quote) return result;
+    if (character === '\\') {
+      result += character + (value[++index] ?? '');
+    } else if (character === '\n' || character === '\r' || character === '\f') return undefined;
+    else result += character;
+  }
+  return undefined;
+}
+
 function cssResourceUrls(value) {
-  const css = cssWithoutComments(decodeCssEscapes(value));
+  const css = cssWithoutComments(value);
   const urls = [];
-  const collectUrl = (_, doubleQuoted, singleQuoted, bare) => {
-    urls.push(doubleQuoted ?? singleQuoted ?? bare);
-    return '';
+  const addUrl = (url) => {
+    if (url !== undefined) urls.push(decodeCssEscapes(url));
   };
-  for (const match of css.matchAll(/url\(\s*(?:"([^"]*)"|'([^']*)'|([^\s)]+))(?:\s*\)|\s*$)/gi)) {
-    if (isOutsideCssString(css, match.index)) collectUrl(...match);
+  for (const argument of cssFunctions(css, 'url')) {
+    const trimmed = argument.trimStart();
+    addUrl(cssString(trimmed) ?? trimmed.match(/^([^\t\n\f\r )]+)/)?.[1]);
   }
   for (const match of css.matchAll(/@import\s*(?:"([^"]*)"|'([^']*)')/gi)) {
-    if (isOutsideCssString(css, match.index)) collectUrl(...match);
+    if (isOutsideCssString(css, match.index)) addUrl(match[1] ?? match[2]);
   }
-  for (const match of css.matchAll(/image-set\(([^)]*)\)/gi)) {
-    if (!isOutsideCssString(css, match.index)) continue;
-    for (const candidate of match[1].matchAll(/"([^"]*)"|'([^']*)'/g)) {
-      urls.push(candidate[1] ?? candidate[2]);
+  for (const argument of cssFunctions(css, 'image-set')) {
+    let depth = 0;
+    let quote;
+    let candidateStart = 0;
+    const candidates = [];
+    for (let index = 0; index <= argument.length; index += 1) {
+      const character = argument[index];
+      if (quote) {
+        if (character === '\\') index += 1;
+        else if (character === quote || character === '\n' || character === '\r' || character === '\f') quote = undefined;
+      } else if (character === '"' || character === "'") quote = character;
+      else if (character === '(') depth += 1;
+      else if (character === ')') depth -= 1;
+      else if ((character === ',' && depth === 0) || character === undefined) {
+        candidates.push(argument.slice(candidateStart, index).trimStart());
+        candidateStart = index + 1;
+      }
+    }
+    for (const candidate of candidates) {
+      if (/^url\s*\(/i.test(candidate)) continue;
+      addUrl(cssString(candidate));
     }
   }
   return urls;
@@ -423,9 +494,28 @@ assert.throws(
   /styles must not load a network resource/,
   'offline gate must inspect every image-set string candidate',
 );
+assert.throws(
+  () => assertOfflineStandaloneReport(`<style>.report { background-image: image-set(url("images/local.png") 1x, "https://example.invalid/tracker.png" 2x); }</style><div class="report"></div>`),
+  /styles must not load a network resource/,
+  'offline gate must inspect image-set candidates after nested functions',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport(`<style>.report { background-image: image-set("images/local.png" type("image/png") 1x, "https://example.invalid/tracker.png" 2x); }</style><div class="report"></div>`),
+  /styles must not load a network resource/,
+  'offline gate must ignore type strings while inspecting every image-set candidate',
+);
 assert.doesNotThrow(
   () => assertOfflineStandaloneReport(`<style>.report { background-image: image-set("images/local.png" 1x, "images/retina.png" 2x); }</style><div class="report"></div>`),
   'offline gate must allow an all-local image-set candidate list',
+);
+assert.doesNotThrow(
+  () => assertOfflineStandaloneReport(`<style>.report { background-image: image-set(url("images/local.png") 1x, "images/retina.png" type("image/png") 2x); }</style><div class="report"></div>`),
+  'offline gate must allow local image-set candidates with nested functions',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport(`<div style='font-family:"\\22";background-image:url(https://example.invalid/tracker.png)'>visible</div>`),
+  /styles must not load a network resource/,
+  'offline gate must preserve CSS string boundaries before decoding escapes',
 );
 assert.throws(
   () => assertOfflineStandaloneReport('<div style="background-image: url(https://example.invalid/tracker.png"></div>'),

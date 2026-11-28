@@ -277,7 +277,8 @@ function cssFunctions(value, name) {
       if (nestedQuote) {
         if (nested === '\\') cursor += 1;
         else if (nested === nestedQuote || nested === '\n' || nested === '\r' || nested === '\f') nestedQuote = undefined;
-      } else if (nested === '"' || nested === "'") nestedQuote = nested;
+      } else if (nested === '\\') cursor += 1;
+      else if (nested === '"' || nested === "'") nestedQuote = nested;
       else if (nested === '(') depth += 1;
       else if (nested === ')' && --depth === 0) break;
     }
@@ -560,6 +561,11 @@ assert.doesNotThrow(
 assert.doesNotThrow(
   () => assertOfflineStandaloneReport('<div style="background-image: url(images//local.png)"></div>'),
   'offline gate must allow relative style URLs with double slashes in their path',
+);
+assert.throws(
+  () => assertOfflineStandaloneReport('<div style="background-image: url(images/local\\(.png), url(https://example.invalid/tracker.png)"></div>'),
+  /network resource/,
+  'offline gate must continue after escaped parentheses in an unquoted local CSS URL',
 );
 for (const css of [
   '@import"https://example.invalid/tracker.css";',
